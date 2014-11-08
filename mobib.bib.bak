@@ -118,6 +118,14 @@
   year = {2012}
 }
 
+@INPROCEEDINGS{spatial_pyramid,
+  author = {Lazebnik, S. and Schmid, C. and Ponce, J.},
+  title = {Beyond Bags of Features: Spatial Pyramid Matching for Recognizing
+	Natural Scene Categories},
+  booktitle = {CVPR},
+  year = {2006}
+}
+
 @ARTICLE{nin,
   author = {Min Lin and Qiang Chen and Shuicheng Yan},
   title = {Network In Network},
@@ -159,6 +167,16 @@
   year = {2014},
   volume = {abs/1409.0575},
   url = {http://arxiv.org/abs/1409.0575}
+}
+
+@ARTICLE{overfeat,
+  author = {Pierre Sermanet and David Eigen and Xiang Zhang and Micha{\"{e}}l
+	Mathieu and Rob Fergus and Yann LeCun},
+  title = {OverFeat: Integrated Recognition, Localization and Detection using
+	Convolutional Networks},
+  journal = {CoRR},
+  year = {2013},
+  volume = {abs/1312.6229}
 }
 
 @ARTICLE{veryDeep,

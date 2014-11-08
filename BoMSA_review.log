@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  8 NOV 2014 09:26
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  8 NOV 2014 11:39
 entering extended mode
 **BoMSA_review.tex
-("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA_review.tex"
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.tex"
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, afrikaans, ancientgreek, arabic, armenian, assamese, basque, bengali
 , bokmal, bulgarian, catalan, coptic, croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, galic
@@ -27,9 +27,11 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\cvpr.sty" ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\eso-pic.sty"
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\cvpr.sty"
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\eso-pic.sty"
 Package: eso-pic 2002/11/16 v1.1b eso-pic (RN)
-("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\cvpr_eso.sty"
+
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\cvpr_eso.sty"
 
 LaTeX Warning: You have requested package `eso-pic',
                but the package provides `everyshi'.
@@ -351,7 +353,7 @@ File: hpdftex.def 2010/10/30 v6.81t Hyperref driver for pdfTeX
 \c@bookmark@seq@number=\count122
 \Hy@SectionHShift=\skip58
 )
-("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA_review.aux")
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.aux")
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
 LaTeX Font Info:    ... okay on input line 28.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
@@ -434,87 +436,98 @@ Underfull \hbox (badness 1189) in paragraph at lines 54--55
 \OT1/ptm/m/it/10 codes multi-scale fea-tures with their spa-tial lo-ca-tions,
  []
 
+
+Underfull \hbox (badness 1584) in paragraph at lines 54--55
+\OT1/ptm/m/it/10 chain-ing mul-ti-ple average-pooled rec-ti-fied lin-ear units
+ []
+
+
+Underfull \vbox (badness 6625) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 90.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 90.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 66.
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\ot1phv.fd"
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
-] <fig_layer_caffe.png, id=61, 463.4916pt x 216.3282pt>
+]
+Underfull \vbox (badness 4060) has occurred while \output is active []
+
+
+<fig_layer_caffe.png, id=82, 463.4916pt x 216.3282pt>
 File: fig_layer_caffe.png Graphic file (type png)
  <use fig_layer_caffe.png>
 File: fig_layer_caffe.png Graphic file (type png)
- <use fig_layer_caffe.png>
-<fig_add_back_caffe.png, id=71, 325.215pt x 180.675pt>
+ <use fig_layer_caffe.png> [2]
+<fig_add_back_caffe.png, id=111, 325.215pt x 180.675pt>
 File: fig_add_back_caffe.png Graphic file (type png)
  <use fig_add_back_caffe.png>
 File: fig_add_back_caffe.png Graphic file (type png)
  <use fig_add_back_caffe.png>
-<fig_forward_select_caffe.png, id=75, 337.26pt x 186.9384pt>
+<fig_forward_select_caffe.png, id=115, 337.26pt x 186.9384pt>
 File: fig_forward_select_caffe.png Graphic file (type png)
  <use fig_forward_select_caffe.png>
-<fig_forward_select_deep19.png, id=76, 343.5234pt x 186.9384pt>
+<fig_forward_select_deep19.png, id=116, 343.5234pt x 186.9384pt>
 File: fig_forward_select_deep19.png Graphic file (type png)
- <use fig_forward_select_deep19.png> [2 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/fig_layer_caffe.png>]
-Underfull \hbox (badness 1824) in paragraph at lines 159--160
+ <use fig_forward_select_deep19.png> [3 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_layer_caffe.png> <C:/U
+sers/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_add_back_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write
+/BoMSA/fig_forward_select_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_forward_select_deep19.png
+>]
+Underfull \hbox (badness 1824) in paragraph at lines 153--154
 []\OT1/ptm/m/n/10 Besides the in-sight on vi-su-al-iz-ing deep CNN fea-
  []
 
 
-LaTeX Warning: Reference `fig:invar_eg' on page 3 undefined on input line 164.
+LaTeX Warning: Reference `fig:invar_eg' on page 4 undefined on input line 158.
 
-[3 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/fig_add_back_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/wri
-te/fig_forward_select_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/fig_forward_select_deep19.png>]
-<invar/v.png, id=135, 252.945pt x 187.902pt>
+<invar/v.png, id=155, 252.945pt x 187.902pt>
 File: invar/v.png Graphic file (type png)
- <use invar/v.png> <invar/s.png, id=136, 259.2084pt x 180.675pt>
+ <use invar/v.png> <invar/s.png, id=156, 259.2084pt x 180.675pt>
 File: invar/s.png Graphic file (type png)
 
-<use invar/s.png> <invar/h.png, id=137, 252.945pt x 174.8934pt>
+<use invar/s.png> <invar/h.png, id=157, 252.945pt x 174.8934pt>
 File: invar/h.png Graphic file (type png)
  <use invar/h.png>
-<invar/f.png, id=138, 244.2726pt x 186.9384pt>
+<invar/f.png, id=158, 244.2726pt x 186.9384pt>
 File: invar/f.png Graphic file (type png)
- <use invar/f.png> <invar/r.png, id=139, 251.4996pt x 174.8934pt>
+ <use invar/f.png> <invar/r.png, id=159, 251.4996pt x 174.8934pt>
 File: invar/r.png Graphic file (type png)
 
-<use invar/r.png> ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA_review.bbl"
-("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA_review.brf")
+<use invar/r.png> [4 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/v.png> <C:/Users/Songfan/Google Drive/U
+CI/CVPR15/write/BoMSA/invar/s.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/h.png> <C:/Users/Songfan/
+Google Drive/UCI/CVPR15/write/BoMSA/invar/f.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/r.png>]
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.bbl"
+("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.brf")
 \tf@brf=\write3
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 97.
- [4 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/invar/v.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/invar/s
-.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/invar/h.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/invar
-/f.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/invar/r.png>]
-Underfull \hbox (badness 2922) in paragraph at lines 108--108
+
+Underfull \hbox (badness 2922) in paragraph at lines 120--120
 []\OT1/ptm/m/n/9 C. Szegedy, W. Liu, Y. Jia, P. Ser-manet, S. Reed,
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 211.
- [5
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 211.
- ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA_review.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 211.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 205.
+ [5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 205.
+ ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.aux")
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 205.
 Package rerunfilecheck Info: File `BoMSA_review.brf' has not changed.
-(rerunfilecheck)             Checksum: 355E5A27709F1FE71B665CE81A05D2E2;2020.
+(rerunfilecheck)             Checksum: D5B4BCF32FBDBC51AD1D7F6174BA3E88;2530.
 
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 6957 strings out of 494019
- 102607 string characters out of 3143876
- 194625 words of memory out of 3000000
- 10013 multiletter control sequences out of 15000+200000
- 35217 words of font info for 81 fonts, out of 3000000 for 9000
+ 6967 strings out of 494019
+ 102853 string characters out of 3143876
+ 196785 words of memory out of 3000000
+ 10021 multiletter control sequences out of 15000+200000
+ 34698 words of font info for 80 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 42i,9n,30p,2321b,466s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,10n,27p,2321b,389s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
  (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfont
@@ -523,9 +536,9 @@ X 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2
 C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw
 /times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9
 /fonts/type1/urw/times/utmri8a.pfb>
-Output written on BoMSA_review.pdf (5 pages, 297423 bytes).
+Output written on BoMSA_review.pdf (5 pages, 305285 bytes).
 PDF statistics:
- 254 PDF objects out of 1000 (max. 8388607)
- 60 named destinations out of 1000 (max. 500000)
+ 288 PDF objects out of 1000 (max. 8388607)
+ 62 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
