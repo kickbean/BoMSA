@@ -16,6 +16,17 @@ J.~Deng, W.~Dong, R.~Socher, L.-J. Li, K.~Li, and L.~Fei-Fei.
 \newblock Imagenet: A large-scale hierarchical image database.
 \newblock In {\em CVPR}, 2009.
 
+\bibitem{mid_level}
+C.~Doersch, A.~Gupta, and A.~A. Efros.
+\newblock Mid-level visual element discovery as discriminative mode seeking.
+\newblock In {\em ECCV}. 2013.
+
+\bibitem{DeCaf}
+J.~Donahue, Y.~Jia, O.~Vinyals, J.~Hoffman, N.~Zhang, E.~Tzeng, and T.~Darrell.
+\newblock Decaf: {A} deep convolutional activation feature for generic visual
+  recognition.
+\newblock {\em CoRR}, 2013.
+
 \bibitem{liblinear}
 R.-E. Fan, K.-W. Chang, C.-J. Hsieh, X.-R. Wang, and C.-J. Lin.
 \newblock {LIBLINEAR}: A library for large linear classification.
@@ -64,6 +75,11 @@ Y.~Jia, E.~Shelhamer, J.~Donahue, S.~Karayev, J.~Long, R.~Girshick,
 \newblock Caffe: Convolutional architecture for fast feature embedding.
 \newblock {\em arXiv preprint arXiv:1408.5093}, 2014.
 
+\bibitem{FV_BoP}
+M.~Juneja, A.~Vedaldi, C.~Jawahar, and A.~Zisserman.
+\newblock Blocks that shout: Distinctive parts for scene classification.
+\newblock In {\em CVPR}, 2013.
+
 \bibitem{AlexNet}
 A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton.
 \newblock Imagenet classification with deep convolutional neural networks.
@@ -111,6 +127,16 @@ P.~Sermanet, D.~Eigen, X.~Zhang, M.~Mathieu, R.~Fergus, and Y.~LeCun.
 K.~Simonyan and A.~Zisserman.
 \newblock Very deep convolutional networks for large-scale image recognition.
 \newblock {\em CoRR}, 2014.
+
+\bibitem{disc_patch}
+S.~Singh, A.~Gupta, and A.~A. Efros.
+\newblock Unsupervised discovery of mid-level discriminative patches.
+\newblock In {\em ECCV}, 2012.
+
+\bibitem{FV}
+J.~S¨¢nchez, F.~Perronnin, T.~Mensink, and J.~Verbeek.
+\newblock Image classification with the fisher vector: Theory and practice.
+\newblock {\em IJCV}, 2013.
 
 \bibitem{momentum}
 I.~Sutskever, J.~Martens, G.~Dahl, and G.~Hinton.
