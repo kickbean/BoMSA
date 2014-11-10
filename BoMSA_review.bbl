@@ -16,6 +16,11 @@ J.~Deng, W.~Dong, R.~Socher, L.-J. Li, K.~Li, and L.~Fei-Fei.
 \newblock Imagenet: A large-scale hierarchical image database.
 \newblock In {\em CVPR}, 2009.
 
+\bibitem{liblinear}
+R.-E. Fan, K.-W. Chang, C.-J. Hsieh, X.-R. Wang, and C.-J. Lin.
+\newblock {LIBLINEAR}: A library for large linear classification.
+\newblock {\em Journal of Machine Learning Research}, 2008.
+
 \bibitem{Scene15}
 L.~Fei-Fei and P.~Perona.
 \newblock A bayesian hierarchical model for learning natural scene categories.

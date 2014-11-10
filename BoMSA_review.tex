@@ -9,8 +9,7 @@
 \usepackage{mathrsfs}
 \usepackage{mathtools}
 \usepackage{subfigure}
-
-
+\DeclareMathOperator*{\argmin}{arg\,min}
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -60,7 +59,18 @@ While Deep Convolutional Neural Network (CNN) encodes multi-scale features with 
 
 Deep CNN has shown its versatility in the tasks such object detection and recognition~\cite{AlexNet, overfeat, veryDeep, GoogLeNet, nin} in the field of computer vision. Trained with large number of instances, (such as ImageNet~\cite{ImageNet}), CNN is also an excel candidate for off-the-shelf feature extractions, results in outstanding performance in various recognition tasks~\cite{cnn_baseline}. In the meantime, a considerable amount of effort is spent on how to further improve the performance of CNN. On one hand, many are focus on techniques to efficiently and effective train a CNN. A good initialization need to be carefully selected~\cite{diff_cnn} in the beginning. Data augmentation~\cite{AlexNet} is recommended to improve the model performance as well. Drop-out~\cite{dropout} and momentum~\cite{momentum} are also necessary to prevent over-fitting and obtain superior models. On the other hand, different model components and architectures are proposed. Rectified linear units (ReLU)~\cite{AlexNet} add non-linearity and enrich the model complexity. Different pooling method, such as Distance Transform Pooling~\cite{dist_trans}, is adopted in~\cite{dpm_is_cnn}, allowing local deformations, as in the widely-used deformable part-based model (DPM)~\cite{dpm}. \cite{veryDeep} adopts a small $3\times 3$ receptive field to deepen the model, while maintaining less parameters. A network in network~\cite{nin} is proposed to enhance model discriminability for local patches within the receptive field. The award winning GoogLeNet~\cite{GoogLeNet} uses an \textit{Inception} model that is based on the Hebbian principle~\cite{Hebb}, \ie, neurons that fire together, wire together, the theoretical proof of which is provided by~\cite{dnn_proof} under constraints. 
 
-One question to ponder: is there any model-independent potential that is yet to be discovered. Although allowing local deformation, CNN encodes the the spatial information of multi-scale features. Conversely, by ignoring the spatial location of features, bag-of-feature like techniques~\cite{spatial_pyramid} achieves transformation invariance to some extend. As pointed out in~\cite{Gong14}, combining both type of features results in a better representation for recognition tasks with large variations, such as Scene classification~\cite{SUN397,MIT67}. Traditionally, when CNN is used for feature extraction, the activation of the first fully-connected (FC) layer is usually considered as the feature~\cite{overfeat, Gong14}. Using an off-the-shelf deep CNN model,~\cite{Gong14} explicitly extracts image patches from three scales and computes the feed-forward CNN activations for each patch for feature extraction. This algorithm is cumbersome due to the computation of multiple patches for one image. Besides, it can only encode the multi-scale features to a certain extend limited by the burden of the post processing, \ie, K-means and Principle Component Analysis (PCA). As a matter of fact, CNN feature is meant to encode multi-scale feature at each convolutional layer. Therefore, there is no need to extract multi-scale patches and only one feed-forward computation is sufficient to capture the activations of multi-scale features for one input image. 
+One question to ponder: is there any model-independent potential that is yet to be discovered. Although allowing local deformation, CNN encodes the the spatial information of multi-scale features. Conversely, by ignoring the spatial location of features, bag-of-feature like techniques~\cite{spatial_pyramid} achieves transformation invariance to some extend. As pointed out in~\cite{Gong14}, combining both type of features results in a better representation for recognition tasks with large variations, such as Scene classification~\cite{SUN397,MIT67}. Traditionally, when CNN is used for feature extraction, the activation of the first fully-connected (FC) layer is usually considered as the feature~\cite{overfeat, Gong14}. Using an off-the-shelf deep CNN model,~\cite{Gong14} explicitly extracts image patches from three scales and computes the feed-forward CNN activations for each patch for feature extraction. This algorithm is cumbersome due to the computation of multiple patches for one image. Besides, it can only encode the multi-scale features to a certain extend limited by the burden of the post processing, \ie, K-means and Principle Component Analysis (PCA). As a matter of fact, CNN feature is meant to encode multi-scale feature at each convolutional (Conv.) layer. Therefore, there is no need to extract multi-scale patches and only one feed-forward computation is sufficient to capture the activations of multi-scale features for one input image. 
+
+\begin{figure*}[htbp]
+\centering
+	\subfigure[low-level feature is preferred]{\includegraphics[width=.9\textwidth]{moti_low_better.png}\label{fig:moti_low}}
+	\subfigure[high-level feature is preferred]{\includegraphics[width=.9\textwidth]{moti_high_better.png}\label{fig:moti_high}}
+
+\caption{Retrieval results using euclidean distance for both low- and high-level features on MIT67~\cite{MIT67}. \textit{Green} (\textit{Red}) box means correct (wrong) results. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. This observation shows that both low- and high-level features are dispensable for a better representation.}
+
+\label{fig:moti}
+\end{figure*}
+
 
 In this paper, we first conducted an empirical analysis on the feature discriminativeness of every unit of CNN model. By average-pooling at each layer, the output ignores global spatial information and results in a bag-of-feature representation. The bag-of-feature from ReLU is then found to carry the most performance gain at each layer. We have also observed a synergy of multi-scale activations results in a better discriminative representation. These observations tie closely to the vanishing gradient~\cite{diff_cnn} issue in the deep CNN literature. During the training of a CNN, the top layer can be easily saturated. The gradients in the back-propagation algorithm will not effective reach the lower levels, resulting in a model that focuses more high-level features. Thus, we proposed a model augmentation schema, BoMSA, that chains the ReLU at each layer to the ultimate loss function. This augmentation approach is not confined by model variations and can be applied to existing pre-trained models or re-training the model from the ground up. By explicitly linking the lower layers to the decision layer, we gear the training towards the bag-of-activations from all layers. Thus, the augmented model is designed to be robust to spatial translations while maintaining its discriminative power in the multi-scale fashion. We apply our augmentation approach on various models (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}, etc.) in the literature and test them on various scene recognition benchmark datasets, such as SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. A consistent performance improvement is observed of our multi-scale representation over the best discriminative single-scale feature. 
 
@@ -70,55 +80,53 @@ The rest of the paper is organized as follows: we motivate and describe our mode
 
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
-\section{Technical Approach\label{sec:approach}}
+\section{Approach\label{sec:approach}}
 
-We seek to discover a model-independent feature representation that can be efficiently computed. This representation should conform the property of \textit{multi-scale} and \textit{orderless} which outperform single-scale representation in scene classification tasks. 
-
-\subsection{Model}
+We seek to discover a model-independent augmentation approach that enable the model with multi-scale feature representation. We first provide our motivation based on empirical studies on the discrimintiveness of individual feature at various scales as well as multi-scale features. We then describe our model augmentation technique. 
 
 In this work, we consider two models in the literature, namely Caffe and Deep19. Caffe~\cite{Caffe} is a well-known deep learning framework. It has a pre-trained model which follows the landmark ``AlexNet''~\cite{AlexNet} trained with millions of data in the ImageNet dataset~\cite{ImageNet}. This model has 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields for the entire net and the deepest model has 19 layers (16 conv. and 3 FC layers). This model registered the state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. 
 
 We intend to demonstrate the consistency and model-independence of our observations and approach. We have conducted experiments on several CNN models and observed similar patterns. Due to limited space, we only provide the analysis of the aforementioned Caffe and Deep19 models as exemplars in the rest of the paper. 
 
 %-------------------------------------------------------------------------
-\subsection{Multi-scale Orderless CNN Activation\label{sec:definition}}
+\subsection{Motivation: Classification Performance of Individual CNN Activation at Different Scale\label{sec:indi_scale}}
 
-We consider the marginal activation of a rectified linear unit (ReLU) as the \textit{orderless} feature response at its corresponding scale. As described in~\cite{ReLU,AlexNet}, ReLU models a neuron's output $r$ as a mapping of its input $x$ with the non-saturating nonlinearity $r(x)=\max (0,x)$. 
-
-Concretely, to compute the proposed representation, let $\alpha_i$ of dimension $w\times h\times k$ be the output of ReLU at $i$-th layer ($w=h$ in most CNN models). Each $w\times h$ is the convolutional response map of one of the $k$ filters. It carries the spatial activation information at the current scale. Thus, the \textit{orderless} response, $f_i$, at each scale can be computed by sum-pooling the first two dimension of $\alpha_i$, resulting in a $k$-dimensional vector, \ie,
-
-\begin{equation}
-f_i=\sum_w \sum_h \alpha_i
-\end{equation}
-
-We are motivated to choose the output of the ReLU layer due to the nonlinearity it introduces to the CNN architecture, which boosts the discriminative power of the model. To further provide statistical evidences for the argument, we conduct classification experiments on MIT Indoor Scene (MIT67) dataset~\cite{MIT67} using both Caffe and Deep19 models. We consider the orderless response, $f_i$, from each layer as different features; one-vs-all linear SVMs are then trained and the classification accuracy is reported in Fig.~\ref{fig:layer_MIT67}. The detailed experimental setups for both Caffe and Deep19 models are similar to the ones described in Sec.~\ref{sec:exp}. As seen in Fig.~\ref{fig:layer_MIT67}, in general, the discriminativeness of the model increases as the layer becomes higher. More importantly, we observe significant improvement resulting from each ReLU layer. These observations not only inform us that the CNN model owes its performance boost to the nonlinearity of the ReLU layer, but also motivate us to leverage multiple ReLU layer responses to enrich the discriminative ability of the model. 
+We consider the average-pooled activation of each computation unit in a CNN as the feature at its corresponding scale. We conduct classification experiments on MIT Indoor Scene (MIT67) dataset~\cite{MIT67} using both Caffe and Deep19 models. 67-way one-vs-all linear SVM classifiers are then trained from a 10-fold cross validation, and the classification accuracy is reported in Fig.~\ref{fig:layer_MIT67}. The detailed parameter option for both Caffe and Deep19 models are similar to the ones described in Sec.~\ref{sec:exp}. As seen in Fig.~\ref{fig:layer_MIT67}, in general, the discriminativeness of the model increases as the layer becomes higher. More importantly, we observe significant improvement resulting from each Rectified Linear Units (ReLU). As described in~\cite{ReLU,AlexNet}, ReLU models a neuron's output $r$ as a mapping of its input $x$ with the non-saturating nonlinearity $r(x)=\max (0,x)$. We are then motivated to choose the output of the ReLU layer due to this nonlinearity it introduces to the CNN architecture, which boosts the discriminative power of the model. 
 
 \begin{figure}[htbp]
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig_layer_caffe.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using the marginal activation of each layer. The color alternation indicates change of convolutional layers. The solid color fill represents the output of the ReLU layer. There are 7 ReLU layer for the Caffe model and 18 for Deep19. A significant performance improvement is observed at each ReLU layer compared with its previous layer, especially at the early convolutional layers.}
+\caption{The classification accuracy on MIT67~\cite{MIT67} using the marginal activation of each layer. The color alternation indicates change of Conv. layers. The solid color fill represents the output of the ReLU layer. There are 7 ReLU layer for the Caffe model and 18 for Deep19. A significant performance improvement is observed at each ReLU layer compared with its previous layer, especially at the early Conv. layers.}
 
 \label{fig:layer_MIT67}
 \end{figure}
 
 
-%-------------------------------------------------------------------------
-\subsection{The Feature Selection from Activation Layer}
+%Concretely, to compute the proposed representation, let $\alpha_i$ of dimension $w\times h\times k$ be the output of ReLU at $i$-th layer ($w=h$ in most CNN models). Each $w\times h$ is the Conv. response map of one of the $k$ filters. It carries the spatial activation information at the current scale. Thus, the \textit{orderless} response, $f_i$, at each scale can be computed by sum-pooling the first two dimension of $\alpha_i$, resulting in a $k$-dimensional vector, \ie,
+%
+%\begin{equation}
+%f_i=\sum_w \sum_h \alpha_i
+%\end{equation}
 
-Since different CNN layer models image patterns at various scales, the first question to ask is that ``Does combining activations at all scales help to extract a better feature''?  To address this question, we carried out another experiments on the MIT67 data~\cite{MIT67}. In the literature when CNN is used for feature extraction, the response of the first fully connected layer is usually selected. Our previous analysis in Fig.~\ref{fig:layer_MIT67} also demonstrates the discriminative power of high-level CNN layer. Thus, in this experiment, we start from the $f$ of the last ReLU layer and greedily concatenate the marginal responses from previous ReLU layer. The rest of the experimental setups are the same as in Sec.~\ref{sec:definition} and Sec.~\ref{sec:exp}, \ie, 67-way one-vs-all linear SVM classifiers are trained every time we add one more layer. Since we keep on concatenating the $f$s to our feature, the feature dimension is monotonically increasing. As the results shown in Fig.~\ref{fig:add_back}, the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{corner} or \textit{edge}. 
+
+%-------------------------------------------------------------------------
+\subsection{Motivation: Classification Performance of Multi-scale CNN Activation\label{sec:multi}}
+
+Since different CNN layers correspond to image feature at various scales, seen in Fig.~\ref{fig:moti}, we wonder whether combining activations at multiple scales help to extract a better feature. To address this question, we carried out another experiments on the MIT67 data~\cite{MIT67}. We start from the average-pooled response of the last ReLU layer and greedily concatenate the ones from previous ReLU layers. The reason we start from the last ReLU layer is that, in the literature when CNN is used for feature extraction, the response of the first fully connected layer is usually selected~\cite{cnn_baseline,Gong14}. Besides, our previous analysis in Fig.~\ref{fig:layer_MIT67} also demonstrates better discriminative power of high-level CNN layer.
+
+The rest of the experimental setups are the same as in Sec.~\ref{sec:indi_scale}, \ie, a set of 67-way one-vs-all linear SVM classifiers are trained every time we add one more layer. Since we keep on concatenating features at lower level, the feature dimension is monotonically increasing. As the results shown in Fig.~\ref{fig:add_back}, the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{edge} or \textit{textures}. 
 
 \begin{figure}[htbp]
 \centering
-	\subfigure[Caffe]{\includegraphics[width=.49\columnwidth]{fig_add_back_caffe.png}\label{fig:add_back_caffe}}
-	\subfigure[Deep19]{\includegraphics[width=.49\columnwidth]{fig_add_back_caffe.png}\label{fig:add_back_deep19}}
-\caption{The performance trend when incorporating more $f$ from the ReLU layer. The keyword ``all'' means previous $f$s been included as feature. A performance drop is observed when incorporating low level marginal responses.}
+	\subfigure[Caffe]{\includegraphics[width=.43\columnwidth]{fig_add_back_caffe.png}\label{fig:add_back_caffe}}
+	\subfigure[Deep19]{\includegraphics[width=.56\columnwidth]{fig_add_back_deep19.png}\label{fig:add_back_deep19}}
+\caption{The performance trend when incorporating more lower-level features. The keyword ``all'' means the previously added average-pooled ReLUs. A performance drop is observed when incorporating more low level features.}
 
 \label{fig:add_back}
 \end{figure}
 
-
-A more systematic way to select the layers to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results only selects the mid- or high-level filter responses. 
+A more systematic way for select the correct scale to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. 
 
 \begin{figure}[htbp]
 \centering
@@ -129,33 +137,79 @@ A more systematic way to select the layers to incorporate as feature is feature 
 \label{fig:forward_select}
 \end{figure}
 
-By incorporating marginal responses from multiple layers, we have achieved \textit{multi-scale orderless} feature extraction. We term this feature ``MOFeat''. We should point out that for the latter analysis and experiments on other datasets, we opt to use the same feature selected by the forward selection algorithm on MIT67 data. An consistent performance boost demonstrates the data-independence of the proposed feature representation. 
+We should point out that for the latter analysis and experiments on other datasets, we opt to use scales selected by the forward selection algorithm on MIT67 data. An consistent performance boost demonstrates the data-independence of our analysis and observations. 
+
+\subsection{Model\label{sec:model}}
+
+Based on the analysis in Sec.~\ref{sec:indi_scale} and Sec.~\ref{sec:multi}, we propose a novel deep CNN architecture, Bag-of-Multi-Scale-Activation (BoMSA), shown in Fig.~\ref{fig:model}. A typical CNN layer consists of four layers, \ie, Conv., ReLU, contrast normalization (Norm), Max-pool layers (with the Norm and Max-pool layers being optional). This augmentation schema converts the traditional CNN \textit{chain} model~\cite{AlexNet,veryDeep} to a complex model by linking each ReLU to an average-pooled layer and FC layer thereafter. Before feeding into the Soft-max layer, an \textit{Add} layer is introduced to combine the responses from all FC layers. 
+
+\begin{figure}[htbp]
+\centering
+	\includegraphics[width=\columnwidth]{fig_model.png}
+\caption{The architecture of the proposed generalized model augmentation technique. The traditional \textit{chain} model is represented by the connections from Layer-$1$ to Layer-$N$.}
+
+\label{fig:model}
+\end{figure}
+
+\subsection{Training}
+
+Let $\textbf{w}_1,...\textbf{w}_K$ be the CNN model parameters at $1,..,K$-th layer, training data be ($\textbf{x}^{(i)},\textbf{y}^{(i)}$), where $\textbf{x}^{(i)}$ is the $i$-th input image and $\textbf{y}^{(i)}$ is the indicator vector of the class of $\textbf{x}^{(i)}$. Then we intend to solve the following optimization problem
+
+\begin{align}
+\argmin_{\textbf{w}_1,...\textbf{w}_K} \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}(f(\textbf{x}^{(i)};\textbf{w}_1,...,\textbf{w}_K),\textbf{y}^{(i)})
+\end{align}
+
+We adopt the stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the derivative of the objective function computed by chain rule results in the well-known back-propagation algorithm. In our proposed complex model, care need to be taken in the feed-forward for Add layer and back-propagation for all the ReLU layers. In the feed-forward step, the Add unit simply adds multiple inputs from all ReLU layers. In the back-prop step for $i$-th ReLU layer (seen in Fig.~\ref{fig:backprop_eq}), let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th branching; $z$ is the final output of the Softmax layer. Thus, the gradient of $z$ with respect to $i$-th ReLU layer can be computed as
+
+\begin{align}
+\frac{\partial z}{\partial \alpha_i}=\sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}
+\end{align}
+
+\noindent where $C=2$ for our model. Each partial derivative component, $\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, can be computed in the typical back-prop fashion. 
+
+
+\begin{figure}[htbp]
+\centering
+	\includegraphics[width=\columnwidth]{fig_backprop_eq.png}
+\caption{Visualization of parameter setups at $i$-th ReLU.}
+
+\label{fig:backprop_eq}
+\end{figure}
+
 
 \section{Discussions\label{sec:ana}}
 
+\subsection{off-the-shelf Model Instantiation}
+
+We first point out an interesting instantiation of our model, linking back to the analysis in~\ref{sec:multi}. We could switch the softmax loss to hinge loss and freeze the back-prop at the FC layer. In this way, we prevent altering the chain-part of our model and only allow training on the augmented part our model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train the augmented part our model.
+
 \subsection{Relationship to the literature}
 
-Though inspired by~\cite{Gong14}, our computation of the \textit{multi-scale orderless} feature is completely different from them. In~\cite{Gong14}, local patches at three scales are first extracted (roughly 50 patches per image in their setting); each patch is then feed to the entire CNN and the activations of the first fully connected layer (4096-dimension) are used for post processing, \ie, K-means + VLAD pooling. 
+Our work is inspired by~\cite{Gong14}. In~\cite{Gong14}, local patches at three scales are first extracted (roughly 50 patches per image in their setting); each patch is then feed to an off-the-shelf CNN and the activations of the first fully connected layer (4096-dimension) are used for post processing, \ie, K-means + VLAD pooling. 
 
 Our approach has several advantages over~\cite{Gong14}:
 \begin{enumerate}
-\item \cite{Gong14} computes multiple feed-forward on a single image due to multiple patches. The computation of convolution is the bottleneck for this procedure. In our implementation, only one feed-forward computation is needed for one image and the activation is available at each scale.
+\item \cite{Gong14} computes multiple feed-forward on a single image due to multiple patches. The computation of convolution is the bottleneck for this procedure. In our approach, our model is trained to adapt to multi-scale features. Thus, during test phase,
+only one feed-forward computation is needed for one image. As matter of fact, extracting feature of one image in~\cite{Gong14} takes more than 20 seconds while ours only take less than 1 second. 
+
 \item \cite{Gong14} uses K-means clustering algorithm in the VLAD pooling, which can result in inconsistent result due to random initialization. 
-\item \cite{Gong14} conducts two steps of PCA (first PCA to reduce $4096$-dimensional activation to $500$-dimension, and second PCA to reduce $50,000$-dimensional VLAD pooled feature to $4096$-dimension). 
-\item the feature extraction procedure in~\cite{Gong14} takes more than 20 seconds for one test image while ours only take less than 1 second. 
+
+\item \cite{Gong14} conducts two steps of PCA (first PCA to reduce $4096$-dimensional activation to $500$-dimension, and second PCA to reduce $50,000$-dimensional VLAD pooled feature to $4096$-dimension). This can also be one bottleneck of their approach. 
+
 \end{enumerate} 
 
-Overall, the implementation of \textit{multi-scale orderless} feature in~\cite{Gong14} is not only inefficient but also prone to over-fitting due to a number of hyper-parameter tuning. On the contrary, our implementation is easy to compute and little parameter tuning is needed. 
+%Overall, the implementation of \textit{multi-scale orderless} feature in~\cite{Gong14} is not only inefficient but also prone to over-fitting due to a number of hyper-parameter tuning. On the contrary, our implementation is easy to compute and little parameter tuning is needed. 
 
 %-------------------------------------------------------------------------
 \subsection{The Analysis of Invariance}
 
-Besides the insight on visualizing deep CNN features,~\cite{visual_cnn} provides transformation invariance analysis of their model on several images. This is done by comparing the feature vector distance between the original and transformed images. Realizing that several examples do not necessarily represents the overall statistics,~\cite{Gong14} improve the invariance analysis by experiments on the SUN397 scene database~\cite{SUN397}. Unfortunately, only the results on 4 categories are provided in their paper. The performance for the entire dataset is still unknown
+Besides the insight on visualizing deep CNN features,~\cite{visual_cnn} provides transformation invariance analysis of their model on several images. This is done by comparing the feature vector distance between the original and transformed images. Realizing that several examples do not necessarily represents the overall statistics,~\cite{Gong14} improve the invariance analysis by experiments on the SUN397 scene database~\cite{SUN397}. Unfortunately, only the results on 4 categories are provided in their paper. The performance for the entire dataset is still unknown.
 
-%and the invariance definition is difficult to quantify. 
-%\textbf{[We should provide some metric to measure the invariance as one of the contribution.]}
+To cope with the aforementioned gap and analyze the invariance of our representation, we carried out experiments on the entire MIT Indoor dataset~\cite{MIT67} and report the average performance. We intend to compare the tolerance of the our multi-scale feature compared with single-scale CNN features. Concretely, the single-scale CNN feature in comparison is the activation of a CNN model which achieves best classification performance (not necessarily the output of the first FC layer). For a fair comparison, the multi-scale features are extracted by concatenating the output of all sum-pooling layers. We first trained $67$-way one-vs-all linear SVM classifiers for all $67$ classes using features extracted from the original images. During test phase, four transformations are considered for the analysis, \ie, translation, scaling, flipping, and rotation. Fig.~\ref{fig:invar_eg} illustrates all the transformations and their corresponding parameters, which are similar to the ones in~\cite{Gong14}. 
 
-To cope with the aforementioned gap and analyze the invariance of our representation, we carried out experiments on the entire MIT Indoor dataset~\cite{MIT67} and report the average performance. We intend to compare the tolerance of the proposed multi-scale MOFeat compared with single-scale CNN features. Concretely, the single-scale CNN feature in comparison is the activation of CNN model which achieves best classification performance (not necessarily the output of the first FC layer). We first trained $67$-way one-vs-all linear SVM classifiers for all $67$ classes using features extracted from the original images. During test phase, four transformations are considered for the analysis, \ie, translation, scaling, flipping, and rotation. Fig.~\ref{fig:invar_eg} illustrates all the transformations and their corresponding parameters, which are similar to the ones in~\cite{Gong14}. After applying the transformations to test images, features are extracted for the proposed MOFeat and single-scale feature. The classification is conducted using the trained SVMs, and the accuracy is shown in Fig.~\ref{fig:invar_rst}. Each data point is the performance of the entire test data. As seen in Fg.~\ref{fig:invar_rst}, the transformations almost always hurt the performance except for horizontal flip. This observation is similar to the one in~\cite{Gong14}. We also see that multi-scale feature, MOFeat, consistently out-performs the single-scale feature under every degree of all transformations. As far as the invariance is concerned, we observe the same level of performance decrease, if not more, for MOFeat compared with single-scale. This means that both features have the same level of tolerance to transformations. This immediately suggest that ``training jittering'', \ie, including transformations in the training data, will improve the performance. Since ``training jittering'' is conducted during the training of CNN model for classification~\cite{veryDeep}, it is interesting that the observation of our invariance analysis shows that when using CNN for feature extraction, it is beneficial to perform another round of ``training jittering'' to train the classifiers. 
+
+
+After applying the transformations to test images, both multi- and single-scale features are extracted. The classification is conducted using the trained SVMs, and the accuracy is shown in Fig.~\ref{fig:invar_rst}. Each data point represents the performance of the entire test data. As seen in Fg.~\ref{fig:invar_rst}, the transformations almost always hurt the performance except for horizontal flip. This observation is similar to the one in~\cite{Gong14}. We also see that multi-scale feature consistently out-performs the single-scale feature under every degree of all transformations. As far as the invariance is concerned, we observe the similar level of performance decrease. This means that both features have the similar level of tolerance to transformations. This immediately suggest that ``training jittering'', \ie, including transformations in the training data, will improve the performance. 
 
 
 \begin{figure}[htbp]
@@ -175,20 +229,27 @@ To cope with the aforementioned gap and analyze the invariance of our representa
 %-------------------------------------------------------------------------
 \section{Experimental Results\label{sec:exp}}
 
-In this section, we carried out experiments on benchmark dataset, SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, and Scene15~\cite{Scene15} to demonstrate the consistency of our approach. We should stress that our MOFeat representation is learned on MIT67 and applied to all the experiments.
+In this section, we carried out experiments on benchmark dataset, SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, and Scene15~\cite{Scene15} to demonstrate the consistency of our approach. 
 
-\section{Experiment Setup}
+\subsection{Experiment Setup}
+
+We should first stress that our augmentation is applied to the ReLU layers selected based on MIT67 dataset, as shown in Fig.~\ref{fig:forward_select}. The learned structure for both Caffe and Deep19 is then applied to all the experiments in this Section, demonstrating the data-independence of our approach. 
 
 We follow the standard image pre-processing steps in the literature~\cite{AlexNet,Caffe,veryDeep}. Since both Caffe~\cite{Caffe} and Deep19 models~\cite{veryDeep} have a fixed input size of $224\times 224$, we first resize the image such that the smaller side matches $224$, and then crop an $224\times 224$ patch from the center. The mean RGB value of each model learned on ImageNet~\cite{ImageNet} is then subtracted.  
 
+We show results of using our BoMSA augmented model for feature extraction. Thus, the output of all the average-pooled ReLU activations are concatenated as our multi-scale representation. For a fair comparison, we compare the multi-scale feature to the best performing single-scale feature. All features are $l2$-normalized. Then the off-the-shelf linear SVM package~\cite{liblinear} is used to train 67-way one-vs-all classifiers with no parameter tuning.
 
-consistent performance improvement on all scene dataset
+\subsection{MIT67}
 
-1. SUN397
+MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. 
 
-2. MIT67
 
-3. Scene15
+
+\subsection{SUN397}
+
+
+\subsection{Scene15}
+
 
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------

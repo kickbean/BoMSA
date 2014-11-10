@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  8 NOV 2014 11:39
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  9 NOV 2014 21:21
 entering extended mode
 **BoMSA_review.tex
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.tex"
@@ -354,21 +354,21 @@ File: hpdftex.def 2010/10/30 v6.81t Hyperref driver for pdfTeX
 \Hy@SectionHShift=\skip58
 )
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.aux")
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 27.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -397,7 +397,7 @@ Package color Info: Driver file: pdftex.def on input line 130.
 )
 \AtBeginShipoutBox=\box31
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 28.
+Package hyperref Info: Link coloring ON on input line 27.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2010/04/30 v2.40 Cross-referencing by name of section
 
@@ -409,44 +409,49 @@ Package: gettitlestring 2009/12/18 v1.3 Cleanup title references (HO)
 )
 \c@section@level=\count129
 )
-LaTeX Info: Redefining \ref on input line 28.
-LaTeX Info: Redefining \pageref on input line 28.
-LaTeX Info: Redefining \nameref on input line 28.
+LaTeX Info: Redefining \ref on input line 27.
+LaTeX Info: Redefining \pageref on input line 27.
+LaTeX Info: Redefining \nameref on input line 27.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
-LaTeX Font Info:    Try loading font information for U+msa on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
+LaTeX Font Info:    Try loading font information for U+msa on input line 50.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 51.
+LaTeX Font Info:    Try loading font information for U+msb on input line 50.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 51.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 50.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\jknappen\ursfs.fd"
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 
-Underfull \hbox (badness 1189) in paragraph at lines 54--55
+Underfull \hbox (badness 1189) in paragraph at lines 53--54
 \OT1/ptm/m/it/10 codes multi-scale fea-tures with their spa-tial lo-ca-tions,
  []
 
 
-Underfull \hbox (badness 1584) in paragraph at lines 54--55
+Underfull \hbox (badness 1584) in paragraph at lines 53--54
 \OT1/ptm/m/it/10 chain-ing mul-ti-ple average-pooled rec-ti-fied lin-ear units
  []
 
-
+<moti_low_better.png, id=30, 709.6914pt x 202.8378pt>
+File: moti_low_better.png Graphic file (type png)
+ <use moti_low_better.png>
+<moti_high_better.png, id=32, 706.8006pt x 202.8378pt>
+File: moti_high_better.png Graphic file (type png)
+ <use moti_high_better.png>
 Underfull \vbox (badness 6625) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 66.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 76.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 76.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\ot1phv.fd"
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
@@ -454,91 +459,102 @@ File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 
 
 ]
-Underfull \vbox (badness 4060) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-<fig_layer_caffe.png, id=82, 463.4916pt x 216.3282pt>
+ [2 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/moti_low_better.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15
+/write/BoMSA/moti_high_better.png>]
+<fig_layer_caffe.png, id=102, 463.4916pt x 216.3282pt>
 File: fig_layer_caffe.png Graphic file (type png)
  <use fig_layer_caffe.png>
 File: fig_layer_caffe.png Graphic file (type png)
- <use fig_layer_caffe.png> [2]
-<fig_add_back_caffe.png, id=111, 325.215pt x 180.675pt>
+ <use fig_layer_caffe.png>
+<fig_add_back_caffe.png, id=113, 325.215pt x 252.945pt>
 File: fig_add_back_caffe.png Graphic file (type png)
  <use fig_add_back_caffe.png>
-File: fig_add_back_caffe.png Graphic file (type png)
- <use fig_add_back_caffe.png>
-<fig_forward_select_caffe.png, id=115, 337.26pt x 186.9384pt>
+<fig_add_back_deep19.png, id=114, 361.35pt x 216.81pt>
+File: fig_add_back_deep19.png Graphic file (type png)
+ <use fig_add_back_deep19.png>
+<fig_forward_select_caffe.png, id=118, 337.26pt x 186.9384pt>
 File: fig_forward_select_caffe.png Graphic file (type png)
  <use fig_forward_select_caffe.png>
-<fig_forward_select_deep19.png, id=116, 343.5234pt x 186.9384pt>
+<fig_forward_select_deep19.png, id=119, 337.26pt x 186.9384pt>
 File: fig_forward_select_deep19.png Graphic file (type png)
  <use fig_forward_select_deep19.png> [3 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_layer_caffe.png> <C:/U
 sers/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_add_back_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write
-/BoMSA/fig_forward_select_caffe.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_forward_select_deep19.png
->]
-Underfull \hbox (badness 1824) in paragraph at lines 153--154
+/BoMSA/fig_add_back_deep19.png>]
+<fig_model.png, id=144, 449.5194pt x 436.029pt>
+File: fig_model.png Graphic file (type png)
+ <use fig_model.png>
+<fig_backprop_eq.png, id=146, 421.575pt x 124.3044pt>
+File: fig_backprop_eq.png Graphic file (type png)
+ <use fig_backprop_eq.png> [4 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_forward_select_caffe.png> <C:/Us
+ers/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_forward_select_deep19.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15
+/write/BoMSA/fig_model.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig_backprop_eq.png>]
+Underfull \hbox (badness 1824) in paragraph at lines 206--207
 []\OT1/ptm/m/n/10 Besides the in-sight on vi-su-al-iz-ing deep CNN fea-
  []
 
 
-LaTeX Warning: Reference `fig:invar_eg' on page 4 undefined on input line 158.
+LaTeX Warning: Reference `fig:invar_eg' on page 5 undefined on input line 208.
 
-<invar/v.png, id=155, 252.945pt x 187.902pt>
+<invar/v.png, id=189, 252.945pt x 186.9384pt>
 File: invar/v.png Graphic file (type png)
- <use invar/v.png> <invar/s.png, id=156, 259.2084pt x 180.675pt>
+ <use invar/v.png> <invar/s.png, id=190, 259.2084pt x 180.675pt>
 File: invar/s.png Graphic file (type png)
 
-<use invar/s.png> <invar/h.png, id=157, 252.945pt x 174.8934pt>
+<use invar/s.png> <invar/h.png, id=191, 252.945pt x 174.8934pt>
 File: invar/h.png Graphic file (type png)
  <use invar/h.png>
-<invar/f.png, id=158, 244.2726pt x 186.9384pt>
+<invar/f.png, id=192, 244.2726pt x 186.9384pt>
 File: invar/f.png Graphic file (type png)
- <use invar/f.png> <invar/r.png, id=159, 251.4996pt x 174.8934pt>
+ <use invar/f.png> <invar/r.png, id=193, 251.4996pt x 174.8934pt>
 File: invar/r.png Graphic file (type png)
 
-<use invar/r.png> [4 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/v.png> <C:/Users/Songfan/Google Drive/U
+<use invar/r.png> [5 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/v.png> <C:/Users/Songfan/Google Drive/U
 CI/CVPR15/write/BoMSA/invar/s.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/h.png> <C:/Users/Songfan/
 Google Drive/UCI/CVPR15/write/BoMSA/invar/f.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/invar/r.png>]
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.bbl"
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.brf")
 \tf@brf=\write3
 
-Underfull \hbox (badness 2922) in paragraph at lines 120--120
+Underfull \hbox (badness 2922) in paragraph at lines 125--125
 []\OT1/ptm/m/n/9 C. Szegedy, W. Liu, Y. Jia, P. Ser-manet, S. Reed,
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 205.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 205.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 266.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 266.
  ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 205.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 266.
 Package rerunfilecheck Info: File `BoMSA_review.brf' has not changed.
-(rerunfilecheck)             Checksum: D5B4BCF32FBDBC51AD1D7F6174BA3E88;2530.
+(rerunfilecheck)             Checksum: 38AE4245094DF0B5D13AA49ABDADB2FA;2785.
 
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 6967 strings out of 494019
- 102853 string characters out of 3143876
- 196785 words of memory out of 3000000
- 10021 multiletter control sequences out of 15000+200000
- 34698 words of font info for 80 fonts, out of 3000000 for 9000
+ 7026 strings out of 494019
+ 103844 string characters out of 3143876
+ 200894 words of memory out of 3000000
+ 10062 multiletter control sequences out of 15000+200000
+ 37857 words of font info for 85 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 42i,10n,27p,2321b,389s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,11n,27p,1912b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfont
-s/cm/cmmi9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><
-C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw
-/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/urw/times/utmri8a.pfb>
-Output written on BoMSA_review.pdf (5 pages, 305285 bytes).
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pf
+b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
+pe1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
+ Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/
+uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
+type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on BoMSA_review.pdf (6 pages, 2315361 bytes).
 PDF statistics:
- 288 PDF objects out of 1000 (max. 8388607)
- 62 named destinations out of 1000 (max. 500000)
- 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 357 PDF objects out of 1000 (max. 8388607)
+ 74 named destinations out of 1000 (max. 500000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
 
