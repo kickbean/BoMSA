@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  10 NOV 2014 10:15
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2014.10.5)  11 NOV 2014 07:27
 entering extended mode
 **BoMSA_review.tex
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.tex"
@@ -513,11 +513,17 @@ File: fig/invar/f.png Graphic file (type png)
 <fig/invar/r.png, id=193, 251.4996pt x 174.8934pt>
 File: fig/invar/r.png Graphic file (type png)
  <use fig/invar/r.png> [5]
+
+LaTeX Warning: Citation `Places' on page 6 undefined on input line 258.
+
+
+LaTeX Warning: Citation `Places' on page 6 undefined on input line 290.
+
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.bbl"
 ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.brf")
 \tf@brf=\write3
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 71.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
  [6 <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig/invar/v.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/wri
 te/BoMSA/fig/invar/s.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig/invar/h.png> <C:/Users/Songfan/Googl
 e Drive/UCI/CVPR15/write/BoMSA/fig/invar/f.png> <C:/Users/Songfan/Google Drive/UCI/CVPR15/write/BoMSA/fig/invar/r.png>]
@@ -529,25 +535,23 @@ Underfull \hbox (badness 2922) in paragraph at lines 151--151
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 306.
- [7
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 306.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 320.
+ [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 320.
  ("C:\Users\Songfan\Google Drive\UCI\CVPR15\write\BoMSA\BoMSA_review.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 306.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 320.
 Package rerunfilecheck Info: File `BoMSA_review.brf' has not changed.
-(rerunfilecheck)             Checksum: AB05C9BD0D8F5A989E11EEC386798639;3210.
+(rerunfilecheck)             Checksum: 7B5139A064DBBE0D84A72F453A4C9E66;3394.
 
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 7060 strings out of 494019
- 104411 string characters out of 3143876
- 199150 words of memory out of 3000000
- 10087 multiletter control sequences out of 15000+200000
+ 7062 strings out of 494019
+ 104428 string characters out of 3143876
+ 198151 words of memory out of 3000000
+ 10089 multiletter control sequences out of 15000+200000
  38376 words of font info for 86 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
  42i,11n,27p,1912b,472s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -561,9 +565,9 @@ pe1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
  Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/
 uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
 type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on BoMSA_review.pdf (7 pages, 2322268 bytes).
+Output written on BoMSA_review.pdf (7 pages, 2323667 bytes).
 PDF statistics:
- 384 PDF objects out of 1000 (max. 8388607)
+ 386 PDF objects out of 1000 (max. 8388607)
  82 named destinations out of 1000 (max. 500000)
  71 words of extra memory for PDF output out of 10000 (max. 10000000)
 
