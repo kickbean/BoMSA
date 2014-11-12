@@ -18,7 +18,7 @@
 \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
 
 \newcommand{\deva}[1]{\textcolor{red}{[Deva: #1]}}
-
+\newcommand{\songfan}[1]{\textcolor{blue}{[Songfan: #1]}}
 
 % \cvprfinalcopy % *** Uncomment this line for the final submission
 
@@ -72,6 +72,9 @@ Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cit
 
 {\bf Hierarhical  models:}  CNNs are 
 hierarchical feed-forward architectures that compute progressively invariant representations of the input image. However, the appropriate level of invariance might be task-dependent. Distinguishing people and dogs requires a representation that is robust to large spatial deformations, since people and dogs can articulate. However, fine-grained categorization of car models (or bird species) requires fine-scale features that capture subtle shape cues. We argue that a universal architecture capable of both tasks must employ some form of multi-scale features for output prediction.
+
+\begin{figure*}
+\centering
 	\subfigure[low-level feature is preferred]{\includegraphics[width=.9\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
 	\subfigure[high-level feature is preferred]{\includegraphics[width=.9\textwidth]{fig/moti_high_better.png}\label{fig:moti_high}}
 
@@ -98,7 +101,7 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 {\bf DAG-structured Neural Networks:} DAG-structured neural nets have been previously explored in the context of recurrent neural nets \cite{baldi2003principled,graves2009offline}. Recurrent neural nets use feedback to capture dynamic states, and so typically cannot be processed with feedforward computations. Previous work has also shown that long-range connections between neural layers can eliminate the vanshing gradient problem, but this is done in the context of memory-based networks~\cite{hochreiter1997long}. We make use of DAG structures to efficiently encode multi-scale features in a simpler feed-forward network.
 
-{\bf Overview:} We motivate our multi-scale DAG-CNN model in \ref{sec:approach}, describe the full architecture in Sec.~\ref{sec:ana}, and conclude with numerous benchmark results in Sec.~\ref{sec:exp}. We evaluate multi-scale DAG-structured variants of existing CNN architectures (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}) on a variety of scene recognition benchmarks including SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. We observe a consistent improvement regardless of the underlying CNN architecture, producing state-of-the-art results on all 3 datasets.
+{\bf Overview:} We motivate our multi-scale DAG-CNN model in Sec.~\ref{sec:motivation}, describe the full architecture in Sec.~\ref{sec:ana}, and conclude with numerous benchmark results in Sec.~\ref{sec:exp}. We evaluate multi-scale DAG-structured variants of existing CNN architectures (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}) on a variety of scene recognition benchmarks including SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. We observe a consistent improvement regardless of the underlying CNN architecture, producing state-of-the-art results on all 3 datasets.
 
 %A consistent performance improvement is observed of our multi-scale representation over the best discriminative single-scale feature. 
 %The rest of the paper is organized as follows: we motivate and describe our model augmentation approach in Sec.~
@@ -119,21 +122,20 @@ We evaluate both models on the heavily benchmarked MIT Indoor Scene (MIT67) data
 %-------------------------------------------------------------------------
 %\subsection{Single-scale classificationScale\label{sec:indi_scale}}
 
-We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (RelU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
 \begin{figure}[htbp]
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig/fig_layer_deep19.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layer for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
+\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layers for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
 \label{fig:layer_MIT67}
 \end{figure}
 
 {\bf Single-scale classification:} Following past work \cite{cnn_baseline}, we train a linear SVM classifier using features extracted from a particular layer. We specifically train $K=67$ 1-vs-all linear classifiers.
 We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (ReLU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
+
+
+
 %As seen in Fig.~\ref{fig:layer_MIT67}, in general, the discriminativeness of the model increases as the layer becomes higher. More importantly, we observe significant improvement resulting from each Rectified Linear Units (ReLU). As described in~\cite{ReLU,AlexNet}, ReLU models a neuron's output $r$ as a mapping of its input $x$ with the non-saturating nonlinearity $r(x)=\max (0,x)$. We are then motivated to choose the output of the ReLU layer due to this nonlinearity it introduces to the CNN architecture, which boosts the discriminative power of the model. 
-
-
-
 
 %Concretely, to compute the proposed representation, let $\alpha_i$ of dimension $w\times h\times k$ be the output of ReLU at $i$-th layer ($w=h$ in most CNN models). Each $w\times h$ is the Conv. response map of one of the $k$ filters. It carries the spatial activation information at the current scale. Thus, the \textit{orderless} response, $f_i$, at each scale can be computed by sum-pooling the first two dimension of $\alpha_i$, resulting in a $k$-dimensional vector, \ie,
 %
@@ -158,11 +160,11 @@ Our observations suggest that high and mid-level features (\ie, \textit{parts} a
 \centering
 	\subfigure[Caffe]{\includegraphics[width=.43\columnwidth]{fig/fig_add_back_caffe.png}\label{fig:add_back_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=.56\columnwidth]{fig/fig_add_back_deep19.png}\label{fig:add_back_deep19}}
-\caption{The performance trend when incorporating more lower-level features. The keyword ``all'' means the previously added average-pooled ReLUs. \deva{Remove all. Why does Deep19 start with layer 42, while Fig3 suggests Deep19 has 20 layers?}. Performance increases as we add mid-layer features, while low-level features prove less helpful.}%performance drop is observed when incorporating more low level features.}
+\caption{The performance trend when incorporating more lower-level features. The keyword ``all'' means the previously added average-pooled ReLUs. \deva{Remove all. Why does Deep19 start with layer 42, while Fig3 suggests Deep19 has 20 layers?}. \songfan{I forgot to mention that the figure was there for placeholder. Layer analysis Figure for Deep19 is now been updated}. Performance increases as we add mid-layer features, while low-level features prove less helpful.}%performance drop is observed when incorporating more low level features.}
 \label{fig:add_back}
 \end{figure}
 
-A more systematic way for select the correct scale to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. \deva{I don't understand the difference between Fig4 + 5?}
+A more systematic way for selecting the correct scale to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. \deva{I don't understand the difference between Fig4 + 5?} \songfan{Fig4 is adding one ReLU layer at a time from back to front. This is done for all ReLU layers with no selection at all. Fig5 is the result of forward selection. Basically, the reasoning here for Multi-scale analysis is that: (1) Does it help to include all ReLU layers? Fig4 shows this is not true. The performance drops when adding low-level features; (2) What are the correct layers to add then? Do a forward selection to find the ``best'' combination. The result of forward selection also confirms that low-levels do hurt the performance. Thus, the algorithm rejects them.}
 
 \begin{figure}[htbp]
 \centering
@@ -184,7 +186,7 @@ Based on the analysis in Sec.~\ref{sec:motivation}, we propose a novel deep DAG-
 \begin{figure*}[t!]
 \centering
 	\includegraphics[width=\textwidth]{fig/fig_model.png}
-\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.\deva{Change formatting to reduce verticle space (too much whitespace)}}
+\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.\deva{Change formatting to reduce verticle space (too much whitespace)}. \songfan{Does this make sense?}}
 \label{fig:model}
 \end{figure*}
 
