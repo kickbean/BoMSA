@@ -17,6 +17,9 @@
 % run, let it finish, and you should be clear).
 \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
 
+\newcommand{\deva}[1]{\textcolor{red}{[Deva: #1]}}
+
+
 % \cvprfinalcopy % *** Uncomment this line for the final submission
 
 \def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
@@ -124,7 +127,7 @@ We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. Th
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. The color indicates the layer type, with a solid color fill representing the output of a ReLU layer. There are 7 ReLU layer for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
+\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. The color indicates the layer type, with a solid color fill representing the output of a ReLU layer \deva{What's blue vs yellow?}. There are 7 ReLU layer for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
 \label{fig:layer_MIT67}
 \end{figure}
 
@@ -137,11 +140,16 @@ We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. Th
 
 
 %-------------------------------------------------------------------------
-\subsection{Motivation: Classification Performance of Multi-scale CNN Activation\label{sec:multi}}
+%\subsection{Motivation: Classification Performance of Multi-scale CNN Activation\label{sec:multi}}
 
-Since different CNN layers correspond to image feature at various scales, seen in Fig.~\ref{fig:moti}, we wonder whether combining activations at multiple scales help to extract a better feature. To address this question, we carried out another experiments on the MIT67 data~\cite{MIT67}. We start from the average-pooled response of the last ReLU layer and greedily concatenate the ones from previous ReLU layers. The reason we start from the last ReLU layer is that, in the literature when CNN is used for feature extraction, the response of the first fully connected layer is usually selected~\cite{cnn_baseline,Gong14}. Besides, our previous analysis in Fig.~\ref{fig:layer_MIT67} also demonstrates better discriminative power of high-level CNN layer.
+{\bf Multi-scale classification:} We now explore the use of multi-scale features. One immediate hurdle to including all features from all layers is the massive increase in dimensionality. We pursue two solutions. Firstly, we compute only marginal activations at each RelU layer with sum pooling. For example, assume a particular layer was of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by summing across spatial dimensions. Secondly, it may not be beneficial to add all layers, as they may encode redundant/correlated information (which may complicate learning by leading to overfitting). We search for an ``optimal'' combination of multiscale features with a greedy forward-selection strategy. We begin by initializing the set of included layers to the last RelU layer (a strong single-layer feature, as suggested by Fig.~\ref{fig:layer_MIT67}).
+Fig.~\ref{fig:add_back} shows that performance increases
 
-The rest of the experimental setups are the same as in Sec.~\ref{sec:indi_scale}, \ie, a set of 67-way one-vs-all linear SVM classifiers are trained every time we add one more layer. Since we keep on concatenating features at lower level, the feature dimension is monotonically increasing. As the results shown in Fig.~\ref{fig:add_back}, the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{edge} or \textit{textures}. 
+ the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{edge} or \textit{textures}. 
+
+%Since different CNN layers correspond to image feature at various scales, seen in Fig.~\ref{fig:moti}, we wonder whether combining activations at multiple scales help to extract a better feature. To address this question, we carried out another experiments on the MIT67 data~\cite{MIT67}. We start from the average-pooled response of the last ReLU layer and greedily concatenate the ones from previous ReLU layers. The reason we start from the last ReLU layer is that, in the literature when CNN is used for feature extraction, the response of the first fully connected layer is usually selected~\cite{cnn_baseline,Gong14}. Besides, our previous analysis in Fig.~\ref{fig:layer_MIT67} also demonstrates better discriminative power of high-level CNN layer.
+
+%The rest of the experimental setups are the same as in Sec.~\ref{sec:indi_scale}, \ie, a set of 67-way one-vs-all linear SVM classifiers are trained every time we add one more layer. Since we keep on concatenating features at lower level, the feature dimension is monotonically increasing. As the results shown in Fig.~\ref{fig:add_back}, the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{edge} or \textit{textures}. 
 
 \begin{figure}[htbp]
 \centering
