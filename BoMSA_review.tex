@@ -68,14 +68,16 @@ While Deep Convolutional Neural Network (CNN) encodes multi-scale features with 
 \label{fig:splash}}
 \end{figure}
 
-Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cite{lecun1998gradient}, are undeniably changing the landscape of many visual recognition tasks~\cite{AlexNet, overfeat, veryDeep, GoogLeNet, nin}. One of the most compelling aspects of their development is their success as universal feature extractors, either as ``off-the-shelf'' features or through a small amount of ``fine tuning''. CNNs trained on particular tasks such as large-scale image classification~\cite{ImageNet} {\em transfer} extraordinarily well to other tasks such as object detection~\cite{rcnn}, scene recognition~\cite{zhoulearning}, image retrieval~\cite{Gong14}, etc \cite{cnn_baseline}.
+Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cite{lecun1998gradient}, now produce state-of-the-art performance on many visual recognition tasks~\cite{AlexNet, overfeat, veryDeep, GoogLeNet, nin}. An attractive property is that appear to serve as universal feature extractors, either as ``off-the-shelf'' features or through a small amount of ``fine tuning''. CNNs trained on particular tasks such as large-scale image classification~\cite{ImageNet} {\em transfer} extraordinarily well to other tasks such as object detection~\cite{rcnn}, scene recognition~\cite{zhoulearning}, image retrieval~\cite{Gong14}, etc \cite{cnn_baseline}.
 
-{\bf Multi-scale models:}  CNNs are 
-hierarchical feed-forward architectures that compute progressively invariant representations of the input image through nonlinear filtering and spatial pooling operations. It appears that they learn such invariant representations remarkably well. However, the appropriate level of invariance must, at some level, be task-dependent. Distinguishing people and dogs requires a representation that is robust to large spatial deformations, since people and dogs can articulate. However, fine-grained categorization of car models (or bird species) requires fine-scale features that capture subtle shape cues. We argue that a universal architecture capable of both tasks must employ some form of multi-scale features for output prediction.
+{\bf Hierarhical  models:}  CNNs are 
+hierarchical feed-forward architectures that compute progressively invariant representations of the input image. However, the appropriate level of invariance might be task-dependent. Distinguishing people and dogs requires a representation that is robust to large spatial deformations, since people and dogs can articulate. However, fine-grained categorization of car models (or bird species) requires fine-scale features that capture subtle shape cues. We argue that a universal architecture capable of both tasks must employ some form of multi-scale features for output prediction.
 
-{\bf Multi-scale features:} We introduce multi-scale CNN architectures that use features at multiple scales for output prediction (Fig.~\ref{fig:splash}). From one perspective, our architectures are quite simple. Typical approaches train a output predictor (e.g., a linear SVM) using features extracted from a single output layer. Instead, one can train an output predictor using features extracted from {\bf multiple layers}. Note that these features come ``for free''; they are already computed in a standard feed-forward pass. But one immediate issue is feature dimensionality - the total number of features across all layers can easily reach hundred of thousands, making training even linear models difficult. Instead, we use {\bf marginal activations} computed from sum (or max) pooling across all locations in a given activation (ReLU) layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}.
+{\bf Multi-scale features:} We introduce multi-scale CNN architectures that use features at multiple scales for output prediction (Fig.~\ref{fig:splash}). From one perspective, our architectures are quite simple. Typical approaches train a output predictor (e.g., a linear SVM) using features extracted from a single output layer. Instead, one can train an output predictor using features extracted from multiple layers. Note that these features come ``for free''; they are already computed in a standard feed-forward pass. 
 
-{\bf DAG-CNN:} Our multi-scale model differs from such past work in one notable aspect. Our model is still a feed-forward CNN that is no longer chain-structured, but a directed-acyclic graph (DAG). DAG-structured CNNs can be discriminatively trained in an end-to-end fashion. Multi-scale learning addresses one well-known difficulty of CNNs - the ``vanishing gradient'' problem~\cite{bengio1994learning}. During gradient-based learning, the gradient signal becomes progressively diluted as one back-propogates it through multiple layers, such that the bottom-most layer receives essentially no updates. Our multi-scale DAG structure connects all activation layers directly to the output, ensuring they all receive a strong gradient signal during learning. 
+{\bf Marginal activations:} One difficulty with multi-scale approaches is feature dimensionality - the total number of features across all layers can easily reach hundred of thousands. This makes training even linear models difficult and prone to overfitting. Instead, we use marginal activations computed from sum (or max) pooling across all spatial locations in a given activation layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}.
+
+{\bf DAG-CNN:} Our multi-scale model differs from such past work in one notable aspect. Our model is still a feed-forward CNN that is no longer chain-structured, but a directed-acyclic graph (DAG). DAG-structured CNNs can be discriminatively trained in an end-to-end fashion, allowing us to learn multiscale representations. Multi-scale learning addresses one well-known difficulty of CNNs - the ``vanishing gradient'' problem~\cite{bengio1994learning}. During gradient-based learning, the gradient signal becomes progressively diluted as one back-propogates it through multiple layers, such that the bottom-most layer receives essentially no updates. Our multi-scale DAG structure connects all activation layers directly to the output, ensuring they all receive a strong gradient signal during learning. 
 
 %yeilding state-of-the-art recognition results across various recognition benchmarks. 
 
@@ -120,14 +122,14 @@ We evaluate both models on the heavily benchmarked MIT Indoor Scene (MIT67) data
 %\subsection{Single-scale classificationScale\label{sec:indi_scale}}
 
 {\bf Single-scale classification:} Following past work \cite{cnn_baseline}, we train a linear SVM classifier using features extracted from a particular layer. We specifically train $K=67$ 1-vs-all linear classifiers.
-We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (RelU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
+We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (RelU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
 %As seen in Fig.~\ref{fig:layer_MIT67}, in general, the discriminativeness of the model increases as the layer becomes higher. More importantly, we observe significant improvement resulting from each Rectified Linear Units (ReLU). As described in~\cite{ReLU,AlexNet}, ReLU models a neuron's output $r$ as a mapping of its input $x$ with the non-saturating nonlinearity $r(x)=\max (0,x)$. We are then motivated to choose the output of the ReLU layer due to this nonlinearity it introduces to the CNN architecture, which boosts the discriminative power of the model. 
 
 \begin{figure}[htbp]
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. The color indicates the layer type, with a solid color fill representing the output of a ReLU layer \deva{What's blue vs yellow?}. There are 7 ReLU layer for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
+\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layer for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive RelU layer, particularly earlier on in the model.}
 \label{fig:layer_MIT67}
 \end{figure}
 
@@ -142,10 +144,10 @@ We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. Th
 %-------------------------------------------------------------------------
 %\subsection{Motivation: Classification Performance of Multi-scale CNN Activation\label{sec:multi}}
 
-{\bf Multi-scale classification:} We now explore the use of multi-scale features. One immediate hurdle to including all features from all layers is the massive increase in dimensionality. We pursue two solutions. Firstly, we compute only marginal activations at each RelU layer with sum pooling. For example, assume a particular layer was of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by summing across spatial dimensions. Secondly, it may not be beneficial to add all layers, as they may encode redundant/correlated information (which may complicate learning by leading to overfitting). We search for an ``optimal'' combination of multiscale features with a greedy forward-selection strategy. We begin by initializing the set of included layers to the last RelU layer (a strong single-layer feature, as suggested by Fig.~\ref{fig:layer_MIT67}).
-Fig.~\ref{fig:add_back} shows that performance increases
-
- the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. We believe it demonstrates the benefit of incorporating more discriminative mid-level and high-level features of CNN (\ie, \textit{parts} and \textit{objects}), but not necessarily the low-level features, such as \textit{edge} or \textit{textures}. 
+{\bf Multi-scale classification:} We now explore the use of multi-scale features. One immediate hurdle to including all features from all layers is the massive increase in dimensionality. We pursue two solutions. Firstly, we compute only marginal activations at each RelU layer with average pooling. We found average pooling to outperform sum pooling as the resulting marginal features remained in a reasonable dynamic range. For example, assume a particular layer was of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaing across spatial dimensions. Secondly, it may not be beneficial to add all layers, as they may encode redundant/correlated information (which may complicate learning by leading to overfitting). We search for an ``optimal'' combination of multiscale features with a greedy forward-selection strategy. We begin by initializing the set of included layers to the last RelU layer (a strong single-layer feature, as suggested by Fig.~\ref{fig:layer_MIT67}).
+Fig.~\ref{fig:add_back} shows that performance increases as we add intermediate layers, while lower layers prove less helpful. 
+% the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. 
+Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures}. 
 
 %Since different CNN layers correspond to image feature at various scales, seen in Fig.~\ref{fig:moti}, we wonder whether combining activations at multiple scales help to extract a better feature. To address this question, we carried out another experiments on the MIT67 data~\cite{MIT67}. We start from the average-pooled response of the last ReLU layer and greedily concatenate the ones from previous ReLU layers. The reason we start from the last ReLU layer is that, in the literature when CNN is used for feature extraction, the response of the first fully connected layer is usually selected~\cite{cnn_baseline,Gong14}. Besides, our previous analysis in Fig.~\ref{fig:layer_MIT67} also demonstrates better discriminative power of high-level CNN layer.
 
@@ -155,12 +157,11 @@ Fig.~\ref{fig:add_back} shows that performance increases
 \centering
 	\subfigure[Caffe]{\includegraphics[width=.43\columnwidth]{fig/fig_add_back_caffe.png}\label{fig:add_back_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=.56\columnwidth]{fig/fig_add_back_deep19.png}\label{fig:add_back_deep19}}
-\caption{The performance trend when incorporating more lower-level features. The keyword ``all'' means the previously added average-pooled ReLUs. A performance drop is observed when incorporating more low level features.}
-
+\caption{The performance trend when incorporating more lower-level features. The keyword ``all'' means the previously added average-pooled ReLUs. \deva{Remove all. Why does Deep19 start with layer 42, while Fig3 suggests Deep19 has 20 layers?}. Performance increases as we add mid-layer features, while low-level features prove less helpful.}%performance drop is observed when incorporating more low level features.}
 \label{fig:add_back}
 \end{figure}
 
-A more systematic way for select the correct scale to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. 
+A more systematic way for select the correct scale to incorporate as feature is feature forward selection, \ie, greedily add the layer in the ReLU pool which results in the best performance boost in an iterative manner. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}, which rejects the low-level features. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. \deva{I don't understand the difference between Fig4 + 5?}
 
 \begin{figure}[htbp]
 \centering
@@ -171,19 +172,20 @@ A more systematic way for select the correct scale to incorporate as feature is 
 \label{fig:forward_select}
 \end{figure}
 
-We should point out that for the latter analysis and experiments on other datasets, we opt to use scales selected by the forward selection algorithm on MIT67 data. An consistent performance boost demonstrates the data-independence of our analysis and observations. 
+{\bf Scale-specific retrieval:}  \deva{TODO. Refer to figure 2.}
+
+For our latter analysis and experiments on other datasets, we use scales selected by the forward selection algorithm on MIT67 data. We use cross-validation data to select these scales, and use the same fixed set across all our benchmark datasets.
 
 \subsection{Model\label{sec:model}}
 
 Based on the analysis in Sec.~\ref{sec:indi_scale} and Sec.~\ref{sec:multi}, we propose a novel deep CNN architecture, Bag-of-Multi-Scale-Activation (BoMSA), shown in Fig.~\ref{fig:model}. A typical CNN layer consists of four layers, \ie, Conv., ReLU, contrast normalization (Norm), Max-pool layers (with the Norm and Max-pool layers being optional). This augmentation schema converts the traditional CNN \textit{chain} model~\cite{AlexNet,veryDeep} to a complex model by linking each ReLU to an average-pooled layer and FC layer thereafter. Before feeding into the Soft-max layer, an \textit{Add} layer is introduced to combine the responses from all FC layers. 
 
-\begin{figure}[htbp]
+\begin{figure*}[t!]
 \centering
-	\includegraphics[width=\columnwidth]{fig/fig_model.png}
-\caption{The architecture of the proposed generalized model augmentation technique. The traditional \textit{chain} model is represented by the connections from Layer-$1$ to Layer-$N$.}
-
+	\includegraphics[width=\textwidth]{fig/fig_model.png}
+\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.\deva{Change formatting to reduce verticle space (too much whitespace)}}
 \label{fig:model}
-\end{figure}
+\end{figure*}
 
 \subsection{Training}
 
