@@ -218,13 +218,13 @@ In this section, we show that the multi-scale model examined in Fig.~\ref{fig:fo
 
 As is now commonplace, we make use of stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the partial derivative of the output with respect to any one weight can be recursively computed by the chain rule, as described in the backprop algorithm~\cite{rumelhart1988learning}. 
 
-{\bf Multi-output layers (RelU):} Our DAG-model is structurally different at the RelU layers (since they have multiple outputs) and the Add layer (since it has multiple inputs). We can still compute partial derivates by recursively applying the chain rule, but care needs to be taken at these points. Let us consider the $i$-th ReLU layer in Fig.~\ref{fig:backprop_eq}. Let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th output branch (its $j^{th}$ child in the DAG), and let $z$ is the final output of the Softmax layer. The gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
+{\bf Multi-output layers (RelU):} Our DAG-model is structurally different at the RelU layers (since they have multiple outputs) and the Add layer (since it has multiple inputs). We can still compute partial derivatives by recursively applying the chain rule, but care needs to be taken at these points. Let us consider the $i$-th ReLU layer in Fig.~\ref{fig:backprop_eq}. Let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th output branch (its $j^{th}$ child in the DAG), and let $z$ is the final output of the Soft-max layer. The gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
 
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}=\sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i} \quad \text {(in general)} \label{eq:backprop1}
 \end{align}
 
-\noindent where $C=2$ for the example in Fig.~\ref{fig:backprop_eq}. One can recover standard backpropogation equations from the above by setting $C$=1: a single back-prop signal $\frac{\partial z}{\partial \beta_i^{(1)}}$  arrives at RelU unit $i$, is multipled by the local gradient $\frac{\partial \beta_i^{(1)}}{\partial \alpha_i^{(1)}}$, and is passed on down to the next layer below. In our DAG, {\em multiple} backprop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multipled by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
+\noindent where $C=2$ for the example in Fig.~\ref{fig:backprop_eq}. One can recover standard back-propogation equations from the above by setting $C$=1: a single back-prop signal $\frac{\partial z}{\partial \beta_i^{(1)}}$  arrives at RelU unit $i$, is multiplied by the local gradient $\frac{\partial \beta_i^{(1)}}{\partial \alpha_i^{(1)}}$, and is passed on down to the next layer below. In our DAG, {\em multiple} back-prop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multiplied by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
 
 % Each partial derivative component, $\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, can be computed in the typical back-prop fashion. In chain-structured back-propogration, a single back-prop signal \frac{\partial z}{\partial \beta_i} will arrive at RelU unit $i$. This is multiped by the layer-specific gradient $
 %This means that during gradient updating, multiple $(C)$ backprop signals will arrive at the $i^{th}$ RelU layer. These signals are added together, and then 
@@ -243,13 +243,13 @@ As is now commonplace, we make use of stochastic gradient descent to minimize th
 \frac{\partial z}{\partial \alpha_i}&=\frac{\partial z}{\partial \beta_k}\frac{\partial \beta_k}{\partial \alpha_i} \nonumber \\
 &=\frac{\partial z}{\partial \beta_k}\sum_{j=1}^{C}\frac{\partial \beta_k}{\partial \alpha_k^{(j)}}\frac{\partial \alpha_k^{(j)}}{\partial \alpha_i} \quad \text{(in general)} \label{eq:backprop2}
 \end{align} 
-One can similary arrive at the standard backpropogation by setting $C=1$.
+One can similarly arrive at the standard back-propogation by setting $C=1$.
 % In chain-structured back-propogration, a single back-prop signal $\frac{\partial z}{\partial \beta_K}$ is arrives at the Add, is multipled by the local gradient 
 
  % arrives at RelU unit $i$, is multipled by the local gradient $\frac{\beta_i}{\partial \alpha_i}$, and is passed on down to the next layer below. In our DAG, {\em multiple} backprop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multipled by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
 
 
-{\bf Special case (RelU):} Our particular DAG architecture can further simply the above equations. Firstly, it may be common for multiple-output layers to duplicate the same output for each child branch. This is true of our RelU units; they pass the same values to the next layer in the chain and the current-layer pooling operation. This means the output-specific gradients are identical for those outputs $\forall j, \frac{\partial \beta_i^{(j)}}{\partial \alpha_i} =  \frac{\partial \beta_i^{(1)}}{\partial \alpha_i}$, which simplifies \eqref{eq:backprop1} to
+{\bf Special case (ReLU):} Our particular DAG architecture can further simply the above equations. Firstly, it may be common for multiple-output layers to duplicate the same output for each child branch. This is true of our ReLU units; they pass the same values to the next layer in the chain and the current-layer pooling operation. This means the output-specific gradients are identical for those outputs $\forall j, \frac{\partial \beta_i^{(j)}}{\partial \alpha_i} =  \frac{\partial \beta_i^{(1)}}{\partial \alpha_i}$, which simplifies \eqref{eq:backprop1} to
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial \beta_i^{(1)}}{\partial \alpha_i} \sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}} \quad \text{(for duplicate outputs)}
 \end{align}
@@ -264,9 +264,9 @@ $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \b
 \end{align}
 \noindent implying that one can similarly save $C$ multiplications. The above equations have an intuitive implementation; the standard chain-structured backpropogation signal is simply replicated along each of the parents of the {\tt Add} layer.
 
-{\bf Implementation:} We use the excellent MatConNet codebase to implement our modifications \cite{vedaldimatconvnet}. We implemented a custom {\tt Add} layer and a custom DAG data-structure to denote layer connectivity. Training and testing is essentially as fast at the chain model.
+{\bf Implementation:} We use the excellent MatConNet codebase to implement our modifications \cite{vedaldimatconvnet}. We implemented a custom {\tt Add} layer and a custom DAG data-structure to denote layer connectivity. Training and testing is essentially as fast as the chain model.
 
-{\bf Vanishing Gradients:} Vanishing Gradient~\cite{bengio1994learning} refers to the problem where the gradients value decrease in the back-propagation procedure. This makes CNN training difficult since the gradient updates in the bottom layers are not as effective. In our DAG-CNN model, this problem is solved by directly linking layers at different level to the output layer. As seen in Fig.~\ref{fig:grad}, the average gradient of our DAG-CNN at the bottom layer is consistently larger than that of a chain model during training time. This make multiscale training considerably more efficient than single (e.g., high-level) scale training.
+{\bf Vanishing Gradients:} Vanishing Gradient~\cite{bengio1994learning} refers to the problem where the gradients value decrease in the back-propagation procedure. This makes CNN training difficult since the gradient updates in the bottom layers are not as effective. In our DAG-CNN model, this problem is solved by directly linking layers at different level to the output layer. As seen in Fig.~\ref{fig:grad}, the average gradient of our DAG-CNN at the bottom layer is consistently larger than that of a chain model during training time. This make multi-scale training considerably more efficient than single (e.g., high-level) scale training.
 
 \begin{figure}[htbp]
 \centering
@@ -278,11 +278,7 @@ Gradient-based learning\\
 \end{figure}
 
 
-\section{Discussions\label{sec:ana}}
-
-\subsection{Off-the-shelf DAG}
-
-We first point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:motivation}. We could switch the softmax loss to hinge loss and freeze the back-prop at the FC layer. In this way, we prevent altering the chain-part of our model and only allow training on the augmented part our model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train our DAG-CNN model.
+{\bf Off-the-shelf DAG:} We point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:motivation}. We could switch the Soft-max loss to Hinge loss and freeze the back-prop at the FC layers. In this way, we prevent altering the chaining backbone of the model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train our DAG-CNN model.
 
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
@@ -296,7 +292,7 @@ We should first stress that our DAG model is applied to the ReLU layers selected
 
 We follow the standard image pre-processing steps in the literature~\cite{AlexNet,Caffe,veryDeep}. Since both Caffe~\cite{Caffe} and Deep19 models~\cite{veryDeep} have a fixed input size of $224\times 224$, we first resize the image such that the smaller side matches $224$, and then crop an $224\times 224$ patch from the center. The mean RGB value of each model learned on ImageNet~\cite{ImageNet} is then subtracted.  
 
-We show results of using our DAG-structure model for feature extraction. Thus, the output of all the average-pooled ReLU activations are concatenated as our multi-scale representation. For a fair comparison, we compare the multi-scale feature to the best performing single-scale feature. All features are $l2$-normalized. Then the off-the-shelf linear SVM solver~\cite{liblinear} is used to train 67-way one-vs-all classifiers with no parameter tuning.
+We show results of using our DAG-structure model for feature extraction. Thus, the output of all the average-pooled ReLU activations are concatenated as our multi-scale representation. For a fair comparison, we compare the multi-scale feature to the best performing single-scale feature. All features are $l2$-normalized. Then the off-the-shelf linear SVM solver~\cite{liblinear} is used to train $K$-way one-vs-all classifiers with no parameter tuning.
 
 
 %-------------------------------------------------------------------------
@@ -305,7 +301,7 @@ We show results of using our DAG-structure model for feature extraction. Thus, t
 SUN397~\cite{SUN397} is a large scene recognition dataset with 397 categories, each of which includes more than 100 images. The total number of images exceeds 100k. The average classification accuracy is usually report from a 10-fold cross validation. The split file is provided in~\cite{SUN397} with 50 images for training and the rest being test for each fold.  
 
 
-\begin{table}
+\begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|l|c|}
 \hline
@@ -315,10 +311,11 @@ Deep19-DAG & \textbf{55.5} \\
 Deep19~\cite{veryDeep} & 51.9 \\
 Caffe-DAG & 46.6	\\
 Caffe~\cite{Caffe} & 43.5 \\ \hline
-MOP-CNN~\cite{Gong14} & 52.0 \\
 Places~\cite{zhoulearning}	& 54.3	\\
-DeCaf~\cite{DeCaf} & 40.9	\\
+MOP-CNN~\cite{Gong14} & 52.0 \\
 FV~\cite{FV} & 47.2 \\
+DeCaf~\cite{DeCaf} & 40.9	\\
+Baseline-overfeat~\cite{SUN_ijcv}	&40.3 \\
 Baseline~\cite{SUN397} & 38.0 \\
 \hline
 \end{tabular}
@@ -327,17 +324,16 @@ Baseline~\cite{SUN397} & 38.0 \\
 \label{table:SUN397}
 \end{table}
 
-We observe that features from our DAG-CNN model always out-perform the single-scale feature on both 
-<Achieves best performance>
-<talk about Places, using different data -> model structure and better domain specific data are both important>
+We observe that features from our DAG-CNN feature always out-perform the single-scale feature for both DAG variants. In particular, Deep19-DAG achieves the highest $55.5\%$ accuracy. We should also point out that the method in~\cite{zhoulearning} train the CNN model uses a new dataset called Places. Places contains over 7 million images in over 400 scene categories. Their performance of $54.3$ is achieved by the synergy of Place- and ImageNet-CNN features. 
 
+%The authors of SUN397 database provided the baseline in the extended paper~cite{SUN_ijcv} using a set of traditional visual features, \eg, SIFT, GIST, etc. as well as the off-the-shelf deep CNN feature, Overfeat~\cite{overfeat}. The result is interesting such that Overfeat by itself ($40.3\%$) out-performs the combinations of all classical image features ($37.5\%$). 
 
 %-------------------------------------------------------------------------
 \subsection{MIT67}
 
-MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. Indoor scenes depends on highly variable features to describe them. There are cases that can be well characterized by high-level spatial geometry (\eg church and cloister) and low-level textures (\eg wine celler and library). Our multi-scale model is designed to encode feature at all levels, and thus, enable us to learn both high- and low-level statistics of scene categories. The training/test split is made available and there are 80/20 training/test images for each class.
+MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. Indoor scenes depends on highly variable features to describe them. There are cases that can be well characterized by high-level spatial geometry (\eg church and cloister) and mid-level objects (\eg wine celler and library). The training/test split is made available and there are 80/20 training/test images for each class.
 
-\begin{table}
+\begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|l|c|}
 \hline
@@ -360,9 +356,11 @@ SPM~\cite{spatial_pyramid} & 34.4	\\
 \label{table:MIT67}
 \end{table}
 
+Our DAG-CNN model is designed to encode feature across multi-scale, and thus, enable us to learn better representation based on both high- and mid-level statistics of scene categories. Similar to observations can be draw from Table.~\cite{table:MIT67}. The DAG-CNN models consistently out-perform the traditional chain model. The highest accuracy, $76.1\%$ is achieved by the DAG-CNN with Deep19 backbone. The method in~\cite{Gong13} also uses multi-scale features. The sample local patches at three different scale and feed to an off-the-shelf CNN. The activation of first fully connected layer is concatenated. 
+
 
 %-------------------------------------------------------------------------
-\subsection{Scene15}
+\subsection{Scene15}[htbp]
 
 \begin{table}
 \begin{center}
