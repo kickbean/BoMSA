@@ -78,8 +78,7 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 	\subfigure[mid-level feature is preferred]{\includegraphics[width=.9\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
 	\subfigure[high-level feature is preferred]{\includegraphics[width=.9\textwidth]{fig/moti_high_better.png}\label{fig:moti_high}}
 
-\caption{Retrieval results using euclidean distance for both low- and high-level features on MIT67~\cite{MIT67}. \textit{Green} (\textit{Red}) box means correct (wrong) results. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. This observation shows that both mid- and high-level features are indispensable for a better representation.}
-
+\caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach. \deva{Replace bolwing with florist or greenhouse image, more consistent with per-class plots.}}
 \label{fig:moti}
 \end{figure*}
 
@@ -112,14 +111,20 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 %-------------------------------------------------------------------------
 \section{Motivation\label{sec:motivation}}
 
-In this section, we motivate our multi-scale architecture with a series of empirical analysis. 
+In this section, we motivate our multi-scale architecture with a series of empirical analysis. We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 19 layers (16 conv. and 3 FC layers). This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}, using 10-fold cross-validation.
 
-\subsection{Scale-specific retrieval} Features at different scale encode various level of invariance. To ensure that multi-scale features is needed for highly variant classes, \eg, scene, we carried out a euclidean-based image retrieval at different scales, the result of which is shown in Fig.~\ref{fig:moti}. As seen in Fig.~\ref{fig:moti_low}, mid-level feature mainly captures \textit{objects} and \textit{parts}, providing some degree of robustness to spatial transformation of objects (bowling ball and people body parts). On the other hand, the example in Fig.~\ref{fig:moti_high} shows high-level feature captures the spatial geometry information. This is important for classes such as scenes with strong \textit{structure} cues, \eg, church, cloister, corridor, etc. Thus, we wish to develop a method that captures the multi-scale invariance.
+%\subsection{Category-specific scale selection} 
+%We first verify our hypothesis that different recognition tasks require different amounts of invariance through two experiments.
+
+{\bf Image retrieval:} Recent work that explores sparse reconstruction techniques for visualizing and analyzing features~\cite{vondrick2013hoggles}. Inspired by such techniques, we use image retrieval to begin our exploration. We attempt to ``reconstruct'' a query image by finding $N=5$ closest images in terms of L2-distance, when computed with mean-pooled layer-specific activations. Results are shown for two query images and two Caffe layers in Fig.~\ref{fig:moti}. The {\tt bowling} query image tends to produces better matches when using mid-level features that appear to capture \textit{objects} and \textit{parts}. On the other hand, the {\tt indoor-church} query image tends to produce better matches when using high-level features that appear to capture more global \textit{scene} statistics.
+
+
+%By working with poo providing some degree of robustness to spatial transformation of objects (bowling ball and people body parts). On the other hand, the example in Fig.~\ref{fig:moti_high} shows high-level feature captures the spatial geometry information. This is important for classes such as scenes with strong \textit{structure} cues, \eg, church, cloister, corridor, etc. Thus, we wish to develop a method that captures the multi-scale invariance.
 
 
 
-\subsection{Scale-specific classification}
-We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 19 layers (16 conv. and 3 FC layers). This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}.
+%\subsection{Scale-specific classification}
+%We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 19 layers (16 conv. and 3 FC layers). This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}.
 
 \begin{figure}[htbp]
 \centering
@@ -133,7 +138,27 @@ We carry out an analysis on existing CNN architectures, namely Caffe and Deep19.
 We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (ReLU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
 
 
-{\bf Multi-scale classification:} We now explore the use of multi-scale features. One immediate hurdle to including all features from all layers is the massive increase in dimensionality. We pursue two solutions. Firstly, we compute only marginal activations at each RelU layer with average pooling. We found average pooling to outperform sum pooling as the resulting marginal features remained in a reasonable dynamic range. For example, assume a particular layer was of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. Secondly, it may not be beneficial to add all layers, as they may encode redundant/correlated information (which may complicate learning by leading to over-fitting). We keep add layers one at a time starting from the last ReLU layer (a strong single-layer feature, as suggested by Fig.~\ref{fig:layer_MIT67}), and we test the performance every time when includes a layer. Fig.~\ref{fig:add_back} shows that performance increases as we add intermediate layers, while lower layers prove less helpful. Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
+
+\begin{figure*}[ht!]
+\centering
+	\includegraphics[width=1\textwidth]{fig/fig_level_perf.png}
+\caption{The ``per-class'' performance using various levels of feature. \deva{Re-order into the 5 groups from Fig.4 [histogram of best-performing layer]. Hopefully these groups will be visually apparent!} }
+\label{fig:level_perf}
+\end{figure*}
+
+
+{\bf Scale-varying classification:} The above experiment required training $K \times N$ 1-vs-all classifiers, where $K$ is the number of classes and $N$ is the number of layers. We can treat each of the $KN$ classifiers as binary predictors, and score each with the number of correct detections of its target class. We plot these scores as a matrix in Fig.~\ref{fig:level_perf}. We tend to see groups of classes that operate best with features computed from particular high-level or mid-level layers. Indeed, we plot the optimal scale for each binary predictor in Fig.~\ref{fig:best_perf_layer_hist}. Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
+
+\begin{figure}[htbp]
+\centering
+	\includegraphics[width=.6\columnwidth]{fig/best_perf_layer_hist.png}
+\caption{The class histogram of best-performing layer. The high-level feature, extracted from Layer-18,  has the best discriminativeness among all selected layers, achieving the highest accuracy in the 26 categories. In the meantime, mid-level features (Layer-11,13, and 15) are also important in this classification task. They perform the best for another 26 categories. }
+\label{fig:best_perf_layer_hist}
+\end{figure}
+
+
+{\bf Multi-scale classification:} We now explore the use of multi-scale features. One immediate hurdle to including all features from all layers is the massive increase in dimensionality. As such, we compute only marginal activations at each RelU layer with average pooling. We found average pooling to outperform sum pooling as the resulting marginal features remained in a reasonable dynamic range. We also experimented with max-pooling, but found similar performance. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $H \times 1 \times F$) are simply the original activations. We plot performance as we iteratively add more layers. Fig.~\ref{fig:layer_MIT67} suggests that one could start with the last RelU layer. Fig~\ref{fig:add_back} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to overfitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
+
 
 % the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. 
 
@@ -145,12 +170,12 @@ We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. Th
 \centering
 	\subfigure[Caffe]{\includegraphics[width=.43\columnwidth]{fig/fig_add_back_caffe.png}\label{fig:add_back_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=.56\columnwidth]{fig/fig_add_back_deep19.png}\label{fig:add_back_deep19}}
-\caption{The performance trend when incorporating more lower-level features. The ``+'' sign means previously added average-pooled ReLUs \textit{plus} the current layer. The Performance decreases in the end for both models. This suggests that low level features are less useful in this scenario.}
+\caption{We plot performance of a multi-scale classifier as we add more layer-specific features. We start with the last RelU layer, and iteratively add the previous RelU layer to the feature set of the classifier.
+The ``+'' sign the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers.}
 \label{fig:add_back}
 \end{figure}
 
-
-We then search for an ``optimal'' combination of multi-scale features with a greedy forward-selection strategy. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach rejects the low-level features. This is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. 
+{\bf Multi-scale selection:} The previous results show that adding all layers may actually hurt performance. We verified that this was an overfitting phenomena; additional layers always improved training performance, but could decrease test performance due to overfitting. This appears especially true for multi-scale analysis, where nearby layers may encoded redundant or correlated information (that is susceptible to overfitting). Ideally, we would like to search for the ``optimal'' combination of RelU layers that maximize performance. Since there exists an exponential number of combinations ($2^N$ for $N$ RelU layers), we find an approximate solution with a greedy forward-selection strategy. We start with the last layer and greedily select the next-best layer (among all remaining layers) to add, until we observe no further performance improvement. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach rejects the low-level features. This is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}. Similarly for the Deep19 model in Fig.~\ref{fig:forward_select_deep19}, although the feature pool is large (18 ReLU layers), the optimal greedy results includes only the mid- or high-level features. 
 
 \begin{figure}[htbp]
 \centering
@@ -213,9 +238,10 @@ Therefore, although our model is a complex DAG, we do not complicate the trainin
 
 \begin{figure}[htbp]
 \centering
-	\includegraphics[width=.8\columnwidth]{fig/fig_grad.png}
-\caption{The average gradient Layer-1 Conv. during training. The gradients in DAG are consistently larger. This means that the gradients are effective back-propagated and thus, makes the model easier to train.}
-
+Gradient-based learning\\
+\rotatebox{90}{\small \hspace{0pt} Average gradient (in log scale)}	\includegraphics[width=.8\columnwidth,clip=true,trim=10mm 10mm 0mm 0mm]{fig/fig_grad.png}\\
+{\footnotesize Number of training epochs}
+\caption{The average gradient Layer-1 Conv. during training, plotting in log-scale. Gradients in DAG are consistently 10X larger, implying that they receive a stronger supervised signal from the target label during gradient-based learning.}
 \label{fig:grad}
 \end{figure}
 
@@ -374,22 +400,6 @@ Baseline~\cite{Scene15} & 65.2 \\
 \subsection{Analysis}
 
 {\bf Per-category analysis}
-
-\begin{figure*}[htbp]
-\centering
-	\includegraphics[width=1\textwidth]{fig/fig_level_perf.png}
-\caption{The ``per-class'' performance using various levels of feature.}
-
-\label{fig:level_perf}
-\end{figure*}
-
-\begin{figure}[htbp]
-\centering
-	\includegraphics[width=.6\columnwidth]{fig/best_perf_layer_hist.png}
-\caption{The class histogram of best-performing layer. The high-level feature, extracted from Layer-18,  has the best discriminativeness among all selected layers, achieving the highest accuracy in the 26 categories. In the meantime, mid-level features (Layer-11,13, and 15) are also important in this classification task. They perform the best for another 26 categories. }
-
-\label{fig:best_perf_layer_hist}
-\end{figure}
 
 
 \begin{figure}[htbp]
