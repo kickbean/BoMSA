@@ -164,19 +164,19 @@ We then search for an ``optimal'' combination of multi-scale features with a gre
 
 Both the retrival and classification analysis suggest that we should employ multi-scale features for the highly variant classification tasks. For our latter analysis and experiments on other datasets, we use scales selected by the forward selection algorithm on MIT67 data (shown in Fig.~\ref{fig:forward_select}). In this way, we also demonstrate the data-independent property of our approach.
 
-
-\subsection{Model\label{sec:model}}
+\section{Approach}
+{\bf Model}
 
 Based on the analysis in Sec.~\ref{sec:motivation}, we propose a novel deep DAG-CNN architecture shown in Fig.~\ref{fig:model}. A typical CNN layer consists one of four layers, \ie, Conv., ReLU, contrast normalization (Norm), pooling layers (with the Norm and pooling layers being optional). Different from the traditional \textit{chain} model~\cite{AlexNet,veryDeep}, the DAG-CNN links each ReLU to an average-pooling layer, which feeds to a FC layer thereafter. Before connecting into the Soft-max layer, an \textit{Add} layer is introduced to combine the responses from all FC layers. 
 
 \begin{figure*}[t!]
 \centering
 	\includegraphics[width=\textwidth]{fig/fig_model.png}
-\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.\deva{Change formatting to reduce verticle space (too much whitespace)}. \songfan{Does this make sense?}}
+\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.}
 \label{fig:model}
 \end{figure*}
 
-\subsection{Training}
+{\bf Training}
 
 Let $\textbf{w}_1,...\textbf{w}_K$ be the CNN model parameters at $1,..,K$-th layer, training data be ($\textbf{x}^{(i)},\textbf{y}^{(i)}$), where $\textbf{x}^{(i)}$ is the $i$-th input image and $\textbf{y}^{(i)}$ is the indicator vector of the class of $\textbf{x}^{(i)}$. Then we intend to solve the following optimization problem
 
@@ -184,7 +184,7 @@ Let $\textbf{w}_1,...\textbf{w}_K$ be the CNN model parameters at $1,..,K$-th la
 \argmin_{\textbf{w}_1,...\textbf{w}_K} \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}(f(\textbf{x}^{(i)};\textbf{w}_1,...,\textbf{w}_K),\textbf{y}^{(i)})
 \end{align}
 
-We adopt the stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the derivative of the objective function computed by chain rule results in the well-known back-propagation algorithm. In our proposed complex model, care need to be taken in the feed-forward for Add layer and back-propagation for all the ReLU layers. In the feed-forward step, the Add unit simply adds multiple inputs from all ReLU layers. In the back-prop step for $i$-th ReLU layer (seen in Fig.~\ref{fig:backprop_eq}), let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th branching; $z$ is the final output of the Softmax layer. Thus, the gradient of $z$ with respect to $i$-th ReLU layer can be computed as
+We adopt the stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the derivative of the objective function computed by chain rule results in the well-known back-propagation algorithm. In our DAG-CNN model, care need to be taken in the feed-forward for Add layer and back-propagation for all the ReLU layers. In the feed-forward step, the Add unit simply adds multiple inputs from all ReLU layers. In the back-prop step for $i$-th ReLU layer (seen in Fig.~\ref{fig:backprop_eq}), let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th branching; $z$ is the final output of the Softmax layer. Thus, the gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
 
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}=\sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}
@@ -201,38 +201,44 @@ We adopt the stochastic gradient descent to minimize the objective function. For
 \label{fig:backprop_eq}
 \end{figure}
 
+In a more general setting, where Add layer is extended to some \textit{Combine} layer, $g(\cdot)$, such that $\beta_k=g(\alpha^{(1)}_k,\cdots,\alpha^{(N)}_k)$ and $\alpha^{(j)}_k=h(\alpha_i)$. Thus, the chain rule still hold true, \ie,
+\begin{align}
+\frac{\partial z}{\partial \alpha_i}&=\frac{\partial z}{\partial \beta_k}\frac{\partial \beta_k}{\partial \alpha_i} \\
+&=\frac{\partial z}{\partial \beta_k}\sum_{j=1}^{C}\frac{\partial g}{\partial \alpha_k^{(j)}}\frac{\partial g}{\partial \alpha_i}
+\end{align} 
 
-\section{Discussions\label{sec:ana}}
+Therefore, although our model is a complex DAG, we do not complicate the training algorithm and the training is still as efficient as chain model.
 
-\subsection{Back-propagate Gradient}
+{\bf Vanishing Gradients} Vanishing Gradient~\cite{bengio1994learning} refers to the problem where the gradients value decrease in the back-propagation procedure. This makes CNN training difficult since the gradient updates in the bottom layers are not as effective. In our DAG-CNN model, this problem is solved by directly linking layers at different level to the output layer. As seen in Fig.~\ref{fig:grad}, the average gradient of our DAG-CNN at the bottom layer is consistently larger than that of a chain model during training time. This make our training more efficient. 
 
 \begin{figure}[htbp]
 \centering
 	\includegraphics[width=.8\columnwidth]{fig/fig_grad.png}
-\caption{The average gradient Layer-1 Conv. during training. The gradients in DAG are consistently larger, which means they are back-propagated more effective.}
+\caption{The average gradient Layer-1 Conv. during training. The gradients in DAG are consistently larger. This means that the gradients are effective back-propagated and thus, makes the model easier to train.}
 
 \label{fig:grad}
 \end{figure}
 
 
+\section{Discussions\label{sec:ana}}
+
 \subsection{off-the-shelf Model Instantiation}
 
-We first point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:multi}. We could switch the softmax loss to hinge loss and freeze the back-prop at the FC layer. In this way, we prevent altering the chain-part of our model and only allow training on the augmented part our model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train the augmented part our model.
+We first point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:motivation}. We could switch the softmax loss to hinge loss and freeze the back-prop at the FC layer. In this way, we prevent altering the chain-part of our model and only allow training on the augmented part our model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train our DAG-CNN model.
 
-\subsection{Relationship to the literature}
-
-Our work is inspired by~\cite{Gong14}. In~\cite{Gong14}, local patches at three scales are first extracted (roughly 50 patches per image in their setting); each patch is then feed to an off-the-shelf CNN and the activations of the first fully connected layer (4096-dimension) are used for post processing, \ie, K-means + VLAD pooling. 
-
-Our approach has several advantages over~\cite{Gong14}:
-\begin{enumerate}
-\item \cite{Gong14} computes multiple feed-forward on patches generated from a single image. Computing convolution is the bottleneck for this procedure. In our approach, our model is trained to adapt to multi-scale features. Thus, during test phase,
-only one feed-forward computation is needed for one image. As matter of fact, extracting feature of one image in~\cite{Gong14} takes more than 20 seconds while ours only take less than 1 second for the augmented Caffe model. 
-
-\item \cite{Gong14} uses K-means clustering algorithm in the VLAD pooling, which can generate inconsistent results due to random initialization. 
-
-\item \cite{Gong14} conducts two steps of PCA (first PCA to reduce $4096$-dimensional activation to $500$-dimension, and second PCA to reduce $50,000$-dimensional VLAD pooled feature to $4096$-dimension). This can also be one bottleneck of their approach. 
-
-\end{enumerate} 
+%\subsection{Relationship to the literature}
+%Our work is inspired by~\cite{Gong14}. In~\cite{Gong14}, local patches at three scales are first extracted (roughly 50 patches per image in their setting); each patch is then feed to an off-the-shelf CNN and the activations of the first fully connected layer (4096-dimension) are used for post processing, \ie, K-means + VLAD pooling. 
+%
+%Our approach has several advantages over~\cite{Gong14}:
+%\begin{enumerate}
+%\item \cite{Gong14} computes multiple feed-forward on patches generated from a single image. Computing convolution is the bottleneck for this procedure. In our approach, our model is trained to adapt to multi-scale features. Thus, during test phase,
+%only one feed-forward computation is needed for one image. As matter of fact, extracting feature of one image in~\cite{Gong14} takes more than 20 seconds while ours only take less than 1 second for the augmented Caffe model. 
+%
+%\item \cite{Gong14} uses K-means clustering algorithm in the VLAD pooling, which can generate inconsistent results due to random initialization. 
+%
+%\item \cite{Gong14} conducts two steps of PCA (first PCA to reduce $4096$-dimensional activation to $500$-dimension, and second PCA to reduce $50,000$-dimensional VLAD pooled feature to $4096$-dimension). This can also be one bottleneck of their approach. 
+%
+%\end{enumerate} 
 
 %Overall, the implementation of \textit{multi-scale orderless} feature in~\cite{Gong14} is not only inefficient but also prone to over-fitting due to a number of hyper-parameter tuning. On the contrary, our implementation is easy to compute and little parameter tuning is needed. 
 
@@ -241,9 +247,9 @@ only one feed-forward computation is needed for one image. As matter of fact, ex
 
 Besides the insight on visualizing deep CNN features,~\cite{visual_cnn} provides transformation invariance analysis of their model on several images. This is done by comparing the feature vector distance between the original and transformed images. Realizing that several examples do not necessarily represents the overall statistics,~\cite{Gong14} improve the invariance analysis by experiments on the SUN397 scene database~\cite{SUN397}. Unfortunately, only the results on 4 categories are provided in their paper. The performance for the entire dataset is still unknown.
 
-To close the aforementioned gap and analyze the invariance of our representation, we carried out experiments on the entire MIT Indoor dataset~\cite{MIT67} and report the average performance. We intend to compare the tolerance to transformation of the our multi-scale feature compared with a single-scale CNN feature. Concretely, the single-scale CNN feature in comparison is the activation of a CNN model which achieves best classification performance (not necessarily the output of the first FC layer). For a fair comparison, the multi-scale features are extracted by concatenating the output of all sum-pooling layers. We first trained $67$-way one-vs-all linear SVM classifiers for all $67$ classes using features extracted from the original images. During test phase, four transformations are considered for the analysis, \ie, translation, scaling, flipping, and rotation. Fig.~\ref{fig:invar_eg} illustrates all the transformations and their corresponding parameters, which are similar to the ones in~\cite{Gong14}. 
+To close the aforementioned gap and analyze the invariance of our DAG-CNN feature vs. single scale features, we carried out experiments on the entire MIT Indoor dataset~\cite{MIT67} and report the average performance. We intend to compare the tolerance to transformation of the our multi-scale feature compared with a mid-level (Layer-11) and a high-level (Layer-20) single-scale CNN features. The multi-scale features are extracted by concatenating the output of all average-pooling layers. We first trained $67$-way one-vs-all linear SVM classifiers for all $67$ classes using features extracted from the original images. During test phase, four transformations are considered for the analysis, \ie, translation, scaling, flipping, and rotation. Fig.~\ref{fig:invar_eg} illustrates all the transformations and their corresponding parameters, which are similar to the ones in~\cite{Gong14}. 
 
-After applying the transformations to test images, both multi- and single-scale features are extracted. The classification is conducted using the trained SVMs, and the accuracy is shown in Fig.~\ref{fig:invar_rst}. Each data point represents the performance on the entire test data. As seen in Fig.~\ref{fig:invar_rst}, the transformations almost always hurt the performance except for horizontal flip. This observation is similar to the one in~\cite{Gong14}. We also see that multi-scale feature consistently out-performs the single-scale feature under every degree of all transformations. As far as the invariance is concerned, we observe the similar level of performance decrease. This means that both features have the similar level of tolerance to transformations. This immediately suggest that ``training jittering'', \ie, including transformations in the training data, will improve the performance. 
+After applying the transformations to test images, both multi-scale, mid-level, high-level features are extracted. The classification is conducted using the trained SVMs, and the accuracy is shown in Fig.~\ref{fig:invar_rst}. Each data point represents the performance on the entire test data. As seen in Fig.~\ref{fig:invar_rst}, the transformations almost always hurt the performance except for horizontal flip. This observation is similar to the one in~\cite{Gong14}. We also see that multi-scale feature consistently out-performs the high-level feature, which out-perform mid-level features under every degree of all transformations. As far as the invariance is concerned, we observe the similar level of performance decrease except for vertical flip. This means that all three features have the similar level of tolerance to transformations. This immediately suggest that ``training jittering'', \ie, including transformations in the training data, will improve the performance. Fig.~\ref{fig:inv_f} shows that the mid-level feature is more robust to vertical flipping. We believe this is because that objects and parts, mainly represented by mid-level features, are more reflectional symmetry than holistic spatial structure. 
 
 
 \begin{figure}[htbp]
@@ -254,7 +260,7 @@ After applying the transformations to test images, both multi- and single-scale 
 	\subfigure[h-translation]{\includegraphics[width=.49\columnwidth]{fig/invar/h.png}\label{fig:inv_h}}
 	\subfigure[rotation]{\includegraphics[width=.49\columnwidth]{fig/invar/r.png}\label{fig:inv_r}}
 
-\caption{The classification accuracy of various transformations on test images in MIT67 data~\cite{MIT67}. The legends shown in Fig.~\ref{fig:inv_v} is the same in the other four figures.}
+\caption{The classification accuracy of various transformations on test images in MIT67 data~\cite{MIT67}. The legends shown in Fig.~\ref{fig:inv_s} is the same in the other four figures.}
 
 \label{fig:invar_rst}
 \end{figure}
@@ -389,7 +395,7 @@ Baseline~\cite{Scene15} & 65.2 \\
 \begin{figure}[htbp]
 \centering
 	\includegraphics[width=\columnwidth]{fig/fig_conf_diff.pdf}
-\caption{The performance improvement of multi-scale over single-scale features on MIT67 in confusion matrix fashion. It is generated by subtracting the the confusion matrix for single-scale from the one for multi-scale. The small differences are ignored. Both \textit{black} and \textit{yellow} label shows the most improved categories, where \textit{black} labels are categories best-classified by high-level features found in Fig.~\ref{fig:best_perf_layer_hist}; similarly, \textit{yellow} label are the ones for mid-level features. \textit{Red} label shows the performance decrease by choosing multi-scale features.}
+\caption{The performance improvement of multi-scale over single-scale features on MIT67 in confusion matrix fashion. It is generated by subtracting the the confusion matrix for single-scale from the one for multi-scale. The small differences are ignored. Both \textit{black} and \textit{yellow} label on the diagonal shows the most improved categories, where \textit{black} labels are categories best-classified by high-level features found in Fig.~\ref{fig:best_perf_layer_hist}; similarly, \textit{yellow} label are the ones for mid-level features. \textit{Red} label shows the performance decrease by choosing multi-scale features.}
 
 \label{fig:conf_diff}
 \end{figure}
