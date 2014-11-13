@@ -53,8 +53,9 @@ First line of institution2 address\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-\deva{Need to update}
-While Deep Convolutional Neural Network (CNN) encodes multi-scale features with their spatial locations, Bag-of-feature representations are more invariant to spatial translations. In this paper, we propose a CNN architecture transformation schema that extracts multi-scale CNN representations with spatial invariance. By directly chaining multiple average-pooled rectified linear units (ReLU) to the final layer of scoring function, we explicitly learn an augmented model from multi-scale activations. We term this transformation Bag-of-Multi-Sale-Activation (BoMSA) Augmentation. The BoMSA augmented model can be trained from scratch or built upon existing pre-trained models, which makes the augmentation more flexible. BoMSA augmentation is also model-independent and can be easily adapted to existing models. Experimental results show consistent improvements achieved by incorporating the BoMSA representation on various models in the literature.  
+\deva{Need to update} \songfan{Please review this}
+
+We present a directed-acyclic graph (DAG) deep Convolutional Neural Network (CNN) architecture. This model links various average-pooled rectified linear units (ReLU) to the final loss score layer. We demonstrate this DAG structure captures multi-scale feature for highly-variant scene classification. We also show that DAG-CNNs can be discriminatively trained in an end-to-end fashion with similar efficiency as a classical \textit{chain} model. We present extensive analysis and results on standard scene benchmarks and show state-of-the-art classification performance on all benchmarks, \ie $55.5\%$ on SUN397, $76.1\%$ on MIT67, and $92.4\%$ on Scene15.
 
 \end{abstract}
 
