@@ -63,7 +63,7 @@ We explore multi-scale convolutional neural nets (CNNs) for image classification
 
 \begin{figure}[t!]
 \centering
-\includegraphics[width=\columnwidth]{fig/deva_splash}
+\includegraphics[width=\columnwidth]{fig/splash}
 \caption{Recognition typically require features at multiple scales. Distinguishing a person versus dog requires highly invariant features robust to the deformation of each category. On the other hand, fine-grained recognition likely requires detailed shape cues to distinguish models of cars ({\bf top}). We use these observations to revisit deep convolutional neural net (CNN) architectures. Typical approaches train a classifier using features from a single output layer ({\bf left}). We extract multi-scale features from multiple layers to simultaneously distinguish coarse and fine classes. Such features come ``for free'' since they are already computed during the feed-forward pass ({\bf middle}). Interestingly, the entire multi-scale predictor is still a feed-forward architecture that is no longer chain-structured, but a directed-acyclic graph (DAG) ({\bf right}). We show that DAG-CNNs can be discriminatively trained in an end-to-end fashion, yielding state-of-the-art recognition results across various recognition benchmarks.  DAG-CNNs address some well-known challenges with CNNs such as ``vanishing gradients''~\cite{bengio1994learning}. Lower layers in a DAG-CNN still receive a strong gradient signal during learning because they are directly tied to the output layer, making them easier to train.
 \label{fig:splash}}
 \end{figure}
