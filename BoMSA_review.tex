@@ -215,13 +215,13 @@ In this section, we show that the multi-scale model examined in Fig.~\ref{fig:fo
 
 As is now commonplace, we make use of stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the partial derivative of the output with respect to any one weight can be recursively computed by the chain rule, as described in the back-prop algorithm~\cite{rumelhart1988learning}. 
 
-{\bf Multi-output layers (ReLU):} Our DAG-model is structurally different at the ReLU layers (since they have multiple outputs) and the Add layer (since it has multiple inputs). We can still compute partial derivatives by recursively applying the chain rule, but care needs to be taken at these points. Let us consider the $i$-th ReLU layer in Fig.~\ref{fig:backprop_eq}. Let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th output branch (its $j^{th}$ child in the DAG), and let $z$ is the final output of the softmax layer. The gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
+{\bf Multi-output layers (ReLU):} Our DAG-model is structurally different at the ReLU layers (since they have multiple outputs) and the \textit{Add} layer (since it has multiple inputs). We can still compute partial derivatives by recursively applying the chain rule, but care needs to be taken at these points. Let us consider the $i$-th ReLU layer in Fig.~\ref{fig:backprop_eq}. Let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th output branch (its $j^{th}$ child in the DAG), and let $z$ is the final output of the softmax layer. The gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
 
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}=\sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i} \quad \text {(in general)} \label{eq:backprop1}
 \end{align}
 
-\noindent where $C=2$ for the example in Fig.~\ref{fig:backprop_eq}. One can recover standard back-propagation equations from the above by setting $C$=1: a single back-prop signal $\frac{\partial z}{\partial \beta_i^{(1)}}$  arrives at ReLU unit $i$, is multiplied by the local gradient $\frac{\partial \beta_i^{(1)}}{\partial \alpha_i^{(1)}}$, and is passed on down to the next layer below. In our DAG, {\em multiple} back-prop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multiplied by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
+\noindent where $C=2$ for the example in Fig.~\ref{fig:backprop_eq}. One can recover standard back-propagation equations from the above by setting $C=1$: a single back-prop signal $\frac{\partial z}{\partial \beta_i^{(1)}}$  arrives at ReLU unit $i$, is multiplied by the local gradient $\frac{\partial \beta_i^{(1)}}{\partial \alpha_i^{(1)}}$, and is passed on down to the next layer below. In our DAG, {\em multiple} back-prop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multiplied by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
 
 % Each partial derivative component, $\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, can be computed in the typical back-prop fashion. In chain-structured back-propogration, a single back-prop signal \frac{\partial z}{\partial \beta_i} will arrive at ReLU unit $i$. This is multiped by the layer-specific gradient $
 %This means that during gradient updating, multiple $(C)$ backprop signals will arrive at the $i^{th}$ ReLU layer. These signals are added together, and then 
@@ -235,18 +235,18 @@ As is now commonplace, we make use of stochastic gradient descent to minimize th
 \end{figure}
 
 %Even though the Add layer is functionally quite simple, let us abstract its operation to a \textit{Combine} layer, $g(\cdot)$ that processes multiple inputs $\beta_k=g(\alpha^{(1)}_k,\cdots,\alpha^{(N)}_k)$ and $\alpha^{(j)}_k=h(\alpha_i)$. 
-{\bf Multi-input layers (Add):} Let $\beta_k=g(\alpha^{(1)}_k,\cdots,\alpha^{(N)}_k)$ represent the output of a layer with multiple inputs. We can compute the gradient along the layer by applying the chain rule as follows:
+{\bf Multi-input layers (Add):} Let $\beta_k=g(\alpha^{(1)}_k,\cdots,\alpha^{(N)}_k)$ represents the output of a layer with multiple inputs. We can compute the gradient along the layer by applying the chain rule as follows:
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}&=\frac{\partial z}{\partial \beta_k}\frac{\partial \beta_k}{\partial \alpha_i} \nonumber \\
 &=\frac{\partial z}{\partial \beta_k}\sum_{j=1}^{C}\frac{\partial \beta_k}{\partial \alpha_k^{(j)}}\frac{\partial \alpha_k^{(j)}}{\partial \alpha_i} \quad \text{(in general)} \label{eq:backprop2}
 \end{align} 
-One can similarly arrive at the standard back-propogation by setting $C=1$.
+One can similarly arrive at the standard back-propagation by setting $C=1$.
 % In chain-structured back-propogration, a single back-prop signal $\frac{\partial z}{\partial \beta_K}$ is arrives at the Add, is multipled by the local gradient 
 
  % arrives at ReLU unit $i$, is multipled by the local gradient $\frac{\beta_i}{\partial \alpha_i}$, and is passed on down to the next layer below. In our DAG, {\em multiple} backprop signals arrive $\frac{\partial z}{\partial \beta_i^{(j)}}$ from each branch $j$, each is multipled by an branch-specific gradient $\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, and their total sum is passed on down to the next layer.
 
 
-{\bf Special case (ReLU):} Our particular DAG architecture can further simply the above equations. Firstly, it may be common for multiple-output layers to duplicate the same output for each child branch. This is true of our ReLU units; they pass the same values to the next layer in the chain and the current-layer pooling operation. This means the output-specific gradients are identical for those outputs $\forall j, \frac{\partial \beta_i^{(j)}}{\partial \alpha_i} =  \frac{\partial \beta_i^{(1)}}{\partial \alpha_i}$, which simplifies \eqref{eq:backprop1} to
+{\bf Special case (ReLU):} Our particular DAG architecture can further simplify the above equations. Firstly, it may be common for multiple-output layers to duplicate the same output for each child branch. This is true of our ReLU units; they pass the same values to the next layer in the chain and the current-layer pooling operation. This means the output-specific gradients are identical for those outputs $\forall j, \frac{\partial \beta_i^{(j)}}{\partial \alpha_i} =  \frac{\partial \beta_i^{(1)}}{\partial \alpha_i}$, which simplifies \eqref{eq:backprop1} to
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial \beta_i^{(1)}}{\partial \alpha_i} \sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}} \quad \text{(for duplicate outputs)}
 \end{align}
@@ -259,23 +259,24 @@ $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \b
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial z}{\partial \beta_k} \frac{\partial \beta_k}{\partial \alpha_k^{(1)}}\sum_{j=1}^{C} \frac{\partial \alpha_k^{(j)}}{\partial \alpha_i}  \quad \text{(for duplicate gradients)}
 \end{align}
-\noindent implying that one can similarly save $C$ multiplications. The above equations have an intuitive implementation; the standard chain-structured back-propogation signal is simply replicated along each of the parents of the {\tt Add} layer.
+\noindent implying that one can similarly save $C$ multiplications. The above equations have an intuitive implementation; the standard chain-structured back-propagation signal is simply replicated along each of the parents of the {\tt Add} layer.
 
 {\bf Implementation:} We use the excellent MatConNet codebase to implement our modifications \cite{vedaldimatconvnet}. We implemented a custom {\tt Add} layer and a custom DAG data-structure to denote layer connectivity. Training and testing is essentially as fast as the chain model.
 
-{\bf Vanishing gradients:} Vanishing gradients~\cite{bengio1994learning} refers to the phenomena where gradients magnitudes decrease as they are propogated. This makes CNN training difficult, particularly for low-layers. In our DAG-CNN model, lower layers are directly connected to the output layer through multiscale connections, ensuring they recieve a strong signal during learning. Fig.~\ref{fig:grad} experimentally verifies this claim.% DAG-CNN at the bottom layer is consistently larger than that of a chain model during training time. This make multi-scale training considerably more efficient than single (e.g., high-level) scale training.
+{\bf Vanishing gradients:} Vanishing gradients~\cite{bengio1994learning} refers to the phenomena where gradients magnitudes decrease as they are propagated. This makes CNN training difficult, particularly for low-layers. In our DAG-CNN model, lower layers are directly connected to the output layer through multi-scale connections, ensuring they receive a strong signal during learning. Fig.~\ref{fig:grad} experimentally verifies this claim.% DAG-CNN at the bottom layer is consistently larger than that of a chain model during training time. This make multi-scale training considerably more efficient than single (e.g., high-level) scale training.
 
 \begin{figure}[htbp]
 \centering
-Gradient-based learning\\
-\rotatebox{90}{\small \hspace{0pt} Average gradient (in log scale)}	\includegraphics[width=.8\columnwidth,clip=true,trim=10mm 10mm 0mm 0mm]{fig/fig_grad.png}\\
-{\footnotesize Number of training epochs}
-\caption{The average gradient from Layer-1 (Conv) during training, ploted in log-scale. Gradients from the DAG are consistently 10X larger, implying that they receive a stronger supervised signal from the target label during gradient-based learning.}
+%Gradient-based learning\\
+%\rotatebox{90}{\small \hspace{0pt} Average gradient \\(in log scale)}	
+%\includegraphics[width=.8\columnwidth,clip=true,trim=10mm 10mm 0mm 0mm]{fig/fig_grad.png}\\{\footnotesize Number of training epochs}
+\includegraphics[width=.9\columnwidth]{fig/fig_grad.png}
+\caption{The average gradient from Layer-1 (Conv.) during training, plotted in log-scale. Gradients from the DAG are consistently $10\times$ larger, implying that they receive a stronger supervised signal from the target label during gradient-based learning.}
 \label{fig:grad}
 \end{figure}
 
 
-{\bf Off-the-shelf DAG:} We point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:motivation}. We could switch the softmax loss to Hinge loss and freeze the back-prop at the FC layers. In this way, we prevent altering the chaining backbone of the model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train our DAG-CNN model.
+{\bf Off-the-shelf DAG:} We point out an interesting instantiation of our model, linking back to the analysis in Section~\ref{sec:motivation}. We could switch the softmax loss to hinge loss and freeze the back-prop at the FC layers. In this way, we prevent altering the chaining backbone of the model, \ie, we learn an linear combination of the FC layers represents multi-scale ReLU activations. Thus, this is equivalent of training a SVM classifier based on the concatenation of the average-pooled activations at all ReLUs. As a result, we could extract multi-scale features using pre-trained CNN models such as the ones in~\cite{AlexNet, veryDeep} and use off-the-shelf SVM solver such as~\cite{liblinear} to train our DAG-CNN model.
 
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
@@ -329,7 +330,7 @@ We observe that features from our DAG-CNN feature always out-perform the single-
 %-------------------------------------------------------------------------
 \subsection{MIT67}
 
-MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. Indoor scenes depends on highly variable features to describe them. There are cases that can be well characterized by high-level spatial geometry (\eg {\tt church} and {\tt cloister}) and mid-level objects (\eg {\tt wine celler} and {\tt library}). The training/test split is made available and there are 80/20 training/test images for each class.
+MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. Indoor scenes depends on highly variable features to describe them. There are cases that can be well characterized by high-level spatial geometry (\eg~{\tt church} and {\tt cloister}) and mid-level objects (\eg~{\tt wine celler} and {\tt operating room}). The training/test split is made available and there are 80/20 training/test images for each class.
 
 \begin{table}[htbp]
 \begin{center}
