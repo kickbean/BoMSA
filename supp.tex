@@ -1,0 +1,179 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{subfigure}
+\usepackage{pbox}
+\DeclareMathOperator*{\argmin}{arg\,min}
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\newcommand{\deva}[1]{\textcolor{red}{[Deva: #1]}}
+\newcommand{\songfan}[1]{\textcolor{blue}{[Songfan: #1]}}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{1627} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Supplimentary Material for ``DAG-CNNs for multi-scale recognition''}
+
+\author{First Author\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+%\begin{abstract}
+%We explore multi-scale convolutional neural nets (CNNs) for image classification. Contemporary approaches extract features from a single output layer. By extracting features from multiple layers, one can simultaneously reason about high, mid, and low-level features during classification. The resulting multi-scale architecture can itself be seen as a feed-forward model that is structured as a directed acyclic graph (DAG). We show that DAG-CNNs are just as fast as chain-structured CNNs in terms of training and testing. In fact, training is easier because multi-scale connections tend to minimize the vanishing gradient problem. We present extensive analysis and results on standard scene benchmarks and show state-of-the-art classification performance on all benchmarks, \ie 55.5\% on SUN397, 76.1\% on MIT67, and 92.4\% on Scene15.
+%
+%\end{abstract}
+
+%%%%%%%%% BODY TEXT
+\section{Full vs. Marginal Features}
+
+In this section, we intend to find out how much we sacrifice when reducing the feature dimension from full response to spatial marginal response of each layer. We conduct this analysis on Caffe-DAG on MIT67. The comparison of full and marginal feature size at each layer is provided in Table.~\ref{table:feat_dim}. The layers of interests are the ones selected by automatic forward-selection as shown in Fig. 7(a) in the main paper. 
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Layer & Response &  Full Feat.& Marginal Feat.\\
+\hline
+11 & $13\times 13 \times 384$ & 64896 & 384 \\
+13 & $13\times 13 \times 384$ & 64896 & 384 \\
+15 & $13\times 13 \times 256$ & 43264 & 256 \\
+18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Feature Dimension for Off-the-shelf Caffe-DAG}
+\label{table:feat_dim}
+\end{table}
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Layer & Full Feat. & Marginal Feat. \\
+\hline
+11 &  &   \\
+13 &  &   \\
+15 &  &   \\
+18 &  &   \\
+20 &  &   \\
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Classification Accuary: Full vs. Marginal Features}
+\label{table:perf_full}
+\end{table}
+
+
+As seen from Table.~\ref{table:perf_full}, ...
+
+
+\section{Fine-tune vs. Off-the-shelf}
+
+In this section, we analyze the performance of DAG-CNN trained in the end-to-end fashion on all three datasets. These results is then compared with the off-the-shelf DAG-CNN feature. Concretely, we first train the proposed DAG-CNN model with softmax loss using the algorithm presented in Section 3. We term this \textit{fine-tune} model. On the other hand, the \textit{off-the-shelf} setting is by first concatenating the outputs of the average-pooled features and then trained with hinge loss using Liblinear package~\cite{liblinear}. The results for \textit{off-the-shelf} experimental setup are the reported in the main paper. Here, we provide the results for the \textit{fine-tune} setup as a comparison. 
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Approach & Off-the-shelf &  Fine-tune\\
+\hline
+Deep19-DAG & \textbf{55.5} &  \\
+Deep19~\cite{veryDeep} & 51.9 &  \\
+Caffe-DAG & 46.6	& \\
+Caffe~\cite{Caffe} & 43.5 &  \\ \hline
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Classification results on SUN397}
+\label{table:SUN397}
+\end{table}
+
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Approach & Off-the-shelf &  Fine-tune\\
+\hline
+Deep19-DAG & \textbf{76.1} &  \\
+Deep19~\cite{veryDeep} & 70.8 &  \\
+Caffe-DAG & 64.6	& 63.5\\
+Caffe~\cite{Caffe} & 59.5 & 60.7 \\ \hline
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Classification results on MIT67}
+\label{table:MIT67}
+\end{table}
+
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+Approach & Off-the-shelf &  Fine-tune\\
+\hline
+Deep19-DAG & \textbf{92.4} &  \\
+Deep19~\cite{veryDeep} & 90.8 &  \\
+Caffe-DAG & 89.7	& \\
+Caffe~\cite{Caffe} & 86.8 & \\ \hline
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Classification results on Scene15}
+\label{table:Scene15}
+\end{table}
+
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{mobib}
+}
+
+\end{document}
