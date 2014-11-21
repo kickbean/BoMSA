@@ -31,7 +31,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Supplimentary Material for ``DAG-CNNs for multi-scale recognition''}
+\title{Supplementary Material for ``DAG-CNNs for multi-scale recognition''}
 
 \author{First Author\\
 Institution1\\
@@ -108,10 +108,12 @@ Layer & Full Feat. & Marginal Feat. \\
 
 \section{Model Fine-tuning}
 
-In this section, we take a deep-dive and consider training our DAG-CNN model in the end-to-end fashion. Firstly, we compare training the Chain and DAG models with softmax loss. We term them \textit{fine-tune} models. Secondly, we use the fine-tune model for feature extraction and analyze the performance using hinge loss. Thirdly, we explore the performance of single- and multi-scale fine-tune models. All the experiments in this section is conducted on MIT67. 
+In this section, we take a deep-dive and consider training our DAG-CNN model in the end-to-end fashion. Firstly, we compare training the Chain and DAG models with softmax loss. We term them \textit{fine-tune} models. Secondly, we use the fine-tune model for feature extraction and analyze the performance of single- and multi-scale fine-tune models. All the experiments in this section is conducted on MIT67. 
 
 
-{\bf Chain vs. DAG: } We use the generalized back-propagation algorithm presented in Section 3 to ``fine-tune'' the \textit{DAG} model on MIT67. In comparison, the traditional \textit{Chain} model is also fine-tuned in the same fashion. The data pre-processing step is the same as the one described in Section 4. To prevent over-fitting~\cite{AlexNet}, a dropout layer is inserted after the last FC layer, with the dropout rate of 0.5. The fine-tune chain model is initialized with the pre-trained Caffe model on ImageNet. As we can see from Fig.~\ref{fig:ft_chain}, the final accuracy saturates at 60.7\%. We then initialized our DAG model training with the fine-tuned chain model. As seen from the learning curve shown in Fig.~\ref{fig:ft_dag}, the DAG model stimulates the saturated Chain model and continues to drive the classification performance. Overall, the Caffe-DAG model out-performs the Caffe-Chain, as seen in Table.~\ref{table:ft_models}.
+\subsection{Chain vs. DAG} 
+
+We use the generalized back-propagation algorithm presented in Section 3 to ``fine-tune'' the \textit{DAG} model on MIT67. In comparison, the traditional \textit{Chain} model is also fine-tuned in the same fashion. The data pre-processing step is the same as the one described in Section 4. To prevent over-fitting~\cite{AlexNet}, a dropout layer is inserted after the last FC layer, with the dropout rate of 0.5. The fine-tune chain model is initialized with the pre-trained Caffe model on ImageNet. As we can see from Fig.~\ref{fig:ft_chain}, the final accuracy saturates at 60.7\%. We then initialized our DAG model training with the fine-tuned chain model. As seen from the learning curve shown in Fig.~\ref{fig:ft_dag}, the DAG model stimulates the saturated Chain model and continues to drive the classification performance. Overall, the Caffe-DAG model out-performs the Caffe-Chain, as seen in Table.~\ref{table:ft_models}.
 
 
 \begin{figure}
@@ -119,7 +121,7 @@ In this section, we take a deep-dive and consider training our DAG-CNN model in 
 	\subfigure[Chain]{\includegraphics[width=.9\columnwidth]{fig/ft_chain.png}\label{fig:ft_chain}}
 	\subfigure[DAG]{\includegraphics[width=.9\columnwidth]{fig/ft_DAG.png}\label{fig:ft_dag}}
 
-\caption{Fine-tuning Caffe models on MIT67. The left shows the objectives for training and validation set for each epoch; the right shows the corresponding training and validation error.}
+\caption{Fine-tuning Caffe models on MIT67. The left shows the objectives for training and validation set for each epoch; the right shows the corresponding top-1/top-5 training and validation error.}
 \label{fig:ft_curve}
 \end{figure}
 
@@ -145,44 +147,29 @@ Caffe-Chain & 60.7   \\
 
 
 
-{\bf Fine-tuning vs. off-the-shelf} 
+\subsection{Fine-tuning vs. Off-the-shelf} 
 
-%We intend to understand how fine-tune model
+In the following experiment, we intend to understand the performance when fine-tune model is used for feature extraction. We compare three variants in this analysis, namely, \textit{off-the-shelf DAG}, \textit{fine-tune-chain DAG}, and \textit{fine-tune DAG}. The \textit{off-the-shelf DAG} is a special case of the multi-scale DAG model, as described in Section 3 of the main paper. It uses the Caffe backbone pre-trained with ImageNet dataset. Its features are extracted such that the ReLU activations are first average-pooled and l2-normalized. The multi-layer feature is by concatenating all single-layer features. The feature extraction for \textit{fine-tune-chain DAG} model follows the same procedure as off-the-shelf DAG; the only difference is we fine-tune the chain backbone on MIT67. As far as the \textit{fine-tune DAG} is concerned, we uses the generalized back-propagation to train the entire DAG model on MIT67. The activation of each average-pool layer is then extracted as feature, which can be visualized in Fig. 8 in the main paper. 
+
+Similar to all experiments on MIT67, 67-way one-vs-all classifiers are trained. The classification accuracy for all three settings are reported in Table.~\ref{table:ft_ots}. Firstly, we observe that multi-scale features always out-performs the best single-scale feature in all three cases. Secondly, the fine-tune models have superior performance for high-level features and the opposite for mid-level features. This suggests that fine-tuning tend to focus on improving the discriminativeness of high-level features. When combining multi-scale features, the off-the-shelf DAG has the largest performance boost due to the superior performance of mid-level features. Overall, the DAG models enjoy a consistent performance improvement by incorporating multi-scale features. 
+
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-& L11 & L13 & L15 & L18 & L20 & multi \\
+ & L11 & L13 & L15 & L18 & L20 & multi \\
 \hline
 off-the-shelf & \textbf{49.3} & \textbf{53.8} & 54.0 & 60.2 & 59.6 & \textbf{64.6} \\
-fine-tune Chain   & 48.4 & 51.0 & 55.1 & 61.3 & \textbf{61.7} & 63.5 \\
-fine-tune DAG     & 47.8 & 51.6 & \textbf{55.7} & \textbf{61.6} & 61.0 & 64.2	\\
+fine-tune-chain & 48.4 & 51.0 & 55.1 & 61.3 & \textbf{61.7} & 63.5 \\
+fine-tune   & 47.8 & 51.6 & \textbf{55.7} & \textbf{61.6} & 61.0 & 63.2	\\
 \hline
 \end{tabular}
 \end{center}
-\caption{Single- / Multi-scale accuracy for off-the-shelf and fine-tune Models on MIT67}
+\caption{Single- / Multi-scale feature performance for three variants of the DAG models on MIT67}
 \label{table:ft_ots}
 \end{table}
 
-
-{\bf SVM vs. softmax}
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|l|c|c|}
-\hline
- & SVM & Softmax \\	
-\hline
-Single-scale &	61.7 & 60.7 \\
-Multi-scale & 63.2 & 63.5   \\
-
-\hline
-\end{tabular}
-\end{center}
-\caption{The comparison of loss function for fine-tune Models on MIT67}
-\label{table:loss}
-\end{table}
 
 
 %
