@@ -130,12 +130,12 @@ In this section, we motivate our multi-scale architecture with a series of empir
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig/fig_layer_deep19.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layers for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive ReLU layer, particularly earlier on in the model.}
+\caption{Single-scale classification accuracy on MIT67~\cite{MIT67}, obtained by training and testing a SVM classifier on activations from a single layer. Orange bars represent the output of a ReLU layer. There are 7 ReLU layers for Caffe and 18 for Deep19. We see tend to see a performance jump at each successive ReLU layer.}
 \label{fig:layer_MIT67}
 \end{figure}
 
 {\bf Single-scale classification:} Following past work \cite{cnn_baseline}, we train a linear SVM classifier using features extracted from a particular layer. We specifically train $K=67$ 1-vs-all linear classifiers.
-We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (ReLU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
+We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67}. The detailed parameter options for both Caffe and Deep19 models are described later in Sec.~\ref{sec:exp}. As past work has pointed out, we see a general increase in performance as we use higher-level (more invariant) features. We do see a slight improvement at each nonlinear activation (ReLU) layer. This makes sense as this layer introduces a nonlinear rectification operation $\max(0,x)$, while other layers (such an convolutional or sum-pooling) are linear operations that can be learned by a linear predictor.
 
 
 
