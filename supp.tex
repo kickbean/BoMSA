@@ -108,9 +108,10 @@ Layer & Full Feat. & Marginal Feat. \\
 
 \section{Model Fine-tuning}
 
+In this section, we take a deep-dive and consider training our DAG-CNN model in the end-to-end fashion. Firstly, we compare training the Chain and DAG models with softmax loss. We term them \textit{fine-tune} models. Secondly, we use the fine-tune model for feature extraction and analyze the performance using hinge loss. Thirdly, we explore the performance of single- and multi-scale fine-tune models. All the experiments in this section is conducted on MIT67. 
 
 
-{\bf Chain vs. DAG}
+{\bf Chain vs. DAG: } We use the generalized back-propagation algorithm presented in Section 3 to ``fine-tune'' the \textit{DAG} model on MIT67. In comparison, the traditional \textit{Chain} model is also fine-tuned in the same fashion. The data pre-processing step is the same as the one described in Section 4. To prevent over-fitting~\cite{AlexNet}, a dropout layer is inserted after the last FC layer, with the dropout rate of 0.5. The fine-tune chain model is initialized with the pre-trained Caffe model on ImageNet. As we can see from Fig.~\ref{fig:ft_chain}, the final accuracy saturates at 60.7\%. We then initialized our DAG model training with the fine-tuned chain model. As seen from the learning curve shown in Fig.~\ref{fig:ft_dag}, the DAG model stimulates the saturated Chain model and continues to drive the classification performance. Overall, the Caffe-DAG model out-performs the Caffe-Chain, as seen in Table.~\ref{table:ft_models}.
 
 
 \begin{figure}
@@ -118,7 +119,7 @@ Layer & Full Feat. & Marginal Feat. \\
 	\subfigure[Chain]{\includegraphics[width=.9\columnwidth]{fig/ft_chain.png}\label{fig:ft_chain}}
 	\subfigure[DAG]{\includegraphics[width=.9\columnwidth]{fig/ft_DAG.png}\label{fig:ft_dag}}
 
-\caption{Fine-tuning Caffe models on MIT67}
+\caption{Fine-tuning Caffe models on MIT67. The left shows the objectives for training and validation set for each epoch; the right shows the corresponding training and validation error.}
 \label{fig:ft_curve}
 \end{figure}
 
@@ -146,6 +147,7 @@ Caffe-Chain & 60.7   \\
 
 {\bf Fine-tuning vs. off-the-shelf} 
 
+%We intend to understand how fine-tune model
 
 \begin{table}[htbp]
 \begin{center}
