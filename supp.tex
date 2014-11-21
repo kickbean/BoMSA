@@ -106,70 +106,146 @@ Layer & Full Feat. & Marginal Feat. \\
 \end{table}
 
 
+\section{Model Fine-tuning}
 
 
-\section{Fine-tune vs. Off-the-shelf}
 
-In this section, we analyze the performance of DAG-CNN trained in the end-to-end fashion on all three datasets. These results is then compared with the off-the-shelf DAG-CNN feature. Concretely, we first train the proposed DAG-CNN model with softmax loss using the algorithm presented in Section 3. We term this \textit{fine-tune} model. On the other hand, the \textit{off-the-shelf} setting is by first concatenating the outputs of the average-pooled features and then trained with hinge loss using Liblinear package~\cite{liblinear}. The results for \textit{off-the-shelf} experimental setup are the reported in the main paper. Here, we provide the results for the \textit{fine-tune} setup as a comparison. 
+{\bf Chain vs. DAG}
 
 
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|l|c|c|}
-\hline
-Approach & Off-the-shelf &  Fine-tune\\
-\hline
-Deep19-DAG & \textbf{55.5} &  \\
-Deep19~\cite{veryDeep} & 51.9 &  \\
-Caffe-DAG & 46.6	& \\
-Caffe~\cite{Caffe} & 43.5 &  \\ \hline
+\begin{figure}
+\centering
+	\subfigure[Chain]{\includegraphics[width=.9\columnwidth]{fig/ft_chain.png}\label{fig:ft_chain}}
+	\subfigure[DAG]{\includegraphics[width=.9\columnwidth]{fig/ft_DAG.png}\label{fig:ft_dag}}
 
-\hline
-\end{tabular}
-\end{center}
-\caption{Classification results on SUN397}
-\label{table:SUN397}
-\end{table}
+\caption{Fine-tuning Caffe models on MIT67}
+\label{fig:ft_curve}
+\end{figure}
+
 
 
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|l|c|c|}
+\begin{tabular}{|l|c|}
 \hline
-Approach & Off-the-shelf &  Fine-tune\\
+Structure & Accuracy \\
 \hline
-Deep19-DAG & \textbf{76.1} &  \\
-Deep19~\cite{veryDeep} & 70.8 &  \\
-Caffe-DAG & 64.6	& 63.5\\
-Caffe~\cite{Caffe} & 59.5 & 60.7 \\ \hline
+Caffe-DAG & 63.5   \\
+Caffe-Chain & 60.7   \\
 
 \hline
 \end{tabular}
 \end{center}
-\caption{Classification results on MIT67}
-\label{table:MIT67}
+\caption{The comparison of fine-tune Models on MIT67}
+\label{table:ft_models}
 \end{table}
 
 
+
+
+{\bf Fine-tuning vs. off-the-shelf} 
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+& L11 & L13 & L15 & L18 & L20 & multi \\
+\hline
+off-the-shelf & \textbf{49.3} & \textbf{53.8} & 54.0 & 60.2 & 59.6 & \textbf{64.6} \\
+fine-tune Chain   & 48.4 & 51.0 & 55.1 & 61.3 & \textbf{61.7} & 63.5 \\
+fine-tune DAG     & 47.8 & 51.6 & \textbf{55.7} & \textbf{61.6} & 61.0 & 64.2	\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Single- / Multi-scale accuracy for off-the-shelf and fine-tune Models on MIT67}
+\label{table:ft_ots}
+\end{table}
+
+
+{\bf SVM vs. softmax}
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|l|c|c|}
 \hline
-Approach & Off-the-shelf &  Fine-tune\\
+ & SVM & Softmax \\	
 \hline
-Deep19-DAG & \textbf{92.4} &  \\
-Deep19~\cite{veryDeep} & 90.8 &  \\
-Caffe-DAG & 89.7	& \\
-Caffe~\cite{Caffe} & 86.8 & \\ \hline
+Single-scale &	61.7 & 60.7 \\
+Multi-scale & 63.2 & 63.5   \\
 
 \hline
 \end{tabular}
 \end{center}
-\caption{Classification results on Scene15}
-\label{table:Scene15}
+\caption{The comparison of loss function for fine-tune Models on MIT67}
+\label{table:loss}
 \end{table}
+
+
+%
+%\section{Fine-tune vs. Off-the-shelf}
+%
+%In this section, we analyze the performance of DAG-CNN trained in the end-to-end fashion on all three datasets. These results is then compared with the off-the-shelf DAG-CNN feature. Concretely, we first train the proposed DAG-CNN model with softmax loss using the algorithm presented in Section 3. We term this \textit{fine-tune} model. On the other hand, the \textit{off-the-shelf} setting is by first concatenating the outputs of the average-pooled features and then trained with hinge loss using Liblinear package~\cite{liblinear}. The results for \textit{off-the-shelf} experimental setup are the reported in the main paper. Here, we provide the results for the \textit{fine-tune} setup as a comparison. 
+%
+%
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|l|c|c|}
+%\hline
+%Approach & Off-the-shelf &  Fine-tune\\
+%\hline
+%Deep19-DAG & \textbf{55.5} &  \\
+%Deep19~\cite{veryDeep} & 51.9 &  \\
+%Caffe-DAG & 46.6	& \\
+%Caffe~\cite{Caffe} & 43.5 &  \\ \hline
+%
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Classification results on SUN397}
+%\label{table:SUN397}
+%\end{table}
+%
+%
+%
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|l|c|c|}
+%\hline
+%Approach & Off-the-shelf &  Fine-tune\\
+%\hline
+%Deep19-DAG & \textbf{76.1} &  \\
+%Deep19~\cite{veryDeep} & 70.8 &  \\
+%Caffe-DAG & 64.6	& 63.5\\
+%Caffe~\cite{Caffe} & 59.5 & 60.7 \\ \hline
+%
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Classification results on MIT67}
+%\label{table:MIT67}
+%\end{table}
+%
+%
+%
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|l|c|c|}
+%\hline
+%Approach & Off-the-shelf &  Fine-tune\\
+%\hline
+%Deep19-DAG & \textbf{92.4} &  \\
+%Deep19~\cite{veryDeep} & 90.8 &  \\
+%Caffe-DAG & 89.7	& \\
+%Caffe~\cite{Caffe} & 86.8 & \\ \hline
+%
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Classification results on Scene15}
+%\label{table:Scene15}
+%\end{table}
 
 
 
