@@ -62,9 +62,9 @@ First line of institution2 address\\
 We include additional details and diagnostic experiments on feature dimensionality, the effect of marginalization, and fine-tuning.
 
 \section{Feature dimension}
-Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yeilding a feature vector of size 4096. Our multi-scale model generates a feature vector of size 9216, {\em making it a factor of 2 larger} and so quite easy to use in practice.
+Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. Our multi-scale model generates a feature vector of size 9216, {\em making it a factor of 2 larger} and so quite easy to use in practice.
 
-{\bf Details:} We provide the exact breakdown of feature dimensionality for our Caffe-DAG model. Our forward selection from  Fig. 7(a) (of the main paper) chooses 5 RelU layers, whos dimensionalities are given in Table.~\ref{table:feat_dim}.
+{\bf Details:} We provide the exact breakdown of feature dimensionality for our Caffe-DAG model. Our forward selection from  Fig. 7(a) (of the main paper) chooses 5 ReLU layers, whose dimensionality are given in Table.~\ref{table:feat_dim}.
 
 \begin{table}[htbp]
 \begin{center}
@@ -88,53 +88,84 @@ Total& & 181248 & 9216\\
 
 
 
-{\bf Full vs Marginal Features:} The above table suggests that it is crucial to use marginal features to keep the final dimensionality of the multi-scale feature manageable. A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we build on the single-scale diagnostic experiments from our paper (Fig 3). Recall these experiments train and test an SVM on activations from a single-layer. We repeat these experiments using both full and marginal activation features each layer. For simplicity, we focus on 5 layers selected through forward selection (Table~\ref{table:perf_full}).
+{\bf Full vs Marginal Features:} The above table suggests that it is crucial to use marginal features to keep the final dimensionality of the multi-scale feature manageable. A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we build on the single-scale diagnostic experiments from our paper (Fig 3). Recall these experiments train and test an SVM on activations from a single-layer. We repeat these experiments using both full and marginal activation features each layer. For simplicity, we focus on 5 layers selected through forward selection (Fig.~\ref{fig:full_marg}).
 
 %We then train 67-way one-vs-all linear SVM classifiers similar to the experimental setups in the Section 4 for each layer. The classification accuracy is reported in Table.~\ref{table:perf_full}. The performances are identical for Layer-18 and Layer-20 since the \textit{Full-} and \textit{Marginal-feature} are equivalent. Surprisingly, as seen from Table.~\ref{table:perf_full}, the marginal-features always out-perform the full-feature for Layer-11, Layer-13, and Layer-20. This suggests that the full-features is likely to suffer from the ``curse of dimensionality'' given fairly small amount of training data (approximately 5k for MIT67). Thus, choosing marginal over full feature not only improves the classification performance but also reduces feature dimension to manageable ranges. 
 
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|l|c|c|}
-\hline
-Layer & Full Feat. & Marginal Feat. \\
-\hline
-11 & 46.7 & 49.3  \\
-13 & 49.0 & 53.8  \\
-15 & 52.2 & 54.0  \\
-18 & 60.2 & 60.2  \\
-20 & 59.6 & 59.6  \\
+\begin{figure}[htbp]
+\centering
+	{\includegraphics[width=.8\columnwidth]{fig/full_marg.png}}
 
-\hline
-\end{tabular}
-\end{center}
-\caption{Single-scale classification accuracy (\%) of Full vs. Marginal Features. \deva{If we have time, perhaps show as a bar plot?}}
-\label{table:perf_full}
-\end{table}
+\caption{Single-scale classification accuracy (\%) of Full vs. Marginal Features.}
+\label{fig:full_marg}
+\end{figure}
 
- Perhaps suprisingly, we find that {\em marginal features always outperform the full dimensional feature}, implying that dimensinality reduction actually helps performance. We verified that this phenomena was due to overfitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, the full-dimensionality features may perform better.
+
+%
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|l|c|c|}
+%\hline
+%Layer & Full Feat. & Marginal Feat. \\
+%\hline
+%11 & 46.7 & 49.3  \\
+%13 & 49.0 & 53.8  \\
+%15 & 52.2 & 54.0  \\
+%18 & 60.2 & 60.2  \\
+%20 & 59.6 & 59.6  \\
+%
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Single-scale classification accuracy (\%) of Full vs. Marginal Features. \deva{If we have time, perhaps show as a bar plot?}}
+%\label{table:perf_full}
+%\end{table}
+
+Surprisingly, we find that {\em marginal features always outperform the full dimensional feature}, implying that dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, the full-dimensionality features may perform better.
 
 \section{Model fine-tuning}
 
 In this section, we further analyze ``off-the-shelf'' and ``fine-tuned'' versions of our multi-scale DAG model. Off-the-shelf models use multi-scale features extracted from pre-trained CNN (e.g., trained on ImageNet). Fine-tuned models retrain the entire DAG, in an end-to-end fashion, on the target dataset. For these experiments, our target dataset is MIT 67. 
 %we take a deep-dive and consider training our DAG-CNN model in the end-to-end fashion. Firstly, we compare training the Chain and DAG models with softmax loss. We term them \textit{fine-tune} models. Secondly, we use the fine-tune model for feature extraction and analyze the performance of single- and multi-scale fine-tune models. All the experiments in this section is conducted on MIT67. 
 
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|l|c|}
-\hline
-Structure & Accuracy \\
-\hline
-Off-the-shelf Caffe-Chain & 59.6   \\
-Fine-tuned Caffe-Chain & 61.7 \\
-Fine-tuned Caffe-DAG & 63.5\\
-\hline
-\end{tabular}
-\end{center}
-\caption{The comparison of fine-tune Models on MIT67. \deva{If we have time, perhaps show as a bar plot?}}
-\label{table:ft_models}
-\end{table}
 
-{\bf Fine-tuned DAG:} We train a multi-scale DAG-CNN by iterative fine-tuning, making use of a sequence of pre-trained models. We tabulate the results in Table~\ref{table:ft_models}. We begin with off-the-shelf Caffe model. Using a single output layer (as is standard practice) yeilds a classification accuracy of 59.6\%. Next, we use this model to initialize gradient-based ``fine-tuning'', using training data from MIT-67. This produces a small improvement to 61.7\%. We plot the training and testing accuracy during training epochs in Fig.~\ref{fig:ft_curve}-(a). Finally, we use this fine-tuned chain model to initialize gradient-based learning of a DAG-CNN. To do so, we add multi-scale connections to the chain-structured ``backbone'', as shown in Fig 8 (main paper). The multi-scale weights are initialized to 0, while all other weights in the model are left as-is. End-to-end fine-tuning of our DAG noticeably improves accuracy to 63.5\%. We plot training and testing accuracy during training epochs in Fig.~\ref{fig:ft_curve}-(b). These experiments validate our end-to-end multi-scale training.
+\begin{figure}[htbp]
+\centering
+	{\includegraphics[width=.75\columnwidth]{fig/ft_model.png}}
+
+\caption{The comparison of fine-tune Models on MIT67.}
+\label{fig:ft_model}
+\end{figure}
+
+
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|l|c|}
+%\hline
+%Structure & Accuracy \\
+%\hline
+%Off-the-shelf Caffe-Chain & 59.6   \\
+%Fine-tuned Caffe-Chain & 61.7 \\
+%Fine-tuned Caffe-DAG & 63.5\\
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{The comparison of fine-tune Models on MIT67. \deva{If we have time, perhaps show as a bar plot?}}
+%\label{table:ft_models}
+%\end{table}
+
+\begin{figure}[t]
+\centering
+	\subfigure[Chain]{\includegraphics[width=.9\columnwidth]{fig/ft_chain.png}\label{fig:ft_chain}}
+	\subfigure[DAG]{\includegraphics[width=.9\columnwidth]{fig/ft_DAG.png}\label{fig:ft_dag}}
+
+\caption{Fine-tuning Caffe models on MIT67. The left shows the objectives for training and validation set for each epoch; the right shows the corresponding training and validation error.}
+\label{fig:ft_curve}
+\end{figure}
+
+{\bf Fine-tuned DAG:} We train a multi-scale DAG-CNN by iterative fine-tuning, making use of a sequence of pre-trained models. We show the results in Fig.~\ref{fig:ft_model}. We begin with off-the-shelf Caffe model. Using a single output layer (as is standard practice) yields a classification accuracy of 59.6\%. Next, we use this model to initialize gradient-based ``fine-tuning'', using training data from MIT-67. This produces a small improvement to 61.7\%. We plot the training and testing accuracy during training epochs in Fig.~\ref{fig:ft_chain}. Finally, we use this fine-tuned chain model to initialize gradient-based learning of a DAG-CNN. To do so, we add multi-scale connections to the chain-structured ``backbone'', as shown in Fig 8 (main paper). The multi-scale weights are initialized to small random numbers, while all other weights in the model are left as-is. End-to-end fine-tuning of our DAG noticeably improves accuracy to 63.5\%. We plot training and testing accuracy during training epochs in Fig.~\ref{fig:ft_dag}. These experiments validate our end-to-end multi-scale training.
+
+
 
 {\bf Off-the-shelf vs fine-tuned DAG:} However, an off-the-shelf DAG performs just as well (or even marginally better than) our fine-tuned DAG. As listed in our main paper, an off-the-shelf DAG produces an accuracy of 64.6. This suggests that while single-scale features don't transfer that well (from ImageNet to MIT67), multi-scale features transfer quite well between the two datasets. In fact, {\em multi-scale features transfer so well that no fine-tuning is apparently needed}. This validates our original hypotheses: multi-scale features are important for learning a generic feature extractor.%, that is applicable to a wide variety of recognition problems (that require both coarse and fine spatial reasoning).
 
@@ -146,14 +177,7 @@ Fine-tuned Caffe-DAG & 63.5\\
 %We use the generalized back-propagation algorithm presented in Section 3 to ``fine-tune'' the \textit{DAG} model on MIT67. In comparison, the traditional \textit{Chain} model is also fine-tuned in the same fashion. The data pre-processing step is the same as the one described in Section 4. To prevent over-fitting~\cite{AlexNet}, a dropout layer is inserted after the last FC layer, with the dropout rate of 0.5. The fine-tune chain model is initialized with the pre-trained Caffe model on ImageNet. As we can see from Fig.~\ref{fig:ft_chain}, the final accuracy saturates at 60.7\%. We then initialized our DAG model training with the fine-tuned chain model. As seen from the learning curve shown in Fig.~\ref{fig:ft_dag}, the DAG model stimulates the saturated Chain model and continues to drive the classification performance. Overall, the Caffe-DAG model out-performs the Caffe-Chain, as seen in Table.~\ref{table:ft_models}.
 
 
-\begin{figure}
-\centering
-	\subfigure[Chain]{\includegraphics[width=.9\columnwidth]{fig/ft_chain.png}\label{fig:ft_chain}}
-	\subfigure[DAG]{\includegraphics[width=.9\columnwidth]{fig/ft_DAG.png}\label{fig:ft_dag}}
 
-\caption{Fine-tuning Caffe models on MIT67. The left shows the objectives for training and validation set for each epoch; the right shows the corresponding top-1/top-5 training and validation error. \deva{If we have time, remove top-5 from plot.}}
-\label{fig:ft_curve}
-\end{figure}
 
 
 %\subsection{Fine-tuning vs. Off-the-shelf} 
@@ -247,9 +271,9 @@ Fine-tuned Caffe-DAG & 63.5\\
 
 
 
-{\small
-\bibliographystyle{ieee}
-\bibliography{mobib}
-}
+%{\small
+%\bibliographystyle{ieee}
+%\bibliography{mobib}
+%}
 
 \end{document}
