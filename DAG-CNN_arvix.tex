@@ -87,10 +87,10 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 {\bf Multi-scale features:} We introduce multi-scale CNN architectures that use features at multiple scales for output prediction (Fig.~\ref{fig:splash}). From one perspective, our architectures are quite simple. Typical approaches train a output predictor (e.g., a linear SVM) using features extracted from a single output layer. Instead, one can train an output predictor using features extracted from multiple layers. Note that these features come ``for free''; they are already computed in a standard feed-forward pass. 
 
-{\bf Marginal activations:} One difficulty with multi-scale approaches is feature dimensionality - the total number of features across all layers can easily reach hundred of thousands. This makes training even linear models difficult and prone to over-fitting. Instead, we use marginal activations computed from sum (or max) pooling across all spatial locations in a given activation layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}.
+{\bf Spatial pooling:} One difficulty with multi-scale approaches is feature dimensionality - the total number of features across all layers can easily reach hundred of thousands. This makes training even linear models difficult and prone to over-fitting. Instead, we use marginal activations computed from sum (or max) pooling across all spatial locations in a given activation layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}. Our approach is most related to \cite{Gong14}, who also use spatially pooled CNN features for scene classification. They do so by pooling together multiple CNN descriptors extracted from various-sized patches within an image. Instead, we perform a single CNN encoding of the entire image, extracting multiscale features ``for free''.
 
-{\bf DAG-CNN:} Our multi-scale model differs from such past work in one notable aspect. Our model is still a feed-forward CNN that is no longer chain-structured, but a directed-acyclic graph (DAG). DAG-structured CNNs can be discriminatively trained in an end-to-end fashion, allowing us to learn multi-scale representations. %Multi-scale learning addresses one well-known difficulty of CNNs - the ``vanishing gradient'' problem~\cite{bengio1994learning}. During gradient-based learning, the gradient signal becomes progressively diluted as one back-propagates it through multiple layers, such that the bottom-most layer receives essentially no updates. Our multi-scale DAG structure connects all activation layers directly to the output, ensuring they all receive a strong gradient signal during learning.  
-DAG structures are relatively straightforward to implement given the flexibility of many deep learning toolboxes~\cite{vedaldimatconvnet,Caffe,overfeat}. Our primary contribution is the demonstration that structures can be used to implement multiscale features that allows for transfer learning between coarse and fine-grained classification tasks.
+{\bf End-to-end training:} Our multi-scale model differs from such past work in another notable aspect. Our entire model is still a feed-forward CNN that is no longer chain-structured, but a directed-acyclic graph (DAG). DAG-structured CNNs can be discriminatively trained in an end-to-end fashion, allowing us to directly learn multi-scale representations. %Multi-scale learning addresses one well-known difficulty of CNNs - the ``vanishing gradient'' problem~\cite{bengio1994learning}. During gradient-based learning, the gradient signal becomes progressively diluted as one back-propagates it through multiple layers, such that the bottom-most layer receives essentially no updates. Our multi-scale DAG structure connects all activation layers directly to the output, ensuring they all receive a strong gradient signal during learning.  
+DAG structures are relatively straightforward to implement given the flexibility of many deep learning toolboxes~\cite{vedaldimatconvnet,Caffe,overfeat}. Our primary contribution is the demonstration that structures can capture multiscale features, that in turn allow for transfer learning between coarse and fine-grained classification tasks.
 
 %yeilding state-of-the-art recognition results across various recognition benchmarks. 
 
@@ -101,9 +101,9 @@ DAG structures are relatively straightforward to implement given the flexibility
 
 %In this paper, we first conducted an empirical analysis on the feature discriminativeness of every unit of CNN model. By average-pooling at each layer, the output ignores global spatial information and results in a bag-of-feature representation. The bag-of-feature from ReLU is then found to carry the most performance gain at each layer. We have also observed a synergy of multi-scale activations results in a better discriminative representation. These observations tie closely to the vanishing gradient~\cite{diff_cnn} issue in the deep CNN literature. During the training of a CNN, the top layer can be easily saturated. The gradients in the back-propagation algorithm will not effective reach the lower levels, resulting in a model that focuses more high-level features. Thus, we proposed a model augmentation schema, BoMSA, that chains the ReLU at each layer to the ultimate loss function. This augmentation approach is not confined by model variations and can be applied to existing pre-trained models or re-training the model from the ground up. By explicitly linking the lower layers to the decision layer, we gear the training towards the bag-of-activations from all layers. Thus, the augmented model is designed to be robust to spatial translations while maintaining its discriminative power in the multi-scale fashion.
 
-{\bf DAG-structured Neural Networks:} DAG-structured neural nets were explored earlier in the context of recurrent neural nets \cite{baldi2003principled,graves2009offline}. Recurrent neural nets use feedback to capture dynamic states, and so typically cannot be processed with feed-forward computations. Previous work has also shown that long-range connections between neural layers can eliminate the vanishing gradient problem, but this is done in the context of memory-based networks~\cite{hochreiter1997long}. We make use of DAG structures to efficiently encode multi-scale features in a simpler feed-forward network. 
+{\bf DAG Neural Networks:} DAG-structured neural nets were explored earlier in the context of recurrent neural nets \cite{baldi2003principled,graves2009offline}. Recurrent neural nets use feedback to capture dynamic states, and so typically cannot be processed with feed-forward computations. Previous work has also shown that long-range connections between neural layers can eliminate the vanishing gradient problem, but this is done in the context of memory-based networks~\cite{hochreiter1997long}. We make use of DAG structures to efficiently encode multi-scale features in a simpler feed-forward network. 
 
-{\bf Skip connections:} Our DAG structures are similar to recent networks that make use of ``skip'' connections between layers \cite{raiko-aistats-12,szegedy2014going,sermanet2013pedestrian}. \cite{raiko-aistats-12} show that such connections are useful for a single binary classification task, but we motivate multiscale connections through multitask learning: different visual classification tasks require features at different image scales. Indeed, we show that off-the-shelf multi-scale features transfer extraordinary well between classification tasks. Finally, the recent state-of-the-art model of \cite{szegedy2014going} make use of skip connections for training, but do not use them at test-time, meaning their feedforward model is not a DAG. Our results suggest that multiscale connections at testtime might further improve their performanace.
+{\bf Skip connections:} Our DAG structures are similar to recent networks that make use of ``skip'' connections between layers \cite{raiko-aistats-12,szegedy2014going,sermanet2013pedestrian}. \cite{raiko-aistats-12} show that such connections are useful for a single binary classification task, but we motivate multiscale connections through multitask learning: different visual classification tasks require features at different image scales. Indeed, we show that off-the-shelf multi-scale features transfer extraordinary well between classification tasks. Finally, the recent state-of-the-art model of \cite{szegedy2014going} make use of skip connections for training, but do not use them at test-time, meaning their feedforward model is not a DAG. Our results suggest adding multiscale connections at testtime might further improve their performanace.
 %multiscale features at test-time might further improve their performance.
 
 {\bf Overview:} We motivate our multi-scale DAG-CNN model in Sec.~\ref{sec:motivation}, describe the full architecture in Sec.~\ref{sec:approach}, and conclude with numerous benchmark results in Sec.~\ref{sec:exp}. We evaluate multi-scale DAG-structured variants of existing CNN architectures (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}) on a variety of scene recognition benchmarks including SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. We observe a consistent improvement regardless of the underlying CNN architecture, producing state-of-the-art results on all 3 datasets.
@@ -209,7 +209,7 @@ In this section, we show that the multi-scale model examined in Fig.~\ref{fig:fo
 \begin{figure*}[t!]
 \centering
 	\includegraphics[width=\textwidth]{fig/fig_model.png}
-\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN.}
+\caption{Our multi-scale DAG-CNN architecture is constructed by adding (marginalized) multi-scale output connections to an underlying {\em chain backbone} from the original CNN. \deva{Add Norm connections after average-pooling?}}
 \label{fig:model}
 \end{figure*}
 
@@ -311,7 +311,7 @@ SUN397~\cite{SUN397} is a large scene recognition dataset with 397 categories, e
 \hline
 Approach & Accuracy(\%) \\
 \hline
-Deep19-DAG & \textbf{55.5} \\
+Deep19-DAG & \textbf{56.2} \\
 Deep19~\cite{veryDeep} & 51.9 \\
 Caffe-DAG & 46.6	\\
 Caffe~\cite{Caffe} & 43.5 \\ \hline
@@ -344,7 +344,7 @@ MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categori
 \hline
 Approach & Accuracy(\%) \\
 \hline
-Deep19-DAG & \textbf{76.1} \\
+Deep19-DAG & \textbf{77.5} \\
 Deep19~\cite{veryDeep} & 70.8 \\
 Caffe-DAG & 64.6	\\
 Caffe~\cite{Caffe} & 59.5 \\ \hline
@@ -376,7 +376,7 @@ The Scene15~\cite{Scene15} includes both indoor scene (\eg, store and kitchen) a
 \hline
 Approach & Accuracy(\%) \\
 \hline
-Deep19-DAG & \textbf{92.4} \\
+Deep19-DAG & \textbf{92.9} \\
 Deep19~\cite{veryDeep} & 90.8 \\
 Caffe-DAG & 89.7	\\
 Caffe~\cite{Caffe} & 86.8 \\ \hline
@@ -468,27 +468,27 @@ In this section, we further analyze ``off-the-shelf'' and ``fine-tuned'' version
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
- & Chain &  Off-the-shelf & Fine-tuned\\
+ & Chain (OTS)  & Chain (FT) &  DAG (OTS) & DAG (FT)\\
 \hline
-SUN397 & 43.5 & 46.6 & 47.1 \\
-MIT67 & 59.5 & 64.6 & 64.2 \\
-Scene15 & 86.8 & 89.7 & 91.1 \\
+SUN397  & 43.5 & ? & 46.6 & 47.1 \\
+MIT67 & 59.5 & 61.7  & 64.6 & 64.2 \\
+Scene15 & 86.8 & ? & 89.7 & 91.1 \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Comparison of chain, off-the-shelf, and fine-tuned models using the Caffe backbone.}
+\caption{Comparison of chain, off-the-shelf (OTS) , and fine-tuned (FT) models using the Caffe backbone. \deva{Two requests. Can you replace DAG-FT with the result that retrains a SVM classifier using DAG features? I think its fine to still call this a DAG-FT, one that just uses a batch optmiztion instead of SGD. Hopefully we can increase the 64.2 number a bit. Can you fill in the (?) above? If so, then I think that this table (perhaps better shown as a bar graph, similar to Fig 12) would have a nice diagnostic analysis of fine-tuning, off-the-shelf, and single vs multi-scale.}}
 \label{table:ft_vs_otf}
 \end{table}
 
-{\bf Fine-tuned DAG as feature extractor:} Fine-tuned model can be used as a feature extractor by concatenating features from the DAG model after fine-tuning. This can be viewed as an off-the-shelf feature from multi-scale fine-tune DAG. As compared in Table.~\ref{table:ft_extractor}, when fine-tuned DAG is used as a feature extractor, it is generally better than off-the-shelf multi-scale model with a chain backbone. This demonstrates that fine-tuning procedure encodes more discriminative features at various scales for classification. 
+{\bf Fine-tuned DAG as feature extractor:} Fine-tuned model can be used as a feature extractor by concatenating features from the DAG model after fine-tuning. This can be viewed as an off-the-shelf feature from multi-scale fine-tune DAG. As compared in Table.~\ref{table:ft_extractor}, when fine-tuned DAG is used as a feature extractor, it is generally better than off-the-shelf multi-scale model with a chain backbone. This demonstrates that fine-tuning procedure encodes more discriminative features at various scales for classification.
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
- & Chain &  fine-tuned DAG\\
+ & Deep19-DAG (OTS) &  Deep19-DAG (FT)\\
 \hline
 SUN397 & 55.5 & 56.2 \\
 MIT67 & 76.1 & 77.5 \\
@@ -496,10 +496,9 @@ Scene15 & 92.4 & 92.9 \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Comparison of multi-scale Chain and fine-tuned DAG models is used as off-the-shelf feature extractors using the Deep19 backbone.}
+\caption{Comparison of  and fine-tuned DAG models is used as off-the-shelf feature extractors using the Deep19 backbone. \deva{If we have the nice CAFFE table above, we may not enough need this one.}} 
 \label{table:ft_extractor}
 \end{table}
-
 
 \begin{figure*}[htbp]
 \centering
