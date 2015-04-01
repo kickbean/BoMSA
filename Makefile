@@ -1,4 +1,4 @@
-TARGET=BoMSA_review
+TARGET=DAG-CNN_arvix
 
 all: 
 	pdflatex $(TARGET).tex
