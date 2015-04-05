@@ -407,64 +407,64 @@ Most existing methods that use CNNs as feature extractors work with the last lay
 
 {\bf Details:} We provide the exact breakdown of feature dimensionality for our Caffe-DAG model. Our forward selection from  Fig. 7(a) (of the main paper) chooses 5 ReLU layers, whose dimensionality are given in Table.~\ref{table:feat_dim}.
 
-%\begin{table}[htbp]
-%\begin{center}
-%\begin{tabular}{|c|c|c|c|}
-%\hline
-%Layer & Response &  Full Feat.& Marginal Feat.\\
-%\hline
-%11 & $13\times 13 \times 384$ & 64896 & 384 \\
-%13 & $13\times 13 \times 384$ & 64896 & 384 \\
-%15 & $13\times 13 \times 256$ & 43264 & 256 \\
-%18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-%20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-%\hline
-%Total& & 181248 & 9216\\
-%\hline
-%\end{tabular}
-%\end{center}
-%\caption{Feature Dimension for Caffe-DAG}
-%\label{table:feat_dim}
-%\end{table}
-
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Layer & Response &  Full Feat.& Marg. Feat.\\
+Layer & Response &  Full Feat.& Marginal Feat.\\
 \hline
-
-1 &	$227\times	227\times	3$ &	154587 &	3 \\
-2 &	$55\times	55\times	96$ &	290400 &	96 \\
-3 &	$55\times	55\times	96$ &	290400 &	96 \\
-4 &	$27\times	27\times	96$ &	69984 &	96 \\
-5 &	$27\times	27\times	96$ &	69984 &	96 \\
-6 &	$27\times	27\times	256$ &	186624 &	256 \\
-7 &	$27\times	27\times	256$ &	186624 &	256 \\
-8 &	$13\times	13\times	256$ &	43264 &	256 \\
-9	& $13\times	13\times	256$ &	43264 &	256 \\
-10 &	$13\times	13\times	384$ &	64896 &	384 \\
-11 &	$13\times	13\times	384$ &	64896 &	384 \\
-12 &	$13\times	13\times	384$ &	64896 &	384 \\
-13 &	$13\times	13\times	384$ &	64896 &	384 \\
-14 &	$13\times	13\times	256$ &	43264 &	256 \\
-15 &	$13\times	13\times	256$ &	43264 &	256 \\
-16 &	$6\times	6\times	256$ &	9216 &	256 \\
-
+11 & $13\times 13 \times 384$ & 64896 & 384 \\
+13 & $13\times 13 \times 384$ & 64896 & 384 \\
+15 & $13\times 13 \times 256$ & 43264 & 256 \\
+18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+\hline
+Total& & 181248 & 9216\\
 \hline
 \end{tabular}
 \end{center}
-\caption{Full and Marginal feature dimension for Caffe-DAG}
+\caption{Feature Dimension for Caffe-DAG}
 \label{table:feat_dim}
-\end{table} 
+\end{table}
 
-{\bf Full vs Marginal Features:} The above table suggests that it is crucial to use marginal features to keep the final dimensionality of the multi-scale feature manageable. A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we build on the single-scale diagnostic experiments from our paper (Fig 3). Recall these experiments train and test an SVM on activations from a single-layer. We repeat these experiments using both full and marginal activation features each layer. For simplicity, we focus on 5 layers selected through forward selection (Fig.~\ref{fig:full_marg}).
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|}
+%\hline
+%Layer & Response &  Full Feat.& Marg. Feat.\\
+%\hline
+%
+%1 &	$227\times	227\times	3$ &	154587 &	3 \\
+%2 &	$55\times	55\times	96$ &	290400 &	96 \\
+%3 &	$55\times	55\times	96$ &	290400 &	96 \\
+%4 &	$27\times	27\times	96$ &	69984 &	96 \\
+%5 &	$27\times	27\times	96$ &	69984 &	96 \\
+%6 &	$27\times	27\times	256$ &	186624 &	256 \\
+%7 &	$27\times	27\times	256$ &	186624 &	256 \\
+%8 &	$13\times	13\times	256$ &	43264 &	256 \\
+%9	& $13\times	13\times	256$ &	43264 &	256 \\
+%10 &	$13\times	13\times	384$ &	64896 &	384 \\
+%11 &	$13\times	13\times	384$ &	64896 &	384 \\
+%12 &	$13\times	13\times	384$ &	64896 &	384 \\
+%13 &	$13\times	13\times	384$ &	64896 &	384 \\
+%14 &	$13\times	13\times	256$ &	43264 &	256 \\
+%15 &	$13\times	13\times	256$ &	43264 &	256 \\
+%16 &	$6\times	6\times	256$ &	9216 &	256 \\
+%
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Full and Marginal feature dimension for Caffe-DAG}
+%\label{table:feat_dim}
+%\end{table} 
+
+{\bf Full vs. Marginal Features:} The above table suggests that it is crucial to use marginal features to keep the final dimensionality of the multi-scale feature manageable. A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we build on the single-scale diagnostic experiments from our paper (Fig 3). Recall these experiments train and test an SVM on activations from a single-layer. We repeat these experiments using both full and marginal activation features each layer. For simplicity, we focus on 5 layers selected through forward selection (Fig.~\ref{fig:full_marg}).
 
 \begin{figure}[htbp]
 \centering
-	{\includegraphics[width=.8\columnwidth]{fig/full_marg_all.png}}
+	{\includegraphics[width=.8\columnwidth]{fig/full_marg.png}}
 
-\caption{Single-scale classification accuracy (\%) of Full vs. Marginal Features.\songfan{It seems that including the comparison of ALL layers does not support the statement `` dimensionality reduction actually helps performance" }}
+\caption{Single-scale classification accuracy (\%) of Full vs. Marginal Features.}
 \label{fig:full_marg}
 \end{figure}
 
@@ -494,23 +494,38 @@ In this section, we further analyze ``off-the-shelf'' and ``fine-tuned'' version
 {\bf Fine-tuned DAG:} We train a multi-scale DAG-CNN by iterative fine-tuning, making use of a sequence of pre-trained models. We show the results in Fig.~\ref{fig:ft_model}. We begin with off-the-shelf Caffe model. Using a single output layer (as is standard practice) yields a classification accuracy of 59.6\%. Next, we use this model to initialize gradient-based ``fine-tuning'', using training data from MIT-67. This produces a small improvement to 61.7\%. We plot the training and testing accuracy during training epochs in Fig.~\ref{fig:ft_chain}. Finally, we use this fine-tuned chain model to initialize gradient-based learning of a DAG-CNN. To do so, we add multi-scale connections to the chain-structured ``backbone'', as shown in Fig 8 (main paper). The multi-scale weights are initialized to small random numbers, while all other weights in the model are left as-is. End-to-end fine-tuning of our DAG noticeably improves accuracy to 63.5\%. We plot training and testing accuracy during training epochs in Fig.~\ref{fig:ft_dag}. 
 
 
-{\bf Off-the-shelf vs fine-tuned DAG:} Fine-tuned DAG models performs better than off-the-shelf DAG, as seen in Table.~\ref{table:ft_vs_otf}. This suggests that while single-scale features don't transfer that well (from ImageNet to MIT67 etc.), multi-scale features transfer quite well between the two datasets. In fact, {\em multi-scale features transfer so well that no fine-tuning is apparently needed}. This validates our original hypotheses: multi-scale features are important for learning a generic feature extractor. Practically, any system making use of off-shelf CNN features should explore multi-scale variants as a ``cheap" baseline.
+{\bf Off-the-shelf vs. fine-tuned:} Fig.~\ref{fig:comp_otf} reports the comparison of off-the-shelf and fine-tune features on both Chain and DAG models. Significant improvements of DAG over Chain are observed in all three datasets, suggesting that the multi-scale features indeed plays an essential role for scene classification. Further, fine-tuned features out-perform the off-the-shelf features consistently. This shows that the data specific information is well captured by fine-tuning, which further boosts the recognition performance. 
 
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|}
-\hline
- & Chain (OTS)  & Chain (FT) &  DAG (OTS) & DAG (FT)\\
-\hline
-SUN397  & 43.5 & ? & 46.6 & 47.5 \\
-MIT67 & 59.5 & 61.7  & 64.6 & 65.4 \\
-Scene15 & 86.8 & ? & 89.7 & 91.1 \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Comparison of chain, off-the-shelf (OTS) , and fine-tuned (FT) models using the Caffe backbone. \deva{Two requests. Can you replace DAG-FT with the result that retrains a SVM classifier using DAG features? I think its fine to still call this a DAG-FT, one that just uses a batch optmiztion instead of SGD. Hopefully we can increase the 64.2 number a bit. Can you fill in the (?) above? If so, then I think that this table (perhaps better shown as a bar graph, similar to Fig 12) would have a nice diagnostic analysis of fine-tuning, off-the-shelf, and single vs multi-scale.} \songfan{if I use SVM for the DAG-FT features, the results for SUN397 and MIT67 improves even further; but not for the Scene15. So I left the 91.1 as is since it is still a DAG-FT result using SGD. I will complete experiment for the other two numbers tomorrow and then turn this table to a bar chart. Given these results, I assume we can get rid of the DAG-Deep19 table, right?}}
-\label{table:ft_vs_otf}
-\end{table}
+Practically, any system making use of off-the-shelf CNN features should explore multi-scale variants, DAG-OTS, as a ``cheap" and ``accessible" baseline.
+
+
+\begin{figure}[t]
+\centering
+	\subfigure[SUN397]{\includegraphics[width=.32\columnwidth]{fig/comp_sun.png}\label{fig:comp_sun}}
+	\subfigure[MIT67]{\includegraphics[width=.32\columnwidth]{fig/comp_mit.png}\label{fig:comp_mit}}
+	\subfigure[Scene15]{\includegraphics[width=.32\columnwidth]{fig/comp_scene.png}\label{fig:comp_scene}}
+	
+\caption{Off-the-shelf vs. Fine-tuning models on both Chain and DAG model for Caffe backbone. \songfan{Since the 65.4 performance of DAG-FT for MIT67 is obtained by using the SVM classifier, we should probably take out Fig.~\ref{fig:ft_dag} and corresponding texts, which are the results of DAG-FT using SGD. Besides, this figure includes the content of Fig.~\ref{fig:ft_model}.}}
+\label{fig:comp_otf}
+\end{figure}
+
+%
+%
+%\begin{table}[htbp]
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|}
+%\hline
+ %& Chain (OTS)  & Chain (FT) &  DAG (OTS) & DAG (FT)\\
+%\hline
+%SUN397  & 43.5 & 44.0 & 46.6 & 47.5 \\
+%MIT67 & 59.5 & 61.7  & 64.6 & 65.4 \\
+%Scene15 & 86.8 & 87.3 & 89.7 & 91.1 \\
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Comparison of chain, off-the-shelf (OTS) , and fine-tuned (FT) models using the Caffe backbone.}
+%\label{table:ft_vs_otf}
+%\end{table}
 %
 %{\bf Fine-tuned DAG as feature extractor:} Fine-tuned model can be used as a feature extractor by concatenating features from the DAG model after fine-tuning. This can be viewed as an off-the-shelf feature from multi-scale fine-tune DAG. As compared in Table.~\ref{table:ft_extractor}, when fine-tuned DAG is used as a feature extractor, it is generally better than off-the-shelf multi-scale model with a chain backbone. This demonstrates that fine-tuning procedure encodes more discriminative features at various scales for classification.
 %
