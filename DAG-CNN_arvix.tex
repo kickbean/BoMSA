@@ -30,7 +30,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{DAG-CNNs for multi-scale recognition}
+\title{Multi-scale recognition with DAG-CNNs}
 
 \author{Songfan Yang\\
 College of Electronics and Information Engineering,\\
@@ -137,7 +137,7 @@ In this section, we motivate our multi-scale architecture with a series of empir
 \centering
 	\subfigure[Caffe]{\includegraphics[width=\columnwidth]{fig/fig_layer_caffe.png}\label{fig:layer_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=\columnwidth]{fig/fig_layer_deep19.png}\label{fig:layer_deep19}}
-\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layers for the Caffe model and 18 for Deep19. We see tend to see a performance jump at each successive ReLU layer, particularly earlier on in the model.}
+\caption{The classification accuracy on MIT67~\cite{MIT67} using activations from each layer. We use a solid color fill representing the output of a ReLU layer. There are 7 ReLU layers for the Caffe model and 18 for Deep19. We tend to see a performance jump at each successive ReLU layer, particularly earlier on in the model. \deva{To save space, remove Deep19 plot}}
 \label{fig:layer_MIT67}
 \end{figure}
 
@@ -149,19 +149,21 @@ We plot the performance of single-layer classifiers in~\ref{fig:layer_MIT67}. Th
 \begin{figure*}[ht!]
 \centering
 	\includegraphics[width=1\textwidth]{fig/fig_level_perf.png}
-\caption{The ``per-class'' performance using features extracted from particular layers. Certain groups of classes perform best using higher  or lower-level layers, each encoding different amounts of invariance. We further analyze this phenomena in Fig.~\ref{fig:best_perf_layer_hist}.}
+\caption{The ``per-class'' performance using features extracted from particular layers. We group classes with identical best-performing layers. The last layer ({\bf 20}) is optimal for only 15 classes, while the second-to-last layer ({\bf 18}) proves most discriminative for 26 classes. The third-most effective layer ({\bf 11}) captures significantly lower-level level features. These results validate our underlying hypothesis; different classes require different amounts of invariance. This suggests that a feature extractor shared across such classes will be more effective when multi-scale.}
+%We further analyze this phenomena in Fig.~\ref{fig:best_perf_layer_hist}.}
 \label{fig:level_perf}
 \end{figure*}
 
-\begin{figure}[t!]
-\centering
-	\includegraphics[width=.6\columnwidth]{fig/best_perf_layer_hist.png}
-\caption{We count the number of classes with a particular best-performing layer. The last layer ({\bf 20}) is optimal for only 15 classes, while the second-to-last layer ({\bf 18}) proves most discriminative for 26 classes. The third-most effective layer ({\bf 11}) captures significantly lower-level level features. These results validate our underlying hypothesis; different classes require different amounts of invariance. This suggests that a feature extractor shared across such classes will be more effective when multi-scale.}
+%\begin{figure}[t!]
+%\centering
+%	\includegraphics[width=.6\columnwidth]{fig/best_perf_layer_hist.png}
+%\caption{We count the number of classes with a particular best-performing layer. The last layer ({\bf 20}) is optimal for only 15 classes, while the second-to-last layer ({\bf 18}) proves most discriminative for 26 classes. The third-most effective layer ({\bf 11}) captures significantly lower-level level features. These results validate our underlying hypothesis; different classes require different amounts of invariance. This suggests that a feature extractor shared across such classes will be more effective when multi-scale.}
 % A high-level feature (Layer-18) achieves the highest accuracy in the 26 categories. In the meantime, mid-level features (Layer-11,13, and 15) are also important in this classification task. They perform the best for another 26 categories. }
-\label{fig:best_perf_layer_hist}
-\end{figure}
+%\label{fig:best_perf_layer_hist}
+%\end{figure}
 
-{\bf Scale-varying classification:} The above experiment required training $K \times N$ 1-vs-all classifiers, where $K$ is the number of classes and $N$ is the number of layers. We can treat each of the $KN$ classifiers as binary predictors, and score each with the number of correct detections of its target class. We plot these scores as a matrix in Fig.~\ref{fig:level_perf}. We tend to see groups of classes that operate best with features computed from particular high-level or mid-level layers. Indeed, we plot the optimal scale for each binary predictor in Fig.~\ref{fig:best_perf_layer_hist}. Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
+{\bf Scale-varying classification:} The above experiment required training $K \times N$ 1-vs-all classifiers, where $K$ is the number of classes and $N$ is the number of layers. We can treat each of the $KN$ classifiers as binary predictors, and score each with the number of correct detections of its target class. We plot these scores as a matrix in Fig.~\ref{fig:level_perf}. We tend to see groups of classes that operate best with features computed from particular high-level or mid-level layers. %Indeed, we plot the optimal scale for each binary predictor in Fig.~\ref{fig:best_perf_layer_hist}. 
+Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
 
 {\bf Spatial pooling:} In the next section, we will explore multi-scale features. One practical hurdle to including all features from all layers is the massive increase in dimensionality. Here, we explore strategies for reducing dimensionality through pooled features. We consider various pooling (sum, average, and max) and  normalization (with and without L2 normalization) strategies. We saw good results with average pooling over all spatial locations, followed by L2 normalization. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. We then normalize this feature to have unit norm. %Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $1 \times 1 \times F$) are simply the original activations.  
 We compare this encoding versus the full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. \deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.}
@@ -191,7 +193,7 @@ We compare this encoding versus the full-dimensional feature (also normalized) i
 	\subfigure[Caffe]{\includegraphics[width=.43\columnwidth]{fig/fig_add_back_caffe.png}\label{fig:add_back_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=.56\columnwidth]{fig/fig_add_back_deep19.png}\label{fig:add_back_deep19}}
 \caption{We plot performance of a multi-scale classifier as we add more layer-specific features. We start with the last ReLU layer, and iteratively add the previous ReLU layer to the feature set of the classifier.
-The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers.}
+The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers. \deva{To save space, remove Deep19 plot and merge Fig 7(a) with this.}}
 \label{fig:add_back}
 \end{figure}
 
@@ -201,7 +203,7 @@ The ``+'' sign means the recent-most added layer. Adding additional layers help,
 \centering
 	\subfigure[Caffe]{\includegraphics[width=.49\columnwidth]{fig/fig_forward_select_caffe.png}\label{fig:forward_select_caffe}}
 	\subfigure[Deep19]{\includegraphics[width=.49\columnwidth]{fig/fig_forward_select_deep19.png}\label{fig:forward_select_deep19}}
-\caption{The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. For example, both models begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see significant improvements of 3-5\% for both models.}% These results suggest that an ``off-the-shelf'' multi-scale model is already quite effective. We will show that ``fine-tuning'' with gradient-based DAG-CNN learning further improves results. Our performance increase comes with virtually no run-time cost, as these multi-scale features are already computed ``for free''.}
+\caption{The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. For example, both models begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see significant improvements of 3-5\% for both models. \deva{To space space, remove Deep19 and combine with Fig 6}}% These results suggest that an ``off-the-shelf'' multi-scale model is already quite effective. We will show that ``fine-tuning'' with gradient-based DAG-CNN learning further improves results. Our performance increase comes with virtually no run-time cost, as these multi-scale features are already computed ``for free''.}
 \label{fig:forward_select}
 \end{figure}
 
@@ -459,7 +461,7 @@ Baseline~\cite{Scene15} & 65.2 \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Classification results on Scene15}
+\caption{Classification results on Scene15. \deva{Can you put Table2-4 into one 2-column table? This should save space, which we'll need to do for ICCV.}}
 \label{table:Scene15}
 \end{table}
 
