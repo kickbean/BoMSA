@@ -167,7 +167,7 @@ We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67
 Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
 
 {\bf Spatial pooling:} In the next section, we will explore multi-scale features. One practical hurdle to including all features from all layers is the massive increase in dimensionality. Here, we explore strategies for reducing dimensionality through pooled features. We consider various pooling (sum, average, and max) and  normalization (with and without L2 normalization) strategies. We saw good results with average pooling over all spatial locations, followed by L2 normalization. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. We then normalize this feature to have unit norm. %Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $1 \times 1 \times F$) are simply the original activations.  
-We compare this encoding versus the full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. \deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.} \songfan{Experiment currently running...}
+We compare this encoding versus the full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. \deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.} \songfan{Please refer to email attachment for the resulting slides}
 
 %{\bf Marginal vs full:} A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we train an SVM on activations from a single layer, using both the full and marginal activations. For simplicity, we focus on the 5 best-performing layers from Fig.~\ref{fig:best_perf_layer_hist}. Surprisingly, the results in Fig.~\ref{fig:full_marg} shows that marginal features always outperform the full-dimensional feature, implying that dimensionality reduction actually helps performance. 
 \begin{figure}[t!]
@@ -291,25 +291,9 @@ We stress that cross-validation on the MIT67 dataset is used to select the set o
 {\bf Training:} We initialize filters and biases to their pre-trained values (tuned on ImageNet) and initialize multi-scale fully-connected (FC) weights to small normally-distributed numbers. We perform 10 epochs of learning.
 
 {\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. Our multi-scale model generates a feature vector of size 9216, {\em making it only a factor of 2 larger} and so rather easy to use in practice. We provide the exact breakdown of feature dimensionality for our Caffe-DAG model in Table.~\ref{table:feat_dim}.
-\begin{table}[t!]
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Layer & Response &  Full Feat.& Marginal Feat.\\
-\hline
-11 & $13\times 13 \times 384$ & 64896 & 384 \\
-13 & $13\times 13 \times 384$ & 64896 & 384 \\
-15 & $13\times 13 \times 256$ & 43264 & 256 \\
-18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-\hline
-Total& & 181248 & 9216\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Feature Dimension for Caffe-DAG. For reference, we also show the dimensionality obtained using all activations from a layer, rather than just the marginal ones. Marginal features reduce dimensionality by nearly 20X, while preserving accuracy (as shown in Fig.~\ref{fig:full_marg}).}
-\label{table:feat_dim}
-\end{table}
+
+{\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. 
+Feature selection on Caffe-DAG selects layers 11,  13, 15, 18, and 20, for a total of 9216 feature dimensions, {\em making it only a factor of 2X larger} and so rather easy to use in practice. Similarly, feature selection on Deep19-DAG selects layers 26, 28, 31, 33, and 30, for a total of 6144 feature dimensions, {\em which is only 1.5X larger}.
 
 
 {\bf Baselines:} We compare our DAG models to published results, including two additional baselines. We evaluate the best single-scale ``off-the-shelf'' model, using both Caffe and Deep19. We pass L2-normalized single-scale features to Liblinear~\cite{liblinear} to train $K$-way one-vs-all classifiers with default settings. Finally, Sec.~\ref{sec:diag} concludes with a detailed diagnostic analysis comparing off-the-shelf and fine-tuned versions of chain and DAG structures.
