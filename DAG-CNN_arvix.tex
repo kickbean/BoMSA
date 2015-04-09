@@ -311,26 +311,28 @@ We stress that cross-validation on the MIT67 dataset is used to select the set o
 {\bf Training:} We initialize filters and biases to their pre-trained values (tuned on ImageNet) and initialize multi-scale fully-connected (FC) weights to small normally-distributed numbers. We perform 10 epochs of learning.
 %We follow the standard image pre-processing steps in the literature~\cite{AlexNet,Caffe,veryDeep}. Since both Caffe~\cite{Caffe} and Deep19 models~\cite{veryDeep} have a fixed input size of $224\times 224$, we first resize the image such that the smaller side matches $224$, and then crop an $224\times 224$ patch from the center. The mean RGB value of each model learned on ImageNet~\cite{ImageNet} is then subtracted.  
 
-{\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. Our multi-scale model generates a feature vector of size 9216, {\em making it only a factor of 2 larger} and so rather easy to use in practice. We provide the exact breakdown of feature dimensionality for our Caffe-DAG model in Table.~\ref{table:feat_dim}.
-\begin{table}[t!]
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Layer & Response &  Full Feat.& Marginal Feat.\\
-\hline
-11 & $13\times 13 \times 384$ & 64896 & 384 \\
-13 & $13\times 13 \times 384$ & 64896 & 384 \\
-15 & $13\times 13 \times 256$ & 43264 & 256 \\
-18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
-\hline
-Total& & 181248 & 9216\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Feature Dimension for Caffe-DAG. For reference, we also show the dimensionality obtained using all activations from a layer, rather than just the marginal ones. Marginal features reduce dimensionality by nearly 20X, while preserving accuracy (as shown in Fig.~\ref{fig:full_marg}).}
-\label{table:feat_dim}
-\end{table}
+{\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. 
+Feature selection on Caffe-DAG selects layers 11,  13, 15, 18, and 20, for a total of 9216 feature dimensions, {\em making it only a factor of 2X larger} and so rather easy to use in practice. Similar, feature selection on Deep19-DAG selects layers \deva{....}.
+% multi-scale model generates a feature vector of size 9216, {\em making it only a factor of 2 larger} and so rather easy to use in practice. We provide the exact breakdown of feature dimensionality for our Caffe-DAG model in Table.~\ref{table:feat_dim}.
+%\begin{table}[t!]
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|}
+%\hline
+%Layer & Response &  Full Feat.& Marginal Feat.\\
+%\hline
+%11 & $13\times 13 \times 384$ & 64896 & 384 \\
+%13 & $13\times 13 \times 384$ & 64896 & 384 \\
+%15 & $13\times 13 \times 256$ & 43264 & 256 \\
+%18 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+%20 & $1\times 1 \times 4096$ & 4096 & 4096 \\
+%\hline
+%Total& & 181248 & 9216\\
+%\hline
+%\end{tabular}
+%\end{center}
+%\caption{Feature Dimension for Caffe-DAG. For reference, we also show the dimensionality obtained using all activations from a layer, rather than just the marginal ones. Marginal features reduce dimensionality by nearly 20X, while preserving accuracy (as shown in Fig.~\ref{fig:full_marg}). }%\deva{We should also include the equivalent for Deep19. Because we likey don't have space, I think its fine to include this as text of the form ``Feature selection on Caffe-DAG selects Layers 11,  13, 15, 18, and 20, for a total of 9216 features, only a factor of 2X larger. Similar, feature selection on Deep19-DAG selects Layers x,x,x,....''}}
+%\label{table:feat_dim}
+%\end{table}
 
 %\begin{table}[htbp]
 %\begin{center}
