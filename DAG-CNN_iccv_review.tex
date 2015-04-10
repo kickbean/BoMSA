@@ -179,7 +179,7 @@ We compare this encoding versus the unpooled full-dimensional feature (also norm
 
 \subsection{Multi-scale models} 
 
-{\bf Multiscale classification:} We now explore multi-scale predictors that process (marginal) features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
+{\bf Multiscale classification:} We now explore multi-scale predictors that process pooled features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
 
 
 % the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. 
@@ -193,7 +193,7 @@ We compare this encoding versus the unpooled full-dimensional feature (also norm
 	\subfigure[Multi-scale]{\includegraphics[width=.49\columnwidth]{fig/fig_add_back_caffe.png}\label{fig:add_back_caffe}}
 	\subfigure[Forward Selection]{\includegraphics[width=.49\columnwidth]{fig/fig_forward_select_caffe.png}\label{fig:forward_select_caffe}}
 \caption{ (a) The performance of a multi-scale classifier as we add more layer-specific features. We start with the last ReLU layer, and iteratively add the previous ReLU layer to the feature set of the classifier.
-The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers. (b) The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. Specifically, it begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see a significant 7\% improvement.}
+The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers. (b) The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. Specifically, it begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see a significant 6\% improvement.}
 \label{fig:add_back}
 \end{figure}
 
@@ -203,17 +203,17 @@ Our analysis strongly suggest the importance (and ease) of incorporating multi-s
 
 \section{Approach\label{sec:approach}} 
 
-In this section, we show that the multi-scale model examined in Fig.~\ref{fig:forward_select_caffe} can be written as a DAG-structured, feed-forward CNN. We also demonstrate that it can be trained with gradient-based learning. Essentially, one can use standard calculus constructions -- specifically the chain rule and partial derivatives -- to generalize back-propagation to layers that have multiple ``parents'' or inputs. Though such DAG structures have been previously introduced by prior work, we have not seen derivations for the corresponding gradient computations. We include them here for completeness, pointing out several opportunities for speedups given our particular structure.
-
-{\bf Model:} The run-time behavior of our multi-scale predictor from the previous section is equivalent to feed-forward processing of the DAG-structured architecture in Fig.~\ref{fig:forward_select_caffe}. Note that we have swapped out a margin-based hinge-loss (corresponding to a SVM) with a softmax function, as the latter is more amenable to training with current toolboxes. Specifically, typical CNNs are grouped into collections of four layers, \ie, Conv., ReLU, contrast normalization (Norm), pooling layers (with the Norm and pooling layers being optional). The final layer is usually a $K$-way softmax function that predicts one of $K$ outputs. We visualize these layers as a chain-structured ``backbone'' in Fig.~\ref{fig:model}. Our DAG-CNN simply links each ReLU layer to an average-pooling layer, followed by a L2 normalization layer, which feeds to a fully-connected (FC) layer that produces $K$ outputs (represented formally as a $1 \times 1 \times K$ matrix). These outputs are element-wise added together across all layers, and the resulting $K$ numbers are fed into the final softmax function. The weights of the FC layers are equivalent to the weights of the final multi-scale $K$-way predictor (which is a softmax predictor for a softmax loss output, and a SVM for a hinge-loss output). Note that all the required operations are standard modules except for the \textit{Add}.
-
-
 \begin{figure*}[t!]
 \centering
-	\includegraphics[width=\textwidth]{fig/fig_model.png}
+	\includegraphics[width=.9\textwidth]{fig/fig_model.png}
 \caption{Our multi-scale DAG-CNN architecture is constructed by adding multi-scale output connections to an underlying {\em chain backbone} from the original CNN. Specifically, for each scale, we spatially (average) pool activations, normalize them to have unit-norm, compute an inner product with a fully-connected (FC) layer with $K$ outputs, and add the scores across all layers to predictions for $K$ output classes (that are finally soft-maxed together).}
 \label{fig:model}
 \end{figure*}
+
+In this section, we show that the multi-scale model examined in Fig.~\ref{fig:forward_select_caffe} can be written as a DAG-structured, feed-forward CNN. Importantly, this allows for end-to-end gradient-based learning. To do so, we use standard calculus constructions -- specifically the chain rule and partial derivatives -- to generalize back-propagation to layers that have multiple ``parents'' or inputs. Though such DAG structures have been previously introduced by prior work, we have not seen derivations for the corresponding gradient computations. We include them here for completeness, pointing out several opportunities for speedups given our particular structure.
+
+{\bf Model:} The run-time behavior of our multi-scale predictor from the previous section is equivalent to feed-forward processing of the DAG-structured architecture in Fig.~\ref{fig:forward_select_caffe}. Note that we have swapped out a margin-based hinge-loss (corresponding to a SVM) with a softmax function, as the latter is more amenable to training with current toolboxes. Specifically, typical CNNs are grouped into collections of four layers, \ie, Conv., ReLU, contrast normalization (Norm), pooling layers (with the Norm and pooling layers being optional). The final layer is usually a $K$-way softmax function that predicts one of $K$ outputs. We visualize these layers as a chain-structured ``backbone'' in Fig.~\ref{fig:model}. Our DAG-CNN simply links each ReLU layer to an average-pooling layer, followed by a L2 normalization layer, which feeds to a fully-connected (FC) layer that produces $K$ outputs (represented formally as a $1 \times 1 \times K$ matrix). These outputs are element-wise added together across all layers, and the resulting $K$ numbers are fed into the final softmax function. The weights of the FC layers are equivalent to the weights of the final multi-scale $K$-way predictor (which is a softmax predictor for a softmax loss output, and a SVM for a hinge-loss output). Note that all the required operations are standard modules except for the \textit{Add}.
+
 
 {\bf Training:} Let $\textbf{w}_1,...\textbf{w}_K$ be the CNN model parameters at $1,..,K$-th layer, training data be ($\textbf{x}^{(i)},\textbf{y}^{(i)}$), where $\textbf{x}^{(i)}$ is the $i$-th input image and $\textbf{y}^{(i)}$ is the indicator vector of the class of $\textbf{x}^{(i)}$. Then we intend to solve the following optimization problem
 
@@ -234,11 +234,10 @@ As is now commonplace, we make use of stochastic gradient descent to minimize th
 % Each partial derivative component, $\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i}$, can be computed in the typical back-prop fashion. In chain-structured back-propogration, a single back-prop signal \frac{\partial z}{\partial \beta_i} will arrive at ReLU unit $i$. This is multiped by the layer-specific gradient $
 %This means that during gradient updating, multiple $(C)$ backprop signals will arrive at the $i^{th}$ ReLU layer. These signals are added together, and then 
 
-\begin{figure}[htbp]
+\begin{figure}[t!]
 \centering
 	\includegraphics[width=\columnwidth]{fig/fig_backprop_eq.png}
 \caption{Visualization of the parameter setup at $i$-th ReLU.}
-
 \label{fig:backprop_eq}
 \end{figure}
 
@@ -268,7 +267,7 @@ $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \b
 
 {\bf Implementation:} We use the excellent MatConNet codebase to implement our modifications \cite{vedaldimatconvnet}. We implemented a custom {\tt Add} layer and a custom DAG data-structure to denote layer connectivity. Training and testing is essentially as fast as the chain model.
 
-{\bf Vanishing gradients:} We point out an interesting property of our multiscale models that make them easier to train. Vanishing gradients~\cite{bengio1994learning} refers to the notorious poperty of deep models that make them difficult to train. Essentially, gradient magnitudes decrease as they are propogated, implying that lower-layers can be difficult to learn because they recieve too small a learning signal. In our DAG-CNNs, lower layers are directly connected to the output layer through multi-scale connections, ensuring they receive a strong gradient signal during learning. Fig.~\ref{fig:grad} experimentally verifies this claim.
+{\bf Vanishing gradients:} We point out an interesting property of our multiscale models that make them easier to train. Vanishing gradients~\cite{bengio1994learning} refers to the phenomena that gradient magnitudes decrease as they are propogated through layers, implying that lower-layers can be difficult to learn because they recieve too small a learning signal. In our DAG-CNNs, lower layers are {\em directly} connected to the output layer through multi-scale connections, ensuring they receive a strong gradient signal during learning. Fig.~\ref{fig:grad} experimentally verifies this claim.
 
 \begin{figure}[htbp]
 \centering
@@ -281,85 +280,126 @@ $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \b
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
 \section{Experimental Results\label{sec:exp}}
+We explore DAG-structured variants of two popular deep models, Caffe~\cite{Caffe} and Deep19~\cite{veryDeep}. We refer to these models as Caffe-DAG and Deep19-DAG. We evaluate these models on three benchmark scene datasets: SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, and Scene15~\cite{Scene15}. In absolute terms, we achieve the best performance ever reported on all three benchmarks, sometimes by a significant margin.% We also show more classification results in Fig.~\ref{fig:more_eg}. 
 
-In this section, we conduct experiments on benchmark datasets, SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, and Scene15~\cite{Scene15}. In absolute terms, we have achieved the best performance ever reported on all three benchmarks. We also show more classification results in Fig.~\ref{fig:more_eg}. 
+%\subsection{Experiment Setup}
+%We stress that cross-validation on the MIT67 dataset is used to select the set of multi-scale layers in our DAG, as shown in Fig.~\ref{fig:forward_select_caffe}. The same set is then used for all other benchmark datasets. Our results may further improve through data-dependant scale selection. We explore DAG-structured variants of two popular models, Caffe~\cite{Caffe} and Deep19 models~\cite{veryDeep}. 
 
-\subsection{Experiment Setup}
-We stress that cross-validation on the MIT67 dataset is used to select the set of multi-scale layers in our DAG, as shown in Fig.~\ref{fig:forward_select_caffe}. The same set is then used for all other benchmark datasets. Our results may further improve through data-dependant scale selection. We explore DAG-structured variants of two popular models, Caffe~\cite{Caffe} and Deep19 models~\cite{veryDeep}. We follow the standard image pre-processing steps of fixing the input image size to $224\times 224$ by scaling and cropping, and subtracting out the mean RGB value (computed on ImageNet). 
-
-{\bf Training:} We initialize filters and biases to their pre-trained values (tuned on ImageNet) and initialize multi-scale fully-connected (FC) weights to small normally-distributed numbers. We perform 10 epochs of learning.
-
-{\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. 
-Feature selection on Caffe-DAG selects layers 11,  13, 15, 18, and 20, making the final multiscale feature 9216-dimensional. Deep19-DAG selects layers 26, 28, 31, 33, and 30, for a final size of 6144. In both cases, our multiscale DAG features are {\em only 2X larger} than their single-scale counter part, making them practically easy to use and store.
-
-{\bf Baselines:} We compare our DAG models to published results, including two additional baselines. We evaluate the best single-scale ``off-the-shelf'' model, using both Caffe and Deep19. We pass L2-normalized single-scale features to Liblinear~\cite{liblinear} to train $K$-way one-vs-all classifiers with default settings. Finally, Sec.~\ref{sec:diag} concludes with a detailed diagnostic analysis comparing off-the-shelf and fine-tuned versions of chain and DAG structures.
-
-
-%-------------------------------------------------------------------------
-\subsection{SUN397}
-
-SUN397~\cite{SUN397} is a large scene recognition dataset with 397 categories, each of which includes more than 100 images. The total number of images exceeds 100k. The average classification accuracy is usually report from a 10-fold cross validation. The split file is provided in~\cite{SUN397} with 50 images for training and the rest being test for each fold.  
-
-
-\begin{table*}[htbp]
-\begin{center}
-\begin{tabular}{|l|c||l|c||l|c|}
+\begin{table*}[t!]
+\centering
+\resizebox{.9\textwidth}{!}{
+\begin{tabular}{ccc}
+SUN397 & MIT67 & Scene15\\
+\begin{tabular}[t]{|l|c|}
 \hline
-\multicolumn{2}{|c||}{SUN397} & \multicolumn{2}{c||}{Mit67} & \multicolumn{2}{c|}{Scene15} \\
+Approach & Accuracy(\%) \\
 \hline
-\hline
-Approach & Accuracy(\%) & Approach & Accuracy(\%) & Approach & Accuracy(\%)\\
-\hline
-Deep19-DAG & \textbf{56.2} & Deep19-DAG & \textbf{77.5} & Deep19-DAG & \textbf{92.9} \\
-Deep19~\cite{veryDeep} & 51.9 & Deep19~\cite{veryDeep} & 70.8 & Deep19~\cite{veryDeep} & 90.8 \\
-Caffe-DAG & 46.6	& Caffe-DAG & 64.6 & Caffe-DAG & 89.7	\\
-Caffe~\cite{Caffe} & 43.5 & Caffe~\cite{Caffe} & 59.5 & Caffe~\cite{Caffe} & 86.8 \\ \hline
-Places~\cite{zhoulearning} & 54.3	& MOP-CNN~\cite{Gong14} & 68.9 & Place~\cite{zhoulearning} & 91.6 \\
-MOP-CNN~\cite{Gong14} & 52.0 & Places~\cite{zhoulearning}	& 68.2	& CENTRIST~\cite{Wu_pami11} & 84.8	\\
-FV~\cite{FV} & 47.2 & Mid-level~\cite{mid_level} & 64.0	& Hybrid~\cite{Bosch_pami08}	& 83.7	\\
-DeCaf~\cite{DeCaf} & 40.9	& FV+BoP~\cite{FV_BoP} & 63.2 & Spatial pyramid~\cite{spatial_pyramid} & 81.4 \\
-Baseline-overfeat~\cite{SUN_ijcv}	&40.3 & Disc. Patch~\cite{disc_patch} & 49.4 & Object bank~\cite{Li_nips10_objectbank}	& 80.9	\\
-Baseline~\cite{SUN397} & 38.0 & SPM~\cite{spatial_pyramid} & 34.4	& Reconfigurable model~\cite{Parizi_cvpr12_reconf} & 78.6	\\
-&&&& Spatial Envelop~\cite{Oliva_ijcv01_envelop} & 74.1 \\
-&&&& Baseline~\cite{Scene15} & 65.2 \\
-
+Deep19-DAG & \textbf{56.2} \\
+Deep19~\cite{veryDeep} & 51.9 \\
+Caffe-DAG & 46.6	\\
+Caffe~\cite{Caffe} & 43.5 \\ \hline
+Places~\cite{zhoulearning}	& 54.3	\\
+MOP-CNN~\cite{Gong14} & 52.0 \\
+FV~\cite{FV} & 47.2 \\
+DeCaf~\cite{DeCaf} & 40.9	\\
+Baseline-overfeat~\cite{SUN_ijcv}	&40.3 \\
+Baseline~\cite{SUN397} & 38.0 \\
 \hline
 \end{tabular}
-\end{center}
-\caption{Classification results on SUN397, MIT67, and Scene15 datasets}
+&
+\begin{tabular}[t]{|l|c|}
+\hline
+Approach & Accuracy(\%) \\
+\hline
+Deep19-DAG & \textbf{77.5} \\
+Deep19~\cite{veryDeep} & 70.8 \\
+Caffe-DAG & 64.6	\\
+Caffe~\cite{Caffe} & 59.5 \\ \hline
+MOP-CNN~\cite{Gong14} & 68.9 \\
+Places~\cite{zhoulearning}	& 68.2	\\
+Mid-level~\cite{mid_level} & 64.0	\\
+FV+BoP~\cite{FV_BoP} & 63.2 \\
+Disc. Patch~\cite{disc_patch} & 49.4 \\
+SPM~\cite{spatial_pyramid} & 34.4	\\
+\hline
+\end{tabular}
+&
+\begin{tabular}[t]{|l|c|}
+\hline
+Approach & Accuracy(\%) \\
+\hline
+Deep19-DAG & \textbf{92.9} \\
+Deep19~\cite{veryDeep} & 90.8 \\
+Caffe-DAG & 89.7	\\
+Caffe~\cite{Caffe} & 86.8 \\ \hline
+Place~\cite{zhoulearning} & 91.6 \\
+CENTRIST~\cite{Wu_pami11} & 84.8	\\
+Hybrid~\cite{Bosch_pami08}	& 83.7	\\
+Spatial pyramid~\cite{spatial_pyramid} & 81.4 \\
+Object bank~\cite{Li_nips10_objectbank}	& 80.9	\\
+Reconfigurable model~\cite{Parizi_cvpr12_reconf} & 78.6	\\
+Spatial Envelop~\cite{Oliva_ijcv01_envelop} & 74.1 \\
+Baseline~\cite{Scene15} & 65.2 \\
+\hline
+\end{tabular}
+\end{tabular}
+}
+\caption{Classification results on SUN397, MIT67, and Scene15 datasets. Please see text for an additional discussion.}
 \label{table:all}
 \end{table*}
 
 
-We observe that features from our DAG-CNN feature always out-perform the single-scale feature for both DAG variants. In particular, Deep19-DAG achieves the highest $56.2\%$ accuracy. We should also point out that the next-best method of~\cite{zhoulearning} (with a score of $54.3$) makes use of a ImageNet-trained CNN and a custom-trained CNN using a new 7-million image dataset with 400 scene categories.
+{\bf Feature dimensionality:} Most existing methods that use CNNs as feature extractors work with the last layer (or the last fully connected layer), yielding a feature vector of size 4096. 
+Forward feature selection on Caffe-DAG selects layers $(11, 13, 15, 18, 20)$, making the final multiscale feature 9216-dimensional. Deep19-DAG selects layers$( 26, 28, 31, 33, 30)$, for a final size of 6144. We perform feature selection by cross-validating on MIT67, and use the same multiscale structure for all other datasets. Dataset-dependant feature selection may further improve performance. Our final multiscale DAG features are {\em only 2X larger} than their single-scale counter part, making them practically easy to use and store.
+
+
+{\bf Training:}  We follow the standard image pre-processing steps of fixing the input image size to $224\times 224$ by scaling and cropping, and subtracting out the mean RGB value (computed on ImageNet). We initialize filters and biases to their pre-trained values (tuned on ImageNet) and initialize multi-scale fully-connected (FC) weights to small normally-distributed numbers. We perform 10 epochs of learning.
+
+{\bf Baselines:} We compare our DAG models to published results, including two additional baselines. We evaluate the best single-scale ``off-the-shelf'' model, using both Caffe and Deep19. We pass L2-normalized single-scale features to Liblinear~\cite{liblinear} to train $K$-way one-vs-all classifiers with default settings. Finally, Sec.~\ref{sec:diag} concludes with a detailed diagnostic analysis comparing off-the-shelf and fine-tuned versions of chain and DAG structures.
 
 %-------------------------------------------------------------------------
-\subsection{MIT67}
 
-MIT67 refers to the MIT Indoor~\cite{MIT67} scene classification for 67 categories. Indoor scenes depends on highly variable features to describe them. There are cases that can be well characterized by high-level spatial geometry (\eg~{\tt church} and {\tt cloister}) and mid-level objects (\eg~{\tt wine celler} and {\tt operating room}). The training/test split is made available and there are 80/20 training/test images for each class.
 
-Our DAG-CNN model is designed to encode features across multiple scales and capture high- and mid-level statistics of scene categories. Similar observations can be drawn from Table.~\ref{table:all}. The DAG-CNN models consistently out-perform the traditional chain model. The highest accuracy, $77.5\%$ is achieved by the DAG-CNN with a Deep19 backbone. Our results reduce the best-previously reported error~\cite{Gong14} by {\bf 23.9\%}. Interestingly~\cite{Gong14} also uses multi-scale CNN features, but do so by first extracting various-sized patches from an image, rescaling each to canonical size. Single-scale CNN features extracted from these patches are then vector-quantized into a large-vocabulary codebook, followed by a projection step to reduce dimensionality. Our multi-scale representation, while similar in spirit, is an end-to-end trainable model that is computed ``for free'' from a single (DAG) CNN.
+\begin{figure*}[t!]
+\centering
+	\includegraphics[width=.9\textwidth]{fig/fig_more_eg.png}
+\caption{Deep19-DAG results on MIT67. The category label is shown on the left and the label for false-positives (in {\bf red}) are also provided. We use the multi-scale analysis of Fig.~\ref{fig:level_perf} to compare categories that perform better with mid-level features ({\bf top 2 rows}) versus high-level features ({\bf bottom 2 rows}). Mid-level features appear to emphasize \textit{grid-textured} objects for {\tt trainsition} scenes and \textit{circular } objects for {\tt laundromat}, while high-level features appear to focus on global spatial statistics. \deva{This explanation doesn't match with Fig4. Could we pick one class per layer to visualize? Should transition be train station?}}
+\label{fig:more_eg}
+\end{figure*}
+
+{\bf SUN397:} We tabulate results for all our benchmark datasets in Table~\ref{table:all}, and discuss each in turn. SUN397~\cite{SUN397} is a large scene recognition dataset with 100K images spanning 397 categories, provided with standard train-test splits. Our DAG models outperform their single-scale counterparts. In particular, Deep19-DAG achieves the highest $56.2\%$ accuracy. Our results are particularly impressive given that the next-best method of~\cite{zhoulearning} (with a score of $54.3$) makes use of a ImageNet-trained CNN and a custom-trained CNN using a new 7-million image dataset with 400 scene categories.
+
+
+
+%-------------------------------------------------------------------------
+%\subsection{MIT67}
+
+{\bf MIT67:} MIT67 consists of 15K images spanning 67 indoor scene classes~\cite{MIT67}, provided with standard train/test splits. Indoor scenes are interesting for our analysis because some scenes are well characterized by high-level spatial geometry (\eg~{\tt church} and {\tt cloister}), while others are better described by mid-level objects (\eg~{\tt wine celler} and {\tt operating room}) in various spatial configurations. We show qualitative results in Fig.~\ref{fig:more_eg}. Deep19-DAG produces a classification accuracy of $77.5\%$, reducing the best-previously reported error~\cite{Gong14} by {\bf 23.9\%}. Interestingly~\cite{Gong14} also uses multi-scale CNN features, but do so by first extracting various-sized patches from an image, rescaling each to canonical size. Single-scale CNN features extracted from these patches are then vector-quantized into a large-vocabulary codebook, followed by a projection step to reduce dimensionality. Our multi-scale representation, while similar in spirit, is an end-to-end trainable model that is computed ``for free'' from a single (DAG) CNN.
+
+%Our DAG-CNN model is designed to encode features across multiple scales and capture high- and mid-level statistics of scene categories. Similar observations can be drawn from Table.~\ref{table:all}. The DAG-CNN models consistently out-perform the traditional chain model. The highest accuracy, $77.5\%$ is achieved by the DAG-CNN with a Deep19 backbone. Our results reduce the best-previously reported error~\cite{Gong14} by {\bf 23.9\%}. Interestingly~\cite{Gong14} also uses multi-scale CNN features, but do so by first extracting various-sized patches from an image, rescaling each to canonical size. Single-scale CNN features extracted from these patches are then vector-quantized into a large-vocabulary codebook, followed by a projection step to reduce dimensionality. Our multi-scale representation, while similar in spirit, is an end-to-end trainable model that is computed ``for free'' from a single (DAG) CNN.
 % The activation of first fully connected layer is concatenated. Their method is less efficient to the the multiple runs of feed-forward computation and high dimensional features.
 
 
 %-------------------------------------------------------------------------
-\subsection{Scene15}
+%\subsection{Scene15}
 
-The Scene15~\cite{Scene15} includes both indoor scene (\eg, store and kitchen) and outdoor scene (\eg, mountain and street). A 10-fold split is provided with 1500 training and 2985 test image, where all images come in black and white. A consistent performance also is observed in Table.~\ref{table:all}. 
+{\bf Scene15:} The Scene15~\cite{Scene15} includes both indoor scene (\eg, store and kitchen) and outdoor scene (\eg, mountain and street). It is a relatively small dataset by contemporary standards (2985 test images), but we include here for completeness. Performance is consistent with the results above. Our multi-scale DAG model, specifically Deep19-DAG, outperforms all prior work. For reference, the next-best method of~\cite{zhoulearning} uses a new custom 7-million image scene dataset for training.
+
+%A 10-fold split is provided with 1500 training and 2985 test image, where all images come in black and white. A consistent performance also is observed in Table.~\ref{table:all}. 
 
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
 
 \subsection{Diagnostics \label{sec:diag}}
-In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) versions of both single-scale Chain and multi-scale DAG models. We focus on the Caffe model, as it is faster and easier for diagnostic analysis. 
+In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) versions of both single-scale chain and multi-scale DAG models. We focus on the Caffe model, as it is faster and easier for diagnostic analysis. 
 
 {\bf Chain:} Chain-OTS uses single-scale features extracted from CNNs pre-trained on ImageNet. These are the baseline Caffe results presented in the previous subsections. Chain-FT trains a model on the target dataset, using the pre-trained model as an initialization. This can be done with standard software packages~\cite{vedaldimatconvnet}. To ensure consistency of analysis, in both cases features are passed to a K-way multi-class SVM to learn the final predictor. %We saw a small improvement in performance in doing this, rather than directly using the softmax prediction.
 
-{\bf DAG:} Importantly, we explore an ``off-the-shelf'' version of our DAG, DAG-OTS.  Specifically, we fix all internal filters and biases to their pre-trained values, and only learn the fully-connected (FC) weights. This final stage learning is a convex problem, and can be done by simply passing the multi-scale features to a convex linear classification package (e.g., SVM). We compare this model to a fine-tuned version that is trained end-to-end, making use of the modified backprop equation from Sec.~\ref{sec:approach}. %We will show that off-the-shelf DAGs perform quite well, though fine-tuning does further improve performance.
+{\bf DAG:} DAG-OTS is obtained by fixing all internal filters and biases to their pre-trained values, and only learning the multiscale fully-connected (FC) weights. Because this final stage learning is a convex problem, this can be done by simply passing off-the-shelf multi-scale features to a convex linear classification package (e.g., SVM). We compare this model to a fine-tuned version that is trained end-to-end, making use of the modified backprop equation from Sec.~\ref{sec:approach}. %We will show that off-the-shelf DAGs perform quite well, though fine-tuning does further improve performance.
 
-{\bf Comparison:} Fig.~\ref{fig:comp_otf} reports the comparison of off-the-shelf and fine-tune features on both Chain and DAG models. Significant improvements of DAG over Chain are observed in all three datasets, suggesting that the multi-scale features indeed plays an essential role for scene classification. Further, fine-tuned features out-perform the off-the-shelf features consistently. This shows that the data specific information is well captured by fine-tuning, which further boosts the recognition performance. 
+{\bf Comparison:} Fig.~\ref{fig:comp_otf} compares off-the-shelf and fine-tune variants of chain and DAG models. We see two dominant trends. First, as perhaps expected, fine-tuned (FT) models consistently outperform their off-the-shelf (OTS) countparts. Even more striking is the large improvement from chain to DAG models, indicating the power of multi-scale feature encodings.
 
-{\bf DAG-OTS:} Perhaps most impressive is the strong performance of DAG-OTS. From a theoretical perspective, this validates our underyling hypothesis that multi-scale features allow for better transfer between recognition tasks -- in this case, ImageNet and scene classification. An interesting question is whether multi-scale features, when trained with our gradient-based DAG-learning on ImageNet, will allow for even more transfer. We are currently exploring this. However even with current CNN architectures, our results suggest that {\em any system making use of off-the-shelf CNN features should explore multi-scale variants as a ``cheap" and ``easy-to-implement'' baseline.}  Multiscale features require essentially no additional time to compute (compared to their single-scale counterparts),  are only a factor of 2 larger to store, and consistently provide a noticeable improvement.
+{\bf DAG-OTS:} Perhaps most impressive is the strong performance of DAG-OTS. From a theoretical perspective, this validates our underyling hypothesis that multi-scale features allow for better transfer between recognition tasks -- in this case, ImageNet and scene classification. An interesting question is whether multi-scale features, when trained with gradient-based DAG-learning on ImageNet, will allow for even more transfer. We are currently exploring this. However even with current CNN architectures, our results suggest that {\em any system making use of off-the-shelf CNN features should explore multi-scale variants as a ``cheap" baseline.}  Compared to their single-scale counterpart, multiscale features require no additional time to compute, are only a factor of 2 larger to store, and consistently provide a noticeable improvement.
 
 
 \begin{figure}[t]
@@ -373,21 +413,12 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 \end{figure}
 
 
-\begin{figure*}[h!]
-\centering
-	\includegraphics[width=.7\textwidth]{fig/fig_more_eg.png}
-\caption{Sample classification results of DAG-CNN model. The category label is shown on the left and the label for false-positives are also provided. \textbf{Top 2 rows:} categories that mid-level features performs better; \textbf{bottom 2 rows:} high-level features does better, shown in Fig.~\ref{fig:level_perf}. The mid-level features emphasize more on \textit{grid texture} for {\tt transition} and \textit{circle} for {\tt laundromat}; the high-level features focus more on global structural statistics.}
-
-\label{fig:more_eg}
-\end{figure*}
-
-
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
 %\section{Conclusion}
 
 {\bf Conclusion:} We have introduced multi-scale CNNs for image classification. Such models encode scale-specific features that can be effectively shared across both coarse and fine-grained classification tasks. Importantly, such models can be viewed as DAG-structured feedforward predictors, allowing for end-to-end training. While fine-tuning helps performance, we empirically demonstrate that even ``off-the-self'' multiscale features perform quite well. We present extensive analysis and demonstrate state-of-the-art classification performance on three standard scene benchmarks, sometimes improving upon prior art by a significant margin. \deva{We need to get main text and figures into 8 pages, and all references into 1}.
-\pagebreak
+\newpage
 {\small
 \bibliographystyle{ieee}
 \bibliography{mobib}
