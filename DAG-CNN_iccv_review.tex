@@ -71,7 +71,7 @@ In terms of the heavily benchmarked MIT67 and Scene15 datasets, our results redu
 \label{fig:splash}
 \end{figure}
 
-Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cite{lecun1998gradient}, now produce state-of-the-art performance on many visual recognition tasks~\cite{AlexNet, veryDeep, GoogLeNet}. An attractive property is that appear to serve as universal feature extractors, either as ``off-the-shelf'' features or through a small amount of ``fine tuning''. CNNs trained on particular tasks such as large-scale image classification~\cite{ImageNet} {\em transfer} extraordinarily well to other tasks such as object detection~\cite{rcnn}, scene recognition~\cite{zhoulearning}, image retrieval~\cite{Gong14}, etc \cite{cnn_baseline}.
+Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cite{lecun1998gradient}, now produce state-of-the-art performance on many visual recognition tasks~\cite{AlexNet, veryDeep, GoogLeNet}. An attractive property is that it appear to serve as universal feature extractors, either as ``off-the-shelf'' features or through a small amount of ``fine tuning''. CNNs trained on particular tasks such as large-scale image classification~\cite{ImageNet} {\em transfer} extraordinarily well to other tasks such as object detection~\cite{rcnn}, scene recognition~\cite{zhoulearning}, image retrieval~\cite{Gong14}, etc \cite{cnn_baseline}.
 
 {\bf Hierarchical chain models:}  CNNs are 
 hierarchical feed-forward architectures that compute progressively invariant representations of the input image. However, the appropriate level of invariance might be task-dependent. Distinguishing people and dogs requires a representation that is robust to large spatial deformations, since people and dogs can articulate. However, fine-grained categorization of car models (or bird species) requires fine-scale features that capture subtle shape cues. We argue that a universal architecture capable of both tasks must employ some form of multi-scale features for output prediction.
@@ -87,7 +87,7 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 {\bf Multi-scale representations:}  Multi-scale representations are a classic concept in computer vision, dating back to image pyramids~\cite{burt1983laplacian}, scale-space theory ~\cite{lindeberg1993scale}, and multiresolution models~\cite{mallat1999wavelet}. Though somewhat fundamental notions, they have not been tightly integrated with contemporary feed-forward approaches for recognition. We introduce multi-scale CNN architectures that use features at multiple scales for output prediction (Fig.~\ref{fig:splash}). From one perspective, our architectures are quite simple. Typical approaches train a output predictor (e.g., a linear SVM) using features extracted from a single output layer. Instead, one can train an output predictor using features extracted from {\em multiple} layers. Note that these features come ``for free''; they are already computed in a standard feed-forward pass.
 
-{\bf Spatial pooling:} One difficulty with multi-scale approaches is feature dimensionality - the total number of features across all layers can easily reach hundreds of thousands. This makes training even linear models difficult and prone to over-fitting. Instead, we use marginal activations computed from sum (or max) pooling across spatial locations in a given activation layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}. Our approach is most related to \cite{Gong14}, who also use spatially pooled CNN features for scene classification. They do so by pooling together multiple CNN descriptors (re)computed on various-sized patches within an image. Instead, we perform a single CNN encoding of the entire image, extracting multiscale features ``for free''.
+{\bf Spatial pooling:} One difficulty with multi-scale approaches is feature dimensionality - the total number of features across all layers can easily reach hundreds of thousands. This makes training even linear models difficult and prone to over-fitting. Instead, we use marginal activations computed from sum (or max) pooling across spatial locations in a given activation layer. From this perspective, our models are similar to those that compute multi-scale features with spatial pooling, including multi-scale templates~\cite{felzenszwalb2008discriminatively}, orderless models~\cite{Gong14}, spatial pyramids~\cite{spatial_pyramid}, and bag-of-words~\cite{sivic2003video}. Our approach is most related to~\cite{Gong14}, who also use spatially pooled CNN features for scene classification. They do so by pooling together multiple CNN descriptors (re)computed on various-sized patches within an image. Instead, we perform a single CNN encoding of the entire image, extracting multiscale features ``for free''.
 
 {\bf End-to-end training:} Our multi-scale model differs from such past work in another notable aspect. Our entire model is still a feed-forward CNN that is no longer chain-structured, but a directed-acyclic graph (DAG). DAG-structured CNNs can still be discriminatively trained in an end-to-end fashion, allowing us to directly learn multi-scale representations. %Multi-scale learning addresses one well-known difficulty of CNNs - the ``vanishing gradient'' problem~\cite{bengio1994learning}. During gradient-based learning, the gradient signal becomes progressively diluted as one back-propagates it through multiple layers, such that the bottom-most layer receives essentially no updates. Our multi-scale DAG structure connects all activation layers directly to the output, ensuring they all receive a strong gradient signal during learning.  
 DAG structures are relatively straightforward to implement given the flexibility of many deep learning toolboxes~\cite{vedaldimatconvnet,Caffe}. Our primary contribution is the demonstration that structures can capture multiscale features, which in turn allow for transfer learning between coarse and fine-grained classification tasks.
@@ -104,7 +104,7 @@ DAG structures are relatively straightforward to implement given the flexibility
 {\bf DAG Neural Networks:} DAG-structured neural nets were explored earlier in the context of recurrent neural nets \cite{baldi2003principled,graves2009offline}. Recurrent neural nets use feedback to capture dynamic states, and so typically cannot be processed with feed-forward computations. %Previous work has also shown that long-range connections between neural layers can eliminate the vanishing gradient problem, but this is done in the context of memory-based networks~\cite{hochreiter1997long}. We make use of DAG structures to efficiently encode multi-scale features in a simpler feed-forward network. 
 %{\bf Skip connections:} 
 More recently, networks have explored the use of ``skip'' connections between layers \cite{raiko-aistats-12,GoogLeNet,sermanet2013pedestrian}, similar to our multi-scale connections. \cite{raiko-aistats-12} show that such connections are useful for a single binary classification task, but we motivate multiscale connections through multitask learning: different visual classification tasks require features at different image scales. %Indeed, we show that off-the-shelf multi-scale features transfer extraordinary well between classification tasks. 
-Finally, the recent state-of-the-art model of \cite{GoogLeNet} make use of skip connections for training, but does not use them at test-time. This means that their final feedforward predictor is not a DAG. Our results suggest that adding multiscale connections at testtime might further improve their performance.
+Finally, the recent state-of-the-art model of \cite{GoogLeNet} make use of skip connections for training, but does not use them at test-time. This means that their final feedforward predictor is not a DAG. Our results suggest that adding multiscale connections at test time might further improve their performance.
 %multiscale features at test-time might further improve their performance.
 
 {\bf Overview:} We motivate our multi-scale DAG-CNN model in Sec.~\ref{sec:motivation}, describe the full architecture in Sec.~\ref{sec:approach}, and conclude with numerous benchmark results in Sec.~\ref{sec:exp}. We evaluate multi-scale DAG-structured variants of existing CNN architectures (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}) on a variety of scene recognition benchmarks including SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. We observe a consistent improvement regardless of the underlying CNN architecture, producing state-of-the-art results on all 3 datasets.
@@ -118,7 +118,7 @@ Finally, the recent state-of-the-art model of \cite{GoogLeNet} make use of skip 
 %-------------------------------------------------------------------------
 \section{Motivation\label{sec:motivation}}
 
-In this section, we motivate our multi-scale architecture with a series of empirical analysis. We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 19 layers (16 conv. and 3 FC layers). This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both ``off-the-shelf'' pre-trained models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}, using 10-fold cross-validation.
+In this section, we motivate our multi-scale architecture with a series of empirical analysis. We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 20 layers in total, including 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 43 layers including 16 conv. and 3 FC layers. This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both ``off-the-shelf'' pre-trained models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}, using 10-fold cross-validation.
 
 \subsection{Single-scale models} 
 %We first verify our hypothesis that different recognition tasks require different amounts of invariance through two experiments.
@@ -179,7 +179,7 @@ We compare this encoding versus the unpooled full-dimensional feature (also norm
 
 \subsection{Multi-scale models} 
 
-{\bf Multiscale classification:} We now explore multi-scale predictors that process pooled features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
+{\bf Multiscale classification:} We now explore multi-scale predictors that process pooled features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers by feature concatenation. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
 
 
 % the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. 
@@ -258,7 +258,7 @@ This allows us to add together multiple back-prop signals before scaling them by
 the number of multiplications by $C$. We make use of this speed up to train our ReLU layers
 . 
 
-{\bf Special case(Add):} Similarly, our multi-input {\tt Add} layer reuses the same partial gradient for each input
+{\bf Special case (Add):} Similarly, our multi-input {\tt Add} layer reuses the same partial gradient for each input
 $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \beta_k}{\partial \alpha_k^{(1)}}$ which simplifies even further in our case to $1$. The resulting back-prop equations that simplify \eqref{eq:backprop2} are given by
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial z}{\partial \beta_k} \frac{\partial \beta_k}{\partial \alpha_k^{(1)}}\sum_{j=1}^{C} \frac{\partial \alpha_k^{(j)}}{\partial \alpha_i}  \quad \text{(for duplicate gradients)}
@@ -298,8 +298,8 @@ Deep19-DAG & \textbf{56.2} \\
 Deep19~\cite{veryDeep} & 51.9 \\
 Caffe-DAG & 46.6	\\
 Caffe~\cite{Caffe} & 43.5 \\ \hline
-Places~\cite{zhoulearning}	& 54.3	\\
-MOP-CNN~\cite{Gong14} & 52.0 \\
+Places~\cite{zhoulearning} (Caffe)	& 54.3	\\
+MOP-CNN~\cite{Gong14} (Caffe) & 52.0 \\
 FV~\cite{FV} & 47.2 \\
 DeCaf~\cite{DeCaf} & 40.9	\\
 Baseline-overfeat~\cite{SUN_ijcv}	&40.3 \\
@@ -315,8 +315,8 @@ Deep19-DAG & \textbf{77.5} \\
 Deep19~\cite{veryDeep} & 70.8 \\
 Caffe-DAG & 64.6	\\
 Caffe~\cite{Caffe} & 59.5 \\ \hline
-MOP-CNN~\cite{Gong14} & 68.9 \\
-Places~\cite{zhoulearning}	& 68.2	\\
+MOP-CNN~\cite{Gong14} (Caffe) & 68.9 \\
+Places~\cite{zhoulearning} (Caffe)	& 68.2	\\
 Mid-level~\cite{mid_level} & 64.0	\\
 FV+BoP~\cite{FV_BoP} & 63.2 \\
 Disc. Patch~\cite{disc_patch} & 49.4 \\
@@ -332,7 +332,7 @@ Deep19-DAG & \textbf{92.9} \\
 Deep19~\cite{veryDeep} & 90.8 \\
 Caffe-DAG & 89.7	\\
 Caffe~\cite{Caffe} & 86.8 \\ \hline
-Place~\cite{zhoulearning} & 91.6 \\
+Place~\cite{zhoulearning} (Caffe) & 91.6 \\
 CENTRIST~\cite{Wu_pami11} & 84.8	\\
 Hybrid~\cite{Bosch_pami08}	& 83.7	\\
 Spatial pyramid~\cite{spatial_pyramid} & 81.4 \\
