@@ -118,7 +118,7 @@ Finally, the recent state-of-the-art model of \cite{GoogLeNet} make use of skip 
 %-------------------------------------------------------------------------
 \section{Motivation\label{sec:motivation}}
 
-In this section, we motivate our multi-scale architecture with a series of empirical analysis. We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. This model has 20 layers in total, including 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 43 layers including 16 conv. and 3 FC layers. This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both ``off-the-shelf'' pre-trained models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}, using 10-fold cross-validation.
+In this section, we motivate our multi-scale architecture with a series of empirical analysis. We carry out an analysis on existing CNN architectures, namely Caffe and Deep19. Caffe~\cite{Caffe} is a broadly used CNN toolbox. It includes a pre-trained model ``AlexNet''~\cite{AlexNet} model, learned with millions of images from the ImageNet dataset~\cite{ImageNet}. \textcolor[rgb]{1,0,0}{This model has 20 layers in total, including 6 conv. layers and 2 fully-connected (FC) layers. Deep19~\cite{veryDeep} uses very small $3\times 3$ receptive fields, but an increased number of layers -- 43 layers including 16 conv. and 3 FC layers.} This model produced state-of-the-art performance in ILSVRC-2014 classification challenge~\cite{ILSVRC14}. We evaluate both ``off-the-shelf'' pre-trained models on the heavily benchmarked MIT Indoor Scene (MIT67) dataset~\cite{MIT67}, using 10-fold cross-validation.
 
 \subsection{Single-scale models} 
 %We first verify our hypothesis that different recognition tasks require different amounts of invariance through two experiments.
@@ -165,7 +165,7 @@ We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67
 {\bf Scale-varying classification:} The above experiment required training $K \times N$ 1-vs-all classifiers, where $K$ is the number of classes and $N$ is the number of layers. We can treat each of the $KN$ classifiers as binary predictors, and score each with the number of correct detections of its target class. We plot these scores as a matrix in Fig.~\ref{fig:level_perf}. We tend to see groups of classes that operate best with features computed from particular high-level or mid-level layers. %Indeed, we plot the optimal scale for each binary predictor in Fig.~\ref{fig:best_perf_layer_hist}. 
 Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
 
-{\bf Spatial pooling:} In the next section, we will explore multi-scale features. One practical hurdle to including all features from all layers is the massive increase in dimensionality. Here, we explore strategies for reducing dimensionality through pooled features. We consider various pooling strategies (sum, average, and max), pooling neighborhoods, and normalization post-processing (with and without L2 normalization). We saw good results with average pooling over all spatial locations, followed by L2 normalization. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. We then normalize this feature to have unit norm. %Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $1 \times 1 \times F$) are simply the original activations.  
+{\bf Spatial pooling:} In the next section, we will explore multi-scale features. One practical hurdle to including all features from all layers is the massive increase in dimensionality. Here, we explore strategies for reducing dimensionality through pooled features. We consider various pooling strategies (sum, average, and max), pooling neighborhoods, and normalization post-processing (with and without L2 normalization). We saw good results with average pooling over all spatial locations, followed by L2 normalization \textcolor[rgb]{1,0,0}{(quantitative results are shown in Fig.~\ref{fig:pool_size})}. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. We then normalize this feature to have unit norm. %Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $1 \times 1 \times F$) are simply the original activations.  
 We compare this encoding versus the unpooled full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. %\deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.} \songfan{Please refer to email attachment for the resulting slides}
 
 %{\bf Marginal vs full:} A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we train an SVM on activations from a single layer, using both the full and marginal activations. For simplicity, we focus on the 5 best-performing layers from Fig.~\ref{fig:best_perf_layer_hist}. Surprisingly, the results in Fig.~\ref{fig:full_marg} shows that marginal features always outperform the full-dimensional feature, implying that dimensionality reduction actually helps performance. 
@@ -179,7 +179,7 @@ We compare this encoding versus the unpooled full-dimensional feature (also norm
 
 \subsection{Multi-scale models} 
 
-{\bf Multiscale classification:} We now explore multi-scale predictors that process pooled features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers by feature concatenation. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
+{\bf Multiscale classification:} We now explore multi-scale predictors that process pooled features extracted from multiple layers. As before, we analyze ``off-the-shelf'' pre-trained models. We evaluate performance as we iteratively add more layers \textcolor[rgb]{1,0,0}{by feature concatenation}. Fig.~\ref{fig:layer_MIT67} suggests that the last ReLU layer is a good starting point due to its strong single-scale performance. Fig~\ref{fig:add_back_caffe} plots performance as we add previous layers to the classifier feature set. Performance increases as we add intermediate layers, while lower layers prove less helpful (and may even hurt performance, likely do to over-fitting). Our observations suggest that high and mid-level features (\ie, \textit{parts} and \textit{objects}) are more useful than low-features based on \textit{edges} or \textit{textures} in scene classification. 
 
 
 % the performance increase in the beginning by adding mid-level features to enrich the model discriminativeness. However, including some low level responses to the feature actually hurts the performance, \ie, layer 7 and 3 in Fig.~\ref{fig:add_back_caffe}. 
@@ -198,6 +198,16 @@ The ``+'' sign means the recent-most added layer. Adding additional layers help,
 \end{figure}
 
 {\bf Multi-scale selection:} The previous results show that adding all layers may actually hurt performance. We verified that this was an over-fitting phenomena; additional layers always improved training performance, but could decrease test performance due to over-fitting. This appears especially true for multi-scale analysis, where nearby layers may encoded redundant or correlated information (that is susceptible to over-fitting). Ideally, we would like to search for the ``optimal'' combination of ReLU layers that maximize performance on validation data. Since there exists an exponential number of combinations ($2^N$ for $N$ ReLU layers), we find an approximate solution with a greedy forward-selection strategy. We greedily select the next-best layer (among all remaining layers) to add, until we observe no further performance improvement. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach rejects the low-level features. This is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}. 
+
+\textcolor[rgb]{1,0,0}{To explore more feature concatenation strategy besides marginal features, we consider non-overlapping pooling with various window sizes in the forward selection diagnostic experiment. Concretely, we first divide the response map to $M\times M$ patches spatially. ``Sum-pooling'' and ``Max-pooling'' strategies are then applied to each patch and the resulting features are concatenated and L2 normalized. Note that the feature dimension increases at $N^2$ speed after concatenation, and thus, a large $N$ with our multi-scale feature extraction is not feasible. Here, we consider N from 1 to 4 in our experiment. As seen in Fig.~\ref{fig:pool_size}, sum-pooling is generally better than max-pooling in this task, suggesting that more aggressive max-pooling might hurt the discriminativeness of the model. Moreover, the best performance is achieved by the marginal activation with sum-pooling ($1\times 1$ in Fig.~\ref{fig:sumpool_size}), suggesting that the mean receptive field is more representative and less prone to over-fitting due to smaller feature dimension. }
+
+\begin{figure}[t!]
+\centering
+	\subfigure[Sum-pooling]{\includegraphics[width=.49\columnwidth]{fig/sumpool_size.png}\label{fig:sumpool_size}}
+	\subfigure[Max-pooling]{\includegraphics[width=.49\columnwidth]{fig/maxpool_size.png}\label{fig:maxpool_size}}
+\caption{\textcolor[rgb]{1,0,0}{Forward selection with different pooling size. The activation at each layer is first divided into $M\times M$ patches. The pooling result of each patch is then concatenated thereafter. It is observed that sum-pooling on the entire activation performs the best likely due to less over-fitting.}}
+\label{fig:pool_size}
+\end{figure}
 
 Our analysis strongly suggest the importance (and ease) of incorporating multi-scale features for classification tasks. For our subsequent experiments, we use scales selected by the forward selection algorithm on MIT67 data (shown in Fig.~\ref{fig:forward_select_caffe}). Note that we use them for all our experimental benchmarks, demonstrating a degree of cross-dataset generalization in our approach. 
 
@@ -298,8 +308,8 @@ Deep19-DAG & \textbf{56.2} \\
 Deep19~\cite{veryDeep} & 51.9 \\
 Caffe-DAG & 46.6	\\
 Caffe~\cite{Caffe} & 43.5 \\ \hline
-Places~\cite{zhoulearning} (Caffe)	& 54.3	\\
-MOP-CNN~\cite{Gong14} (Caffe) & 52.0 \\
+Places~\cite{zhoulearning} (\textcolor[rgb]{1,0,0}{Caffe})	& 54.3	\\
+MOP-CNN~\cite{Gong14} (\textcolor[rgb]{1,0,0}{Caffe}) & 52.0 \\
 FV~\cite{FV} & 47.2 \\
 DeCaf~\cite{DeCaf} & 40.9	\\
 Baseline-overfeat~\cite{SUN_ijcv}	&40.3 \\
@@ -315,8 +325,8 @@ Deep19-DAG & \textbf{77.5} \\
 Deep19~\cite{veryDeep} & 70.8 \\
 Caffe-DAG & 64.6	\\
 Caffe~\cite{Caffe} & 59.5 \\ \hline
-MOP-CNN~\cite{Gong14} (Caffe) & 68.9 \\
-Places~\cite{zhoulearning} (Caffe)	& 68.2	\\
+MOP-CNN~\cite{Gong14} (\textcolor[rgb]{1,0,0}{Caffe}) & 68.9 \\
+Places~\cite{zhoulearning} (\textcolor[rgb]{1,0,0}{Caffe})	& 68.2	\\
 Mid-level~\cite{mid_level} & 64.0	\\
 FV+BoP~\cite{FV_BoP} & 63.2 \\
 Disc. Patch~\cite{disc_patch} & 49.4 \\
@@ -332,7 +342,7 @@ Deep19-DAG & \textbf{92.9} \\
 Deep19~\cite{veryDeep} & 90.8 \\
 Caffe-DAG & 89.7	\\
 Caffe~\cite{Caffe} & 86.8 \\ \hline
-Place~\cite{zhoulearning} (Caffe) & 91.6 \\
+Place~\cite{zhoulearning} (\textcolor[rgb]{1,0,0}{Caffe}) & 91.6 \\
 CENTRIST~\cite{Wu_pami11} & 84.8	\\
 Hybrid~\cite{Bosch_pami08}	& 83.7	\\
 Spatial pyramid~\cite{spatial_pyramid} & 81.4 \\
