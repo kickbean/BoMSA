@@ -19,7 +19,7 @@
 % run, let it finish, and you should be clear).
 \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
 
-\newcommand{\deva}[1]{\textcolor{red}{[Deva: #1]}}
+\newcommand{\deva}[1]{\textcolor{blue}{[Deva: #1]}}
 \newcommand{\songfan}[1]{\textcolor{blue}{[Songfan: #1]}}
 
 \def\iccvPaperID{1416} % *** Enter the ICCV Paper ID here
@@ -78,9 +78,9 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 \begin{figure*}
 \centering
-	\subfigure[mid-level feature is preferred]{\includegraphics[width=.7\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
-	\subfigure[high-level feature is preferred]{\includegraphics[width=.7\textwidth]{fig/moti_high_better.png}\label{fig:moti_high}}
-\caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach.}
+	\subfigure[mid-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
+	\subfigure[high-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_high_better.png}\label{fig:moti_high}}
+\caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach. \deva{Songfan, can you update this figure to look nicer with this layout? Perhaps put the query image above the rows?}}
 \label{fig:moti}
 \end{figure*}
 
