@@ -1,7 +1,16 @@
-We thank the reviewers for their general positive feedbacks. We address concerns below.
+We thank the reviewers for their general positive feedback. We have incorporated suggestions in to a minor revision. We discuss concerns below, referring to line numbers and figures in the revision.
 
-To Reviewer 1: We have clarified the "number of layer" and "feature concatenation" issues in the text. The corresponding model adopted by the previous work is also added to the result table. Although it is true that the best performance is due in part to a more advanced model (e.g. Deep19), it is impressive that DAG-CNN could still achieve a considerable amount of gain given less room for improvement. This suggests that, under our architecture, both model complexity and multi-scale features are two parallel paths for improving performance. It is unclear if the performance gain for other approaches will match DAG-CNN when switching to an advanced model. 
+Object recognition results [R2]
+We agree that our multiscale model should apply to object recognition, and are currently pursuing such experiments on ImageNet. We hope to include results by the camera ready. That said, scene classification is clearly an interesting topic in of itself, and our method already demonstrates signifcant improvement on all benchmark scene datasets (of which we are aware).
 
-To Reviewer 2: We agree with the reviewer about evaluations on object recognition datasets. We are currently conducting experiments on large-scale object recognition tasks (ImageNet) and fine-grain classifications. We are in hope of including more results in the Camera-ready, if accepted.
+Diagnostic experiments for combining cues across layers [R3]
+Fig 6 now examines various approaches for combining features across layers. We generalize our greedy layer selection procedure to also search over pooling strategies when selecting a layer. Overall, global average pooling is suprisingly effective. Interestingly, local pooling helps single-scale recognition, but does not help multi-scale recognition (suggesting that detailed spatial information in a particular layer is naturally encoded in global cues extracted from an adjacent layer).
 
-To Reviewer 3: We have reported the results for different-sized pooling windows and updated the corresponding text. Please see the manuscript for details. 
+Notation of layers [R1]
+L238-244 now explicitly define our notion of layers.
+
+Method for feature combination [R1]
+L309 now explicitly defined a concetenation operation.
+
+Architectures used by prior work [R1]
+Table 1 now explicitly specifies which prior methods made of AlexNet vs Deep19 architectures.
