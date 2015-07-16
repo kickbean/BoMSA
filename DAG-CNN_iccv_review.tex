@@ -10,6 +10,7 @@
 \usepackage{mathtools}
 \usepackage{subfigure}
 \usepackage{multirow}
+%\usepackage{floatrow}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 % Include other packages here, before hyperref.
@@ -79,8 +80,8 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 \begin{figure*}
 \centering
-	\subfigure[mid-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
-	\subfigure[high-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_high_better.png}\label{fig:moti_high}}
+	\subfigure[mid-level feature is preferred]{\includegraphics[height=.252\textwidth]{fig/moti_low_better.png}\label{fig:moti_low}}
+	\subfigure[high-level feature is preferred]{\includegraphics[height=.252\textwidth,clip=true,trim=70mm 0mm 0mm 0mm]{fig/moti_high_better.png}\label{fig:moti_high}}
 \caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach.}
 \label{fig:moti}
 \end{figure*}
@@ -170,16 +171,21 @@ We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67
 Most categories tend to do well with high-level features, but a significant fraction (over a third) do better with mid-level features.
 
 {\bf Spatial pooling:} In the next section, we will explore multi-scale features. One practical hurdle to including all features from all layers is the massive increase in dimensionality. Here, we explore strategies for reducing dimensionality through pooled features. We consider various pooling strategies (average versus max), pooling neighborhoods, and normalization post-processing (with and without L2 normalization). We saw good results with average pooling over all spatial locations, followed by L2 normalization \new{(though we will re-examine this particular issue further in the next section)}. Specifically, assume a particular layer is of size $H \times W \times F$, where $H$ is the height, $W$ is the width, and $F$ is the number of filter channels. We compute a $1 \times 1 \times F$ feature by averaging across spatial dimensions. We then normalize this feature to have unit norm. %Note that the ``marginal activations'' of fully-connected layers (which are already of dimension $1 \times 1 \times F$) are simply the original activations.  
-We compare this encoding versus the unpooled full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. %\deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.} \songfan{Please refer to email attachment for the resulting slides}
+%We compare this encoding versus the unpooled full-dimensional feature (also normalized) in Fig.~\ref{fig:full_marg}. Pooled features always do better, implying dimensionality reduction actually helps performance. We verified that this phenomena was due to over-fitting; the full features always performed better on training data, but performed worse on test data. This suggests that with additional training data, less-aggressive pooling (that preserves some spatial information) may perform better. %\deva{If we have time, we should explore other amounts of pooling; say pooling into quadrants such that the features is $2 \times 2 \times F$. One reviewer suggested this. This should be relatively easy to try out for single-scale. If it helps, we could try out for multi-scale and DAG.} \songfan{Please refer to email attachment for the resulting slides}
 
 %{\bf Marginal vs full:} A reasonable question is whether some performance is sacrificed for this reduced dimensionality. To evaluate this hypothesis, we train an SVM on activations from a single layer, using both the full and marginal activations. For simplicity, we focus on the 5 best-performing layers from Fig.~\ref{fig:best_perf_layer_hist}. Surprisingly, the results in Fig.~\ref{fig:full_marg} shows that marginal features always outperform the full-dimensional feature, implying that dimensionality reduction actually helps performance. 
-\begin{figure}[t!]
-\centering
-	{\includegraphics[width=.6\columnwidth]{fig/full_marg.png}}
-\caption{Marginal features (computed by spatially-pooling across activations from a layer) do as well or better than their full-dimensional counterpart. }
-\label{fig:full_marg}
-\end{figure}
 
+%\begin{figure}[t!]
+%\centering
+%\begin{minipage}[c]{.49\linewidth}
+ % {\includegraphics[width=\linewidth]{fig/full_marg.png}}
+%\end{minipage}\hfill
+%\begin{minipage}[c]{.51\linewidth}
+%\caption{Marginal features (computed by spatially-pooling across activations from a layer) do as well or better than their full-dimensional counterpart. }
+%\label{fig:full_marg}
+%\end{minipage}
+%\vspace{-15pt}
+%\end{figure}
 
 \subsection{Multi-scale models} 
 
@@ -203,14 +209,15 @@ The ``+'' sign means the recent-most added layer. Adding additional layers help,
 
 {\bf Multi-scale selection:} The previous results show that adding all layers may actually hurt performance. We verified that this was an over-fitting phenomena; additional layers always improved training performance, but could decrease test performance due to over-fitting. This appears especially true for multi-scale analysis, where nearby layers may encoded redundant or correlated information (that is susceptible to over-fitting). Ideally, we would like to search for the ``optimal'' combination of ReLU layers that maximize performance on validation data. Since there exists an exponential number of combinations ($2^N$ for $N$ ReLU layers), we find an approximate solution with a greedy forward-selection strategy. We greedily select the next-best layer (among all remaining layers) to add, until we observe no further performance improvement. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach rejects the low-level features. This is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}. 
 
-\new{{\bf Multiscale pooling:} We use our greedy scale-selection strategy to explore different-sized pooling windows. When greedily searching over scales, we also search over possible pooling strategies at each scale. Specifically, we divide the spatial features from a particular layer into $M \times M$ non-overlapping windows, were $M$ varied from 1 to 3. Within each window we pool features by average pooling), concatenate the $M^2$ pooled features together into a final L2-normalized descriptor (that was available for greedy selection). Interestingly, when evaluating spatial pooling strategies for {\em single-scale} classification, a small mount of spatial information (say, a $2 \times 2$ descriptor) could improve performance for certain layers. But when used in a multi-scale model, the improvement over global pooling ($1 \times 1$ in Fig.~\ref{fig:pool_size}) was negligible, perhaps because such information is already captured in neighboring layers. We hypothesize that with more training data, spatial pooling may perform better. In our subsequent analysis we consider only globally-pooled features.}
+\new{{\bf Multi-scale pooling:} We use our greedy scale-selection strategy to re-examine pooling strategies. Specifically, we divide the spatial features from a particular layer into $M \times M$ non-overlapping windows, where $M$ varied from 1 to 3. We average-pool features within each window and concatenate the $M^2$ pooled features together into a final L2-normalized descriptor. When greedily searching over layers to add, we also greedily search over the 3 possible pooling windows for each layer. Interestingly, when evaluating pooling windows for {\em single-scale} classification, retaining a small amount of spatial information (in say, a $2 \times 2$ descriptor) sometimes improved performance for certain layers. But in the multi-scale setting, there was essentially no improvement over global pooling (Fig.~\ref{fig:pool_size}), perhaps because finer spatial cues may already be captured in multiscale features extracted from neighboring layers. %We hypothesize that with more training data, spatial pooling may perform better.
+In our subsequent analysis we consider only globally-pooled features.}
 %To explore more feature concatenation strategy besides marginal features, we consider non-overlapping pooling with various window sizes in the forward selection diagnostic experiment. Concretely, we first divide the response map to $M\times M$ patches spatially. ``Sum-pooling'' and ``Max-pooling'' strategies are then applied to each patch and the resulting features are concatenated and L2 normalized. Note that the feature dimension increases at $N^2$ speed after concatenation, and thus, a large $N$ with our multi-scale feature extraction is not feasible. Here, we consider N from 1 to 4 in our experiment. As seen in Fig.~\ref{fig:pool_size}, sum-pooling is generally better than max-pooling in this task, suggesting that more aggressive max-pooling might hurt the discriminativeness of the model. Moreover, the best performance is achieved by the marginal activation with sum-pooling ($1\times 1$ in Fig.~\ref{fig:sumpool_size}), suggesting that the mean receptive field is more representative and less prone to over-fitting due to smaller feature dimension. }
 
 \begin{figure}[t!]
 \centering
 \includegraphics[width=.5\columnwidth]{fig/sumpool_size.png}
 
-\caption{\new{Greedy selection of layers and the number of pooling windows per layer. Globally-pooled $1 \times 1$ features (with average pooling) performs as good as the results that searches over all window sizes during the greedy selection.}}
+\caption{\new{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multiscale performance. We find the answer to be `no': global pooling (using a 1X1 window covering the entire layer) does as well or better than other fixed pooling sizes (including {\bf all}, which allows the greedy procedure to dynamically select the pooling size for a particular layer).}}
 \label{fig:pool_size}
 \end{figure}
 
@@ -232,7 +239,7 @@ In this section, we show that the multi-scale model examined in Fig.~\ref{fig:fo
 
 
 {\bf Training:} Let $\textbf{w}_1,...\textbf{w}_K$ be the CNN model parameters at $1,..,K$-th layer, training data be ($\textbf{x}^{(i)},\textbf{y}^{(i)}$), where $\textbf{x}^{(i)}$ is the $i$-th input image and $\textbf{y}^{(i)}$ is the indicator vector of the class of $\textbf{x}^{(i)}$. Then we intend to solve the following optimization problem
-\vspace{-5}
+\vspace{-5pt}
 \begin{align}
 \argmin_{\textbf{w}_1,...\textbf{w}_K} \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}(f(\textbf{x}^{(i)};\textbf{w}_1,...,\textbf{w}_K),\textbf{y}^{(i)})
 \end{align}
@@ -240,7 +247,7 @@ In this section, we show that the multi-scale model examined in Fig.~\ref{fig:fo
 As is now commonplace, we make use of stochastic gradient descent to minimize the objective function. For a traditional \textit{chain} model, the partial derivative of the output with respect to any one weight can be recursively computed by the chain rule, as described in the back-prop algorithm.%~\cite{rumelhart1988learning}. 
 
 {\bf Multi-output layers (ReLU):} Our DAG-model is structurally different at the ReLU layers (since they have multiple outputs) and the \textit{Add} layer (since it has multiple inputs). We can still compute partial derivatives by recursively applying the chain rule, but care needs to be taken at these points. Let us consider the $i$-th ReLU layer in Fig.~\ref{fig:backprop_eq}. Let $\alpha_i$ be its input, $\beta_i^{(j)}$ be the output for its $j$-th output branch (its $j^{th}$ child in the DAG), and let $z$ is the final output of the softmax layer. The gradient of $z$ with respect to the input of the $i$-th ReLU layer can be computed as
-\vspace{-5}
+\vspace{-5pt}
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}=\sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}}\frac{\partial \beta_i^{(j)}}{\partial \alpha_i} \quad \text {(in general)} \label{eq:backprop1}
 \end{align}
@@ -259,7 +266,7 @@ As is now commonplace, we make use of stochastic gradient descent to minimize th
 
 
 {\bf Multi-input layers (Add):} Let $\beta_k=g(\alpha^{(1)}_k,\cdots,\alpha^{(N)}_k)$ represents the output of a layer with multiple inputs. We can compute the gradient along the layer by applying the chain rule as follows:
-\vspace{-5}
+\vspace{-5pt}
 \begin{align}
 \frac{\partial z}{\partial \alpha_i}&=\frac{\partial z}{\partial \beta_k}\frac{\partial \beta_k}{\partial \alpha_i} \nonumber \\
 &=\frac{\partial z}{\partial \beta_k}\sum_{j=1}^{C}\frac{\partial \beta_k}{\partial \alpha_k^{(j)}}\frac{\partial \alpha_k^{(j)}}{\partial \alpha_i} \quad \text{(in general)} \label{eq:backprop2}
@@ -268,7 +275,7 @@ One can similarly arrive at the standard back-propagation by setting $C=1$.
 
 
 {\bf Special case (ReLU):} Our particular DAG architecture can further simplify the above equations. Firstly, it may be common for multiple-output layers to duplicate the same output for each child branch. This is true of our ReLU units; they pass the same values to the next layer in the chain and the current-layer pooling operation. This means the output-specific gradients are identical for those outputs $\forall j, \frac{\partial \beta_i^{(j)}}{\partial \alpha_i} =  \frac{\partial \beta_i^{(1)}}{\partial \alpha_i}$, which simplifies \eqref{eq:backprop1} to
-\vspace{-5}
+\vspace{-5pt}
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial \beta_i^{(1)}}{\partial \alpha_i} \sum_{j=1}^{C}\frac{\partial z}{\partial \beta_i^{(j)}} \quad \text{(for duplicate outputs)}
 \end{align}
@@ -278,7 +285,7 @@ the number of multiplications by $C$. We make use of this speed up to train our 
 
 {\bf Special case (Add):} Similarly, our multi-input {\tt Add} layer reuses the same partial gradient for each input
 $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \beta_k}{\partial \alpha_k^{(1)}}$ which simplifies even further in our case to $1$. The resulting back-prop equations that simplify \eqref{eq:backprop2} are given by
-\vspace{-5}
+\vspace{-5pt}
 \begin{align}
 \frac{\partial z}{\partial \alpha_i} = \frac{\partial z}{\partial \beta_k} \frac{\partial \beta_k}{\partial \alpha_k^{(1)}}\sum_{j=1}^{C} \frac{\partial \alpha_k^{(j)}}{\partial \alpha_i}  \quad \text{(for duplicate gradients)}
 \end{align}
@@ -363,7 +370,7 @@ Baseline~\cite{Scene15} & 65.2 \\
 \end{tabular}
 \end{tabular}
 }
-\caption{Classification results on SUN397, MIT67, and Scene15 datasets. \new{We explicitly denote those methods that make use of the same Caffe model, either applied with a different (multi-scale) post-processing stage~\cite{Gong14} or learned with a massively-large custom dataset~\cite{zhoulearning}.} }%Please see text for an additional discussion.}
+\caption{Classification results on SUN397, MIT67, and Scene15 datasets. \new{We explicitly denote those methods that make use of the same Caffe model, either applied with a different (multi-scale) post-processing stage~\cite{Gong14} or learned with a massively-large custom dataset~\cite{zhoulearning}.} Please see text for an additional discussion.}
 \label{table:all}
 \end{table*}
 
