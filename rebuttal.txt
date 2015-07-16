@@ -1,4 +1,4 @@
-We thank the reviewers for their general positive feedback. We have incorporated suggestions in to a minor revision. We discuss concerns below, referring to line numbers and figures in the revision.
+We thank the reviewers for their generally positive feedback. We have incorporated suggestions in to a minor revision. We discuss concerns below, referring to line numbers and figures in the revision.
 
 Object recognition results [R2]
 We agree that our multiscale model should apply to object recognition, and are currently pursuing such experiments on ImageNet. We hope to include results by the camera ready. That said, scene classification is clearly an interesting topic in of itself, and our method already demonstrates signifcant improvement on all benchmark scene datasets (of which we are aware).
