@@ -80,8 +80,10 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 
 \begin{figure*}
 \centering
-	\subfigure[mid-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_low_better}\label{fig:moti_low}}
-	\subfigure[high-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_high_better}\label{fig:moti_high}}
+	\subfigure[mid-level feature is preferred]{\includegraphics[height=.245\textwidth]{fig/moti_low_better}\label{fig:moti_low}}
+	\subfigure[high-level feature is preferred]{\includegraphics[height=.245\textwidth,clip=true,trim=23mm 0mm 0mm 0mm]{fig/moti_high_better}\label{fig:moti_high}}
+%	\subfigure[mid-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_low_better}\label{fig:moti_low}}
+%	\subfigure[high-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_high_better}\label{fig:moti_high}}
 \caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach.}
 \label{fig:moti}
 \end{figure*}
@@ -217,7 +219,7 @@ In our subsequent analysis we consider only globally-pooled features.}
 \centering
 \includegraphics[width=.8\columnwidth]{fig/sumpool_size}
 
-\caption{\new{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. We find the answer to be `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than other fixed pooling sizes (including {\bf all}, which allows the greedy procedure to dynamically select the pooling size for a particular layer).}}
+\caption{\new{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than other fixed pooling sizes (including {\bf all}, where the greedy procedure can dynamically select the optimal pooling size for a particular layer).}}
 \label{fig:pool_size}
 \end{figure}
 
