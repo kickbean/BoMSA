@@ -217,8 +217,8 @@ In our subsequent analysis we consider only globally-pooled features, as they ar
 
 \begin{figure}[t!]
 \centering
-\includegraphics[width=.8\columnwidth]{fig/sumpool_size}
-\caption{\new{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than local windows, either of a fixed size or adaptive-size dynamically selected during the greedy search ({\bf all}). We posit two reasons: (1) finer spatial cues may already be captured by multiscale features extracted from neighboring layers and (2) additional training data might be needed to realize the benefit of local pooling windows since they generate larger descriptors. For reference, we also experimented with max-pooling strategies, but saw consistently worse results.}}
+\includegraphics[width=.7\columnwidth]{fig/sumpool_size}
+\caption{\new{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than local windows, either of a fixed size or adaptive-size dynamically selected during the greedy search ({\bf all}). We posit two reasons: (1) finer spatial cues may already be captured by multiscale features extracted from neighboring layers and (2) additional training data might be needed to realize the benefit of local pooling windows since they generate larger descriptors. Dotted line means the layer will not be selected by greedy procedure. For reference, we also experimented with max-pooling strategies, but saw consistently worse results.}}
 \label{fig:pool_size}
 \end{figure}
 
