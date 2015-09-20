@@ -109,9 +109,8 @@ DAG structures are relatively straightforward to implement given the flexibility
 
 {\bf DAG Neural Networks:} DAG-structured neural nets were explored earlier in the context of recurrent neural nets \cite{baldi2003principled,graves2009offline}. Recurrent neural nets use feedback to capture dynamic states, and so typically cannot be processed with feed-forward computations. %Previous work has also shown that long-range connections between neural layers can eliminate the vanishing gradient problem, but this is done in the context of memory-based networks~\cite{hochreiter1997long}. We make use of DAG structures to efficiently encode multi-scale features in a simpler feed-forward network. 
 %{\bf Skip connections:} 
-More recently, networks have explored the use of ``skip'' connections between layers \cite{raiko-aistats-12,GoogLeNet,sermanet2013pedestrian}, similar to our multi-scale connections. \cite{raiko-aistats-12} show that such connections are useful for a single binary classification task, but we motivate multi-scale connections through multi-task learning: different visual classification tasks require features at different image scales. %Indeed, we show that off-the-shelf multi-scale features transfer extraordinary well between classification tasks. 
-Finally, the recent state-of-the-art model of \cite{GoogLeNet} make use of skip connections for training, but does not use them at test-time. This means that their final feedforward predictor is not a DAG. Our results suggest that adding multi-scale connections at test time might further improve their performance.
-%multiscale features at test-time might further improve their performance.
+Recent networks have explored the use of ``skip'' connections between layers \cite{raiko-aistats-12,GoogLeNet,sermanet2013pedestrian}, similar to our multi-scale connections. \cite{raiko-aistats-12} show that such connections are useful for a single binary classification task, but we motivate multi-scale connections through multi-task learning: different visual classification tasks require features at different image scales. %Indeed, we show that off-the-shelf multi-scale features transfer extraordinary well between classification tasks. 
+\cite{GoogLeNet}  use skip connections for training, but not at test-time (implying the final model not a DAG). Finally, our work aligns with approaches that predict local pixel labels using features extracted from multiple CNN layers~\cite{hariharan2015hypercolumns,long2015fully}. We show that such features also improve global image classification.
 
 {\bf Overview:} We motivate our multi-scale DAG-CNN model in Sec.~\ref{sec:motivation}, describe the full architecture in Sec.~\ref{sec:approach}, and conclude with numerous benchmark results in Sec.~\ref{sec:exp}. We evaluate multi-scale DAG-structured variants of existing CNN architectures (\eg, Caffe~\cite{Caffe}, Deep19~\cite{veryDeep}) on a variety of scene recognition benchmarks including SUN397~\cite{SUN397}, MIT67~\cite{MIT67}, Scene15~\cite{Scene15}. We observe a consistent improvement regardless of the underlying CNN architecture, producing state-of-the-art results on all 3 datasets.
 
@@ -220,7 +219,7 @@ In our subsequent analysis we consider only globally-pooled features, as they ar
 \begin{figure}[t!]
 \centering
 \includegraphics[width=.7\columnwidth]{fig/sumpool_size}
-\caption{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than local windows, either of a fixed size or adaptive-size dynamically selected during the greedy search ({\bf all}). We posit two reasons: (1) finer spatial cues may already be captured by multiscale features extracted from neighboring layers and (2) additional training data might be needed to realize the benefit of local pooling windows since they generate larger descriptors. Dotted line means the layer will not be selected by greedy procedure. For reference, we also experimented with max-pooling strategies, but saw consistently worse results.}
+\caption{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than local windows, either of a fixed-size or adaptive-size dynamically selected during the greedy search ({\bf all}). We posit two reasons: (1) finer spatial cues may already be captured by multiscale features extracted from neighboring layers and (2) additional training data might be needed to realize the benefit of local pooling windows since they generate larger descriptors. Dotted line means the layer will not be selected by greedy procedure. For reference, we also experimented with max-pooling strategies, but saw consistently worse results.}
 \label{fig:pool_size}
 \end{figure}
 
@@ -448,6 +447,11 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 
 {\bf Conclusion:} We have introduced multi-scale CNNs for image classification. Such models encode scale-specific features that can be effectively shared across both coarse and fine-grained classification tasks. Importantly, such models can be viewed as DAG-structured feedforward predictors, allowing for end-to-end training. While fine-tuning helps performance, we empirically demonstrate that even ``off-the-self'' multi-scale features perform quite well. We present extensive analysis and demonstrate state-of-the-art classification performance on three standard scene benchmarks, sometimes improving upon prior art by a significant margin. %\deva{We need to get main text and figures into 8 pages, and all references into 1}.
 \newpage
+
+{\bf Acknowledgement.}
+This work was supported by NSF Grant 0954083, ONR-MURI Grant N00014-10-1-0933, and the Intel Science and Technology Center - Visual Computing.
+
+
 {\small
 \bibliographystyle{ieee}
 \bibliography{mobib}

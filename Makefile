@@ -1,4 +1,4 @@
-TARGET=DAG-CNN_arvix
+TARGET=DAG-CNN_iccv_cam_ready
 
 all: 
 	pdflatex $(TARGET).tex

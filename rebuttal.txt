@@ -1,7 +1,7 @@
-We thank the reviewers for their generally positive feedback. We have incorporated suggestions in to a minor revision. We discuss concerns below, referring to line numbers and figures in the revision.
+We thank the reviewers for their generally positive feedback. We have incorporated suggestions into a minor revision. We discuss concerns below, referring to line numbers and figures in the revision.
 
 Object recognition results [R2]
-We agree that our multiscale model should apply to object recognition, and are currently pursuing such experiments on ImageNet. We hope to include results by the camera ready. That said, scene classification is clearly an interesting topic in of itself, and our method already demonstrates signifcant improvement on all benchmark scene datasets (of which we are aware).
+We agree that our multiscale model should apply to object recognition, and are currently pursuing such experiments on ImageNet. We hope to include results by the camera ready. That said, scene classification is clearly an interesting topic in of itself, and our method already demonstrates significant improvement on all benchmark scene datasets (of which we are aware).
 
 Diagnostic experiments for combining cues across layers [R3]
 Fig 6 now examines various approaches for combining features across layers. We generalize our greedy layer selection procedure to also search over pooling strategies when selecting a layer. Overall, global average pooling is suprisingly effective. Interestingly, local pooling helps single-scale recognition, but does not help multi-scale recognition (suggesting that detailed spatial information in a particular layer is naturally encoded in global cues extracted from an adjacent layer).
