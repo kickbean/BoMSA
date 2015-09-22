@@ -374,6 +374,7 @@ Baseline~\cite{Scene15} & 65.2 \\
 }
 \caption{Classification results on SUN397, MIT67, and Scene15 datasets. We explicitly denote those methods that make use of the same Caffe model, either applied with a different (multi-scale) post-processing stage~\cite{Gong14} or learned with a massively-large custom dataset~\cite{zhoulearning}. Please see text for an additional discussion.}
 \label{table:all}
+\vspace{-10pt}
 \end{table*}
 
 
@@ -446,11 +447,12 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 %\section{Conclusion}
 
 {\bf Conclusion:} We have introduced multi-scale CNNs for image classification. Such models encode scale-specific features that can be effectively shared across both coarse and fine-grained classification tasks. Importantly, such models can be viewed as DAG-structured feedforward predictors, allowing for end-to-end training. While fine-tuning helps performance, we empirically demonstrate that even ``off-the-self'' multi-scale features perform quite well. We present extensive analysis and demonstrate state-of-the-art classification performance on three standard scene benchmarks, sometimes improving upon prior art by a significant margin. %\deva{We need to get main text and figures into 8 pages, and all references into 1}.
-\newpage
 
 {\bf Acknowledgement.}
-This work was supported by NSF Grant 0954083, ONR-MURI Grant N00014-10-1-0933, and the Intel Science and Technology Center - Visual Computing.
+This work was supported by NSF Grant 0954083 and ONR-MURI Grant N00014-10-1-0933.
 
+
+\newpage
 
 {\small
 \bibliographystyle{ieee}
