@@ -1,32 +1,14 @@
 % This file was created with JabRef 2.6.
 % Encoding: GBK
 
-@inproceedings{ raiko-aistats-12,
- title = "Deep Learning Made Easier by Linear Transformations in Perceptrons",
- author = "Raiko, Tapani and Valpola, Harri and LeCun, Yann",
- booktitle = "AISTATS",
- volume = 22,
- pages = "924-932",
- year = 2012
-}
-
-@ARTICLE{dnn_proof,
+@INPROCEEDINGS{dnn_proof,
   author = {Sanjeev Arora and Aditya Bhaskara and Rong Ge and Tengyu Ma},
   title = {Provable Bounds for Learning Some Deep Representations},
-  journal = {CoRR},
-  year = 2013,
-  volume = {abs/1310.6343}
+  booktitle = {ICML},
+  year = {2013},
+  volume = {32},
+  journal = {CoRR}
 }
-
-@inproceedings{sermanet2013pedestrian,
-  title={Pedestrian detection with unsupervised multi-stage feature learning},
-  author={Sermanet, Pierre and Kavukcuoglu, Koray and Chintala, Soumith and LeCun, Yann},
-  booktitle={CVPR},
-  year=2013,
-  organization={IEEE}
-}
-%  pages={3626--3633},
-
 
 @ARTICLE{baldi1996hybrid,
   author = {Baldi, Pierre and Chauvin, Yves},
@@ -57,9 +39,8 @@
 @ARTICLE{bengio1994learning,
   author = {Bengio, Yoshua and Simard, Patrice and Frasconi, Paolo},
   title = {Learning long-term dependencies with gradient descent is difficult},
-  journal = {IEEE Transactions on Neural Networks,},
-  number = {2},
-  publisher = {IEEE}
+  journal = {IEEE Transactions on Neural Networks},
+  year = {1994}
 }
 
 @ARTICLE{Bosch_pami08,
@@ -67,6 +48,17 @@
   title = {Scene Classification Using a Hybrid Generative/Discriminative Approach},
   journal = {PAMI},
   year = {2008}
+}
+
+@ARTICLE{burt1983laplacian,
+  author = {Burt, Peter J and Adelson, Edward H},
+  title = {The Laplacian pyramid as a compact image code},
+  journal = {IEEE Transactions on Communications},
+  year = {1983},
+  volume = {31},
+  pages = {532-540},
+  number = {4},
+  publisher = {IEEE}
 }
 
 @INPROCEEDINGS{ImageNet,
@@ -84,13 +76,13 @@
   year = {2013}
 }
 
-@ARTICLE{DeCaf,
+@INPROCEEDINGS{DeCaf,
   author = {Jeff Donahue and Yangqing Jia and Oriol Vinyals and Judy Hoffman
 	and Ning Zhang and Eric Tzeng and Trevor Darrell},
   title = {DeCAF: {A} Deep Convolutional Activation Feature for Generic Visual
 	Recognition},
-  journal = {CoRR},
-  year = {2013}
+  booktitle = {ICML},
+  year = {2014}
 }
 
 @ARTICLE{liblinear,
@@ -108,20 +100,6 @@
   year = {2005}
 }
 
-@INPROCEEDINGS{hariharan2015hypercolumns,
-  author = {Hariharan, Bharath and Arbel{\'a}ez, Pablo and Girshick, Ross and Malik, Jitendra},
-  title = {Hypercolumns for object segmentation and fine-grained localization},
-  booktitle = {CVPR},
-  year = 2015
-}
-
-@article{long2015fully,
-  title={Fully convolutional networks for semantic segmentation},
-  author={Long, Jonathan and Shelhamer, Evan and Darrell, Trevor},
-  booktitle = {CVPR},
-  year = 2015
-}
-
 @ARTICLE{dpm,
   author = {Felzenszwalb, P.F. and Girshick, R.B. and McAllester, D. and Ramanan,
 	D.},
@@ -134,9 +112,7 @@
   author = {Felzenszwalb, Pedro and McAllester, David and Ramanan, Deva},
   title = {A discriminatively trained, multiscale, deformable part model},
   booktitle = {CVPR},
-  year = {2008},
-  pages = {1--8},
-  organization = {IEEE}
+  year = {2008}
 }
 
 @ARTICLE{dist_trans,
@@ -146,14 +122,14 @@
   year = {2004}
 }
 
-@ARTICLE{rcnn,
+@INPROCEEDINGS{rcnn,
   author = {Ross B. Girshick and Jeff Donahue and Trevor Darrell and Jitendra
 	Malik},
   title = {Rich feature hierarchies for accurate object detection and semantic
 	segmentation},
-  journal = {CoRR},
-  year = {2013},
-  volume = {abs/1311.2524}
+  booktitle = {CVPR},
+  year = {2014},
+  journal = {CoRR}
 }
 
 @ARTICLE{dpm_is_cnn,
@@ -177,8 +153,27 @@
   title = {Offline handwriting recognition with multidimensional recurrent neural
 	networks},
   booktitle = {NIPS},
-  year = {2009},
-  pages = {545--552}
+  year = {2009}
+}
+
+@ARTICLE{hadjidemetriou2004multiresolution,
+  author = {Hadjidemetriou, Efstathios and Grossberg, Michael D and Nayar, Shree
+	K},
+  title = {Multiresolution histograms and their use for recognition},
+  journal = {Pattern Analysis and Machine Intelligence, IEEE Transactions on},
+  year = {2004},
+  volume = {26},
+  pages = {831--847},
+  number = {7},
+  publisher = {IEEE}
+}
+
+@INPROCEEDINGS{hariharan2015hypercolumns,
+  author = {Hariharan, Bharath and Arbel{\'a}ez, Pablo and Girshick, Ross and
+	Malik, Jitendra},
+  title = {Hypercolumns for object segmentation and fine-grained localization},
+  booktitle = {CVPR},
+  year = {2015}
 }
 
 @BOOK{Hebb,
@@ -205,8 +200,8 @@
   author = {Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
   title = {Long short-term memory},
   journal = {Neural computation},
-  year = 1997,
-  number = 8,
+  year = {1997},
+  number = {8},
   publisher = {MIT Press}
 }
 
@@ -215,15 +210,26 @@
 	Sergey and Long, Jonathan and Girshick, Ross and Guadarrama, Sergio
 	and Darrell, Trevor},
   title = {Caffe: Convolutional Architecture for Fast Feature Embedding},
-  journal = {arXiv:1408.5093},
-  year = 2014
+  journal = {arXiv preprint arXiv:1408.5093},
+  year = {2014}
 }
 
 @INPROCEEDINGS{FV_BoP,
   author = {Juneja, M. and Vedaldi, A. and Jawahar, C.V. and Zisserman, A.},
   title = {Blocks That Shout: Distinctive Parts for Scene Classification},
   booktitle = {CVPR},
-  year = 2013
+  year = {2013}
+}
+
+@ARTICLE{koenderink1999structure,
+  author = {Koenderink, Jan J and Van Doorn, Andrea J},
+  title = {The structure of locally orderless images},
+  journal = {International Journal of Computer Vision},
+  year = {1999},
+  volume = {31},
+  pages = {159--168},
+  number = {2-3},
+  publisher = {Springer}
 }
 
 @INCOLLECTION{AlexNet,
@@ -267,6 +273,27 @@
   volume = {abs/1312.4400}
 }
 
+@BOOK{lindeberg1993scale,
+  title = {Scale-space theory in computer vision},
+  publisher = {Springer Science \& Business Media},
+  year = {1993},
+  author = {Lindeberg, Tony}
+}
+
+@INPROCEEDINGS{long2015fully,
+  author = {Long, Jonathan and Shelhamer, Evan and Darrell, Trevor},
+  title = {Fully convolutional networks for semantic segmentation},
+  booktitle = {CVPR},
+  year = {2015}
+}
+
+@BOOK{mallat1999wavelet,
+  title = {A wavelet tour of signal processing},
+  publisher = {Academic press},
+  year = {1999},
+  author = {Mallat, St{\'e}phane}
+}
+
 @INPROCEEDINGS{ReLU,
   author = {Vinod Nair and Geoffrey E. Hinton},
   title = {Rectified Linear Units Improve Restricted Boltzmann Machines},
@@ -280,6 +307,14 @@
 	Spatial Envelope},
   journal = {IJCV},
   year = {2001}
+}
+
+@BOOK{oppenheim1989discrete,
+  title = {Discrete-time signal processing},
+  publisher = {Prentice-hall Englewood Cliffs},
+  year = {1989},
+  author = {Oppenheim, Alan V and Schafer, Ronald W and Buck, John R and others},
+  volume = {2}
 }
 
 @INPROCEEDINGS{Parizi_cvpr12_reconf,
@@ -306,13 +341,21 @@
   year = {2009}
 }
 
-@ARTICLE{cnn_baseline,
+@INPROCEEDINGS{raiko-aistats-12,
+  author = {Raiko, Tapani and Valpola, Harri and LeCun, Yann},
+  title = {Deep Learning Made Easier by Linear Transformations in Perceptrons},
+  booktitle = {AISTATS},
+  year = {2012},
+  volume = {22},
+  pages = {924-932}
+}
+
+@INPROCEEDINGS{cnn_baseline,
   author = {Ali Sharif Razavian and Hossein Azizpour and Josephine Sullivan and
 	Stefan Carlsson},
   title = {{CNN} Features off-the-shelf: an Astounding Baseline for Recognition},
-  journal = {CoRR},
-  year = {2014},
-  volume = {abs/1403.6382}
+  booktitle = {CVPR},
+  year = {2014}
 }
 
 @ARTICLE{rumelhart1988learning,
@@ -344,12 +387,20 @@
   volume = {abs/1312.6229}
 }
 
-@ARTICLE{veryDeep,
+@INPROCEEDINGS{sermanet2013pedestrian,
+  author = {Sermanet, Pierre and Kavukcuoglu, Koray and Chintala, Soumith and
+	LeCun, Yann},
+  title = {Pedestrian detection with unsupervised multi-stage feature learning},
+  booktitle = {CVPR},
+  year = {2013},
+  organization = {IEEE}
+}
+
+@INPROCEEDINGS{veryDeep,
   author = {Karen Simonyan and Andrew Zisserman},
   title = {Very Deep Convolutional Networks for Large-Scale Image Recognition},
-  journal = {CoRR},
-  year = {2014},
-  url = {http://arxiv.org/abs/1409.1556}
+  booktitle = {ICLR},
+  year = {2015}
 }
 
 @INPROCEEDINGS{disc_patch,
@@ -365,10 +416,8 @@
   author = {Sivic, Josef and Zisserman, Andrew},
   title = {Video Google: A text retrieval approach to object matching in videos},
   booktitle = {ICCV},
-  year = 2003,
+  year = {2003}
 }
-%  pages = {1470--1477},
-%  organization = {IEEE}
 
 @INPROCEEDINGS{momentum,
   author = {Ilya Sutskever and James Martens and George Dahl and Geoffrey Hinton},
@@ -377,14 +426,13 @@
   year = {2013}
 }
 
-@ARTICLE{GoogLeNet,
+@INPROCEEDINGS{GoogLeNet,
   author = {Christian Szegedy and Wei Liu and Yangqing Jia and Pierre Sermanet
 	and Scott Reed and Dragomir Anguelov and Dumitru Erhan and Vincent
 	Vanhoucke and Andrew Rabinovich},
   title = {Going Deeper with Convolutions},
-  journal = {CoRR},
-  year = 2014,
-  volume = {abs/1409.4842}
+  booktitle = {CVPR},
+  year = {2015}
 }
 
 @ARTICLE{FV,
@@ -405,9 +453,7 @@
 	Antonio},
   title = {Hoggles: Visualizing object detection features},
   booktitle = {ICCV},
-  year = {2013},
-  pages = {1--8},
-  organization = {IEEE}
+  year = {2013}
 }
 
 @ARTICLE{Wu_pami11,
@@ -450,57 +496,3 @@
   year = {2014}
 }
 
-@book{mallat1999wavelet,
-  title={A wavelet tour of signal processing},
-  author={Mallat, St{\'e}phane},
-  year={1999},
-  publisher={Academic press}
-}
-
-@book{oppenheim1989discrete,
-  title={Discrete-time signal processing},
-  author={Oppenheim, Alan V and Schafer, Ronald W and Buck, John R and others},
-  volume={2},
-  year={1989},
-  publisher={Prentice-hall Englewood Cliffs}
-}
-
-@article{koenderink1999structure,
-  title={The structure of locally orderless images},
-  author={Koenderink, Jan J and Van Doorn, Andrea J},
-  journal={International Journal of Computer Vision},
-  volume={31},
-  number={2-3},
-  pages={159--168},
-  year={1999},
-  publisher={Springer}
-}
-
-@article{hadjidemetriou2004multiresolution,
-  title={Multiresolution histograms and their use for recognition},
-  author={Hadjidemetriou, Efstathios and Grossberg, Michael D and Nayar, Shree K},
-  journal={Pattern Analysis and Machine Intelligence, IEEE Transactions on},
-  volume={26},
-  number={7},
-  pages={831--847},
-  year={2004},
-  publisher={IEEE}
-}
-
-@book{lindeberg1993scale,
-  title={Scale-space theory in computer vision},
-  author={Lindeberg, Tony},
-  year={1993},
-  publisher={Springer Science \& Business Media}
-}
-
-@article{burt1983laplacian,
-  title={The Laplacian pyramid as a compact image code},
-  author={Burt, Peter J and Adelson, Edward H},
-  journal={Communications, IEEE Transactions on},
-  volume={31},
-  number={4},
-  pages={532--540},
-  year={1983},
-  publisher={IEEE}
-}

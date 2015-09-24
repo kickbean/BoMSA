@@ -30,7 +30,9 @@
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
-\ificcvfinal\pagestyle{empty}\fi
+\ificcvfinal
+\pagestyle{empty}
+\fi
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -54,6 +56,7 @@ Carnegie Mellon University, USA\\
 
 \maketitle
 %\thispagestyle{empty}
+\thispagestyle{empty}
 
 
 %%%%%%%%% ABSTRACT
@@ -449,7 +452,7 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 {\bf Conclusion:} We have introduced multi-scale CNNs for image classification. Such models encode scale-specific features that can be effectively shared across both coarse and fine-grained classification tasks. Importantly, such models can be viewed as DAG-structured feedforward predictors, allowing for end-to-end training. While fine-tuning helps performance, we empirically demonstrate that even ``off-the-self'' multi-scale features perform quite well. We present extensive analysis and demonstrate state-of-the-art classification performance on three standard scene benchmarks, sometimes improving upon prior art by a significant margin. %\deva{We need to get main text and figures into 8 pages, and all references into 1}.
 
 {\bf Acknowledgement.}
-This work was supported by NSF Grant 0954083 and ONR-MURI Grant N00014-10-1-0933.
+This work was supported by NSF Grant 0954083, ONR-MURI Grant N00014-10-1-0933, and NSF of China Grant 61501312.
 
 
 \newpage
