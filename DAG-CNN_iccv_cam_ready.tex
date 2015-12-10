@@ -76,6 +76,7 @@ In terms of the heavily benchmarked MIT67 and Scene15 datasets, our results redu
 \includegraphics[width=\columnwidth]{fig/splash}
 \caption{Recognition typically require features at multiple scales. Distinguishing a person versus dog requires highly invariant features robust to the deformation of each category. On the other hand, fine-grained recognition likely requires detailed shape cues to distinguish models of cars ({\bf top}). We use these observations to revisit deep convolutional neural net (CNN) architectures. Typical approaches train a classifier using features from a single output layer ({\bf left}). We extract multi-scale features from multiple layers to simultaneously distinguish coarse and fine classes. Such features come ``for free'' since they are already computed during the feed-forward pass ({\bf middle}). Interestingly, the entire multi-scale predictor is still a feed-forward architecture that is no longer chain-structured, but a directed-acyclic graph (DAG) ({\bf right}). We show that DAG-CNNs can be discriminatively trained in an end-to-end fashion, yielding state-of-the-art recognition results across various recognition benchmarks. }% DAG-CNNs address some well-known challenges with CNNs such as ``vanishing gradients''~\cite{bengio1994learning}. Lower layers in a DAG-CNN still receive a strong gradient signal during learning because they are directly tied to the output layer, making them easier to train.
 \label{fig:splash}
+\vspace{-20pt}
 \end{figure}
 
 Deep convolutional neural nets (CNNs), pioneered by Lecun and collaborators~\cite{lecun1998gradient}, now produce state-of-the-art performance on many visual recognition tasks~\cite{AlexNet, veryDeep, GoogLeNet}. An attractive property is that it appear to serve as universal feature extractors, either as ``off-the-shelf'' features or through a small amount of ``fine tuning''. CNNs trained on particular tasks such as large-scale image classification~\cite{ImageNet} {\em transfer} extraordinarily well to other tasks such as object detection~\cite{rcnn}, scene recognition~\cite{zhoulearning}, image retrieval~\cite{Gong14}, etc \cite{cnn_baseline}.
@@ -91,6 +92,7 @@ hierarchical feed-forward architectures that compute progressively invariant rep
 %	\subfigure[high-level feature is preferred]{\includegraphics[width=.49\textwidth]{fig/moti_high_better}\label{fig:moti_high}}
 \caption{Retrieval results using L2 distance for both mid- and high-level features on MIT67~\cite{MIT67}, computed from layer 11 and 20 of the Caffe model. \textit{Green} (\textit{Red}) box means correct (wrong) results, in terms of the scene category label. The correct label for wrong retrievals are provided. The retrieval results are displayed such that the left-most image has the closest distance to the query, and vice versa. Certain query images (or categories) produce better matches with high-level features, while others produce better results with mid-level features. This motivates our multi-scale approach.}
 \label{fig:moti}
+\vspace{-10pt}
 \end{figure*}
 
 
@@ -163,6 +165,7 @@ We plot the performance of single-layer classifiers in Fig.~\ref{fig:layer_MIT67
 \caption{The ``per-class'' performance using features extracted from particular layers. We group classes with identical best-performing layers. The last layer ({\bf 20}) is optimal for only 15 classes, while the second-to-last layer ({\bf 18}) proves most discriminative for 26 classes. The third-most effective layer ({\bf 11}) captures significantly lower-level level features. These results validate our underlying hypothesis; different classes require different amounts of invariance. This suggests that a feature extractor shared across such classes will be more effective when multi-scale.}
 %We further analyze this phenomena in Fig.~\ref{fig:best_perf_layer_hist}.}
 \label{fig:level_perf}
+\vspace{-10pt}
 \end{figure*}
 
 %\begin{figure}[t!]
@@ -208,9 +211,9 @@ Most categories tend to do well with high-level features, but a significant frac
 \centering
 	\subfigure[Multi-scale]{\includegraphics[width=.49\columnwidth]{fig/fig_add_back_caffe}\label{fig:add_back_caffe}}
 	\subfigure[Forward Selection]{\includegraphics[width=.49\columnwidth]{fig/fig_forward_select_caffe}\label{fig:forward_select_caffe}}
-\caption{ (a) The performance of a multi-scale classifier as we add more layer-specific features. We start with the last ReLU layer, and iteratively add the previous ReLU layer to the feature set of the classifier.
-The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers. (b) The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. Specifically, it begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see a significant 6\% improvement.}
+\caption{ (a) The performance of a multi-scale classifier as we add more layer-specific features. We start with the last ReLU layer, and iteratively add the previous ReLU layer. The ``+'' sign means the recent-most added layer. Adding additional layers help, but performance saturates and even slightly decreases when adding lower-layer features. This suggests it may be helpful to search for the ``optimal'' combination of layers. (b) The performance trend when using forward selection to incorporate the ReLU layers. Note that layers are {\em not} selected in high-to-low order. Specifically, it begin with the second-to-last ReLU layer, and skip one or more previous layers when adding the next layer. This suggests that layers encode some redundant or correlated information. Overall, we see a significant 6\% improvement.}
 \label{fig:add_back}
+\vspace{-10pt}
 \end{figure}
 
 {\bf Multi-scale selection:} The previous results show that adding all layers may actually hurt performance. We verified that this was an over-fitting phenomena; additional layers always improved training performance, but could decrease test performance due to over-fitting. This appears especially true for multi-scale analysis, where nearby layers may encoded redundant or correlated information (that is susceptible to over-fitting). Ideally, we would like to search for the ``optimal'' combination of ReLU layers that maximize performance on validation data. Since there exists an exponential number of combinations ($2^N$ for $N$ ReLU layers), we find an approximate solution with a greedy forward-selection strategy. We greedily select the next-best layer (among all remaining layers) to add, until we observe no further performance improvement. As seen in Fig.~\ref{fig:forward_select_caffe}, the optimal results of this greedy approach rejects the low-level features. This is congruent with the previous results in Fig.~\ref{fig:add_back_caffe}. 
@@ -224,6 +227,7 @@ In our subsequent analysis we consider only globally-pooled features, as they ar
 \includegraphics[width=.7\columnwidth]{fig/sumpool_size}
 \caption{We evaluate spatial pooling strategies to see if retaining spatial information (by pooling over smaller windows) helps multi-scale performance. The answer is essentially `no': global pooling (using a $1\times 1$ window covering the entire layer) does as well as or better than local windows, either of a fixed-size or adaptive-size dynamically selected during the greedy search ({\bf all}). We posit two reasons: (1) finer spatial cues may already be captured by multiscale features extracted from neighboring layers and (2) additional training data might be needed to realize the benefit of local pooling windows since they generate larger descriptors. Dotted line means the layer will not be selected by greedy procedure. For reference, we also experimented with max-pooling strategies, but saw consistently worse results.}
 \label{fig:pool_size}
+\vspace{-15pt}
 \end{figure}
 
 
@@ -305,6 +309,7 @@ $\forall j, \frac{\partial \beta_k}{\partial \alpha_k^{(j)}} = \frac{\partial \b
 \includegraphics[width=.8\columnwidth]{fig/fig_grad}
 \caption{The average gradient from Layer-1 (Conv.) during training, plotted in log-scale. Gradients from the DAG are consistently $10\times$ larger, implying that they receive a stronger supervised signal from the target label during gradient-based learning.}
 \label{fig:grad}
+\vspace{-15pt}
 \end{figure}
 
 
@@ -397,6 +402,7 @@ Forward feature selection on Caffe-DAG selects layers $(11, 13, 15, 18, 20)$, ma
 	\includegraphics[width=.9\textwidth]{fig/fig_more_eg}
 \caption{Deep19-DAG results on MIT67. The category label is shown on the left and the label for false-positives (in {\bf red}) are also provided. We use the multi-scale analysis of Fig.~\ref{fig:level_perf} to compare categories that perform better with mid-level features ({\bf top 2 rows}) versus high-level features ({\bf bottom 2 rows}). Mid-level features appear to emphasize \textit{objects} such as operating equipment for {\tt operating room} scenes and circular grid for {\tt  wine celler}, while high-level features appear to focus on global \textit{spatial statistics} for {\tt inside bus} and {\tt elevator} scenes. }%\songfan{showing a different set of results. The selected classes all have large performance difference for mid- vs high-level features, based on Fig. 4.}}
 \label{fig:more_eg}
+\vspace{-10pt}
 \end{figure*}
 
 {\bf SUN397:} We tabulate results for all our benchmark datasets in Table~\ref{table:all}, and discuss each in turn. SUN397~\cite{SUN397} is a large scene recognition dataset with 100K images spanning 397 categories, provided with standard train-test splits. Our DAG models outperform their single-scale counterparts. In particular, Deep19-DAG achieves the highest $56.2\%$ accuracy. Our results are particularly impressive given that the next-best method of~\cite{zhoulearning} (with a score of $54.3$) makes use of a ImageNet-trained CNN and a custom-trained CNN using a new 7-million image dataset with 400 scene categories.
@@ -442,6 +448,7 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 	
 \caption{Off-the-shelf vs. Fine-tuning models on both Chain and DAG model for Caffe backbone. Please see the text for a discussion.}
 \label{fig:comp_otf}
+\vspace{-10pt}
 \end{figure}
 
 
@@ -452,8 +459,7 @@ In this section, we analyze ``off-the-shelf'' (OTS) and ``fine-tuned'' (FT) vers
 {\bf Conclusion:} We have introduced multi-scale CNNs for image classification. Such models encode scale-specific features that can be effectively shared across both coarse and fine-grained classification tasks. Importantly, such models can be viewed as DAG-structured feedforward predictors, allowing for end-to-end training. While fine-tuning helps performance, we empirically demonstrate that even ``off-the-self'' multi-scale features perform quite well. We present extensive analysis and demonstrate state-of-the-art classification performance on three standard scene benchmarks, sometimes improving upon prior art by a significant margin. %\deva{We need to get main text and figures into 8 pages, and all references into 1}.
 
 {\bf Acknowledgement.}
-This work was supported by NSF Grant 0954083, ONR-MURI Grant N00014-10-1-0933, and NSF of China Grant 61501312.
-
+This work was supported by NSF Grant 0954083 and ONR-MURI Grant N00014-10-1-0933. This research is based upon work supported in part by the Office of the Director of National Intelligence (ODNI), Intelligence Advanced Research Projects Activity (IARPA), via IARPA R \& D Contract No. 2014-14071600012. The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of ODNI, IARPA, or the U.S. Government. The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright annotation thereon.
 
 \newpage
 
